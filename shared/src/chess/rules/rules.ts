@@ -1,4 +1,4 @@
-import { Cell } from "./cell";
+import { Cell } from "../cell";
 
 // export enum MovementRuleName {
 //   DiagonalMovementRule = "DiagonalMovementRule",
@@ -22,10 +22,21 @@ export abstract class MovementRule {
     // protected name: MovementRuleName,
     protected moveToEmpty: boolean,
     protected moveToKill: boolean,
-    protected collistion: boolean, // true - will move until first enemy, false - will jump like horse
+    protected collision: boolean, // true - will move until first enemy, false - will jump like horse
     protected distance: number,
     protected directions: Set<Direction>
   ) {}
+
+  getMeta() {
+    return {
+      name: this.constructor.name,
+      moveToEmpty: this.moveToEmpty,
+      moveToKill: this.moveToKill,
+      collision: this.collision,
+      distance: this.distance,
+      directions: this.directions,
+    };
+  }
 
   abstract availableMoves(
     fromX: number,

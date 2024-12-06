@@ -14,7 +14,7 @@ export class Cell {
   public isEmpty() {
     return !this.piece;
   }
-  public getPiece() {
+  public getPiece(): Piece | undefined {
     return this.piece;
   }
 }

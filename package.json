@@ -1,16 +1,20 @@
 {
-  "name": "magechess",
-  "version": "1.0.0",
+  "name": "@real_one_chess_king/server",
+  "version": "1.0.2",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "build": "tsc"
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsc",
+    "dev": "tsx watch ./src/index.ts"
   },
-  "author": "",
+  "author": "Eugene Perminov",
   "license": "ISC",
   "devDependencies": {
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },
   "dependencies": {

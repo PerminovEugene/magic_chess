@@ -1,4 +1,4 @@
-import { MovementRule } from "./rules";
+import { MovementRule } from "./rules/rules";
 
 export enum PieceType {
   Pawn = "Pawn",
@@ -19,35 +19,43 @@ export abstract class Piece {
     public color: Color,
     public movementRules: MovementRule[]
   ) {}
+
+  getMeta() {
+    return {
+      type: this.type,
+      color: this.color,
+      rules: this.movementRules.map((rule) => rule.getMeta()),
+    };
+  }
 }
 
 export class Pawn extends Piece {
-  constructor(color: Color, movementRules = []) {
+  constructor(color: Color, movementRules: MovementRule[] = []) {
     super(PieceType.Pawn, color, movementRules);
   }
 }
 export class King extends Piece {
-  constructor(color: Color, movementRules = []) {
+  constructor(color: Color, movementRules: MovementRule[] = []) {
     super(PieceType.King, color, movementRules);
   }
 }
 export class Queen extends Piece {
-  constructor(color: Color, movementRules = []) {
+  constructor(color: Color, movementRules: MovementRule[] = []) {
     super(PieceType.Queen, color, movementRules);
   }
 }
 export class Rook extends Piece {
-  constructor(color: Color, movementRules = []) {
+  constructor(color: Color, movementRules: MovementRule[] = []) {
     super(PieceType.Rook, color, movementRules);
   }
 }
 export class Knight extends Piece {
-  constructor(color: Color, movementRules = []) {
+  constructor(color: Color, movementRules: MovementRule[] = []) {
     super(PieceType.Knight, color, movementRules);
   }
 }
 export class Bishop extends Piece {
-  constructor(color: Color, movementRules = []) {
+  constructor(color: Color, movementRules: MovementRule[] = []) {
     super(PieceType.Bishop, color, movementRules);
   }
 }

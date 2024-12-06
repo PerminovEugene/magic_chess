@@ -1,0 +1,44 @@
+{
+  "name": "@real_one_chess_king/game-logic",
+  "version": "0.1.2",
+  "description": "R.O.C.K. game logic",
+  "keywords": [
+    "chess",
+    "game"
+  ],
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.mjs",
+  "types": "dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.cjs",
+      "import": "./dist/esm/index.mjs",
+      "types": "./dist/esm/index.d.ts"
+    }
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf dist/",
+    "prebuild": "npm run clean",
+    "build:cjs": "tsc -p tsconfig.cjs.json && mv dist/cjs/index.js dist/cjs/index.cjs",
+    "build:esm": "tsc -p tsconfig.esm.json && mv dist/esm/index.js dist/esm/index.mjs",
+    "build": "npm run build:cjs && npm run build:esm",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "Eugene Perminov",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PerminovEugene/openMarketplaceNFT-market/tree/main/packages/blockchain/interface"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "typescript": "^5.6.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

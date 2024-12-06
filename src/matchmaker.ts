@@ -1,28 +1,50 @@
-import { Board } from "./chess/board";
-import { Game, Player } from "./chess/game";
+import { Socket } from "socket.io";
+import { Board } from "../shared/src/chess/board";
+import { Game, Player } from "../shared/src/chess/game";
+import { GameInitializer } from "./game-initializer";
 
+type QueueItem = {
+  player: Player;
+  socket: Socket;
+};
 export class Queue {
-  private queue: Player[] = [];
+  private queue: QueueItem[] = [];
 
-  public enqueue(player: Player) {
-    this.queue.push(player);
+  public enqueue(player: Player, socket: Socket) {
+    this.queue.push({ player, socket });
   }
 
-  public dequeue(): Player | null {
+  public dequeue(): QueueItem | undefined {
     return this.queue.pop();
   }
 }
 
 export class Matchmaker {
   private queue = new Queue();
+  private gameInitializer = new GameInitializer();
+  private socketIdsInQueue = new Set<string>();
 
-  public findMatch(player: Player): null | Game {
+  public isSocketIdInQueue(socketId: string) {
+    return this.socketIdsInQueue.has(socketId);
+  }
+
+  public removeSocketFromQueue(socketId: string) {
+    this.socketIdsInQueue.delete(socketId);
+  }
+
+  public findMatch(player: Player, socket: Socket) {
     const opponent = this.queue.dequeue();
     if (!opponent) {
-      this.queue.enqueue(player);
+      this.socketIdsInQueue.add(socket.id);
+      this.queue.enqueue(player, socket);
       return null;
     }
     const board = new Board();
-    return new Game(player, opponent, board);
+    this.gameInitializer.spawnPieces(board);
+
+    return {
+      game: new Game(player, opponent.player, board),
+      opponentSocket: opponent.socket,
+    };
   }
 }
