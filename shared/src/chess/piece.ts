@@ -1,4 +1,4 @@
-import { MovementRule } from "./rules/rules";
+import { MovementRule, RuleMeta } from "./rules/rules";
 
 export enum PieceType {
   Pawn = "Pawn",
@@ -12,6 +12,12 @@ export enum Color {
   white = "white",
   black = "black",
 }
+
+export type PieceMeta = {
+  type: PieceType;
+  color: Color;
+  rules: RuleMeta[];
+};
 
 export abstract class Piece {
   constructor(

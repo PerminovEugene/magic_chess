@@ -1,5 +1,5 @@
 import { Board } from "./board";
-import { Color } from "./piece";
+import { Color, PieceMeta } from "./piece";
 
 export class Player {
   constructor(public name: string) {}
@@ -9,6 +9,16 @@ export enum TurnType {
   Move = "move",
   Skill = "skill",
 }
+
+export type BoardMeta = PieceMeta[][];
+
+export type NewPlayerGameData = {
+  players: { [key in Color]: { name: string } };
+  yourColor: Color;
+  timeStart: string;
+  timeForWhite: number;
+  timeForBlack: number;
+};
 
 export type Turn = {
   color: Color;
@@ -25,7 +35,7 @@ export class Game {
   nextTurnColor: Color;
   turns: Turn[] = [];
   result: Color | "draw" | null = null;
-  timeStart: string | null = null;
+  timeStart: string = new Date().toISOString();
   timeEnd: string | null = null;
 
   processTurn(turn: Turn): boolean {
@@ -43,7 +53,7 @@ export class Game {
   }
 
   // returns meta board for color, it hides opponent private data, hold minimal data
-  getBoardForColor(color: Color) {
+  getBoardMetaForColor(color: Color): BoardMeta {
     const coloredBoard: any[][] = Array.from(
       { length: this.board.squares.length },
       () => Array.from({ length: this.board.squares[0].length }, () => null)
@@ -64,5 +74,18 @@ export class Game {
       }
     }
     return coloredBoard;
+  }
+
+  getNewGameInfoForColor(color: Color): NewPlayerGameData {
+    return {
+      players: {
+        [Color.white]: { name: this.white.name },
+        [Color.black]: { name: this.black.name },
+      },
+      yourColor: color,
+      timeStart: this.timeStart,
+      timeForWhite: 10 * 60 * 1000, // 10 minutes for random game
+      timeForBlack: 10 * 60 * 1000,
+    };
   }
 }

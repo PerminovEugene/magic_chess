@@ -69,8 +69,12 @@ export class GameMachine {
   }
   public beginGame() {
     for (const color of Object.values(Color)) {
-      const board = this.game.getBoardForColor(color);
-      this.sockets[color].emit(WSServerGameEvent.GameStarted, board);
+      const board = this.game.getBoardMetaForColor(color);
+      const gameInfo = this.game.getNewGameInfoForColor(color);
+      this.sockets[color].emit(WSServerGameEvent.GameStarted, {
+        board,
+        gameInfo,
+      });
       console.log("Emit game started"), board;
     }
 

@@ -1,11 +1,5 @@
 import { Cell } from "../cell";
 
-// export enum MovementRuleName {
-//   DiagonalMovementRule = "DiagonalMovementRule",
-//   VerticalMovementRule = "VerticalMovementRule",
-//   HorizontalMovementRule = "HorizontalMovementRule",
-// }
-
 export enum Direction {
   Up = "Up",
   UpLeft = "UpLeft",
@@ -16,6 +10,15 @@ export enum Direction {
   Left = "Left",
   Right = "Right",
 }
+
+export type RuleMeta = {
+  name: string;
+  moveToEmpty: boolean;
+  moveToKill: boolean;
+  collision: boolean;
+  distance: number;
+  directions: Direction[];
+};
 
 export abstract class MovementRule {
   constructor(
