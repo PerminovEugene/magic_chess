@@ -152,18 +152,18 @@ export class GameInitializer {
       new Rook(color, this.getDefaultRookRules())
     );
     board.squares[spawnLine][1].putPiece(
-      new Bishop(color, this.getDefaultBishopRules())
+      new Knight(color, this.getDefaultKnightRules())
     );
     board.squares[spawnLine][2].putPiece(
-      new Knight(color, this.getDefaultKnightRules())
+      new Bishop(color, this.getDefaultBishopRules())
     );
     board.squares[spawnLine][3].putPiece(new King(color));
     board.squares[spawnLine][4].putPiece(new Queen(color));
     board.squares[spawnLine][5].putPiece(
-      new Knight(color, this.getDefaultKnightRules())
+      new Bishop(color, this.getDefaultBishopRules())
     );
     board.squares[spawnLine][6].putPiece(
-      new Bishop(color, this.getDefaultBishopRules())
+      new Knight(color, this.getDefaultKnightRules())
     );
     board.squares[spawnLine][7].putPiece(
       new Rook(color, this.getDefaultRookRules())
