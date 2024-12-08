@@ -1,6 +1,6 @@
 {
   "name": "@real_one_chess_king/game-logic",
-  "version": "0.1.2",
+  "version": "0.1.7",
   "description": "R.O.C.K. game logic",
   "keywords": [
     "chess",
@@ -26,7 +26,8 @@
     "build:cjs": "tsc -p tsconfig.cjs.json && mv dist/cjs/index.js dist/cjs/index.cjs",
     "build:esm": "tsc -p tsconfig.esm.json && mv dist/esm/index.js dist/esm/index.mjs",
     "build": "npm run build:cjs && npm run build:esm",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "jest"
   },
   "author": "Eugene Perminov",
   "repository": {
@@ -35,6 +36,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.7.0",
     "typescript": "^5.6.2"
   },

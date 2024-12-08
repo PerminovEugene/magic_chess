@@ -38,42 +38,41 @@ export class Game {
   timeStart: string = new Date().toISOString();
   timeEnd: string | null = null;
 
-  processTurn(turn: Turn): boolean {
+  private updateGameNextTurn() {
+    this.nextTurnColor =
+      this.nextTurnColor === Color.black ? Color.white : Color.black;
+  }
+
+  processTurn(turn: Turn) {
     const { color, from, to, type, timestamp } = turn;
     if (this.nextTurnColor !== color) {
       throw new Error("Not your turn");
     }
-    this.turns.push(turn);
     if (type === TurnType.Move) {
       this.board.move(color, from, to);
     } else {
       this.board.cast(color, from, to);
     }
+    this.turns.push(turn);
+    this.updateGameNextTurn();
+    // todo check win condition and return true in that case
     return false;
   }
 
   // returns meta board for color, it hides opponent private data, hold minimal data
   getBoardMetaForColor(color: Color): BoardMeta {
-    const coloredBoard: any[][] = Array.from(
-      { length: this.board.squares.length },
-      () => Array.from({ length: this.board.squares[0].length }, () => null)
-    );
-    for (let i = 0; i < this.board.squares.length; i++) {
-      for (let j = 0; j < this.board.squares[i].length; j++) {
-        const cell = this.board.squares[i][j];
-        const piece = cell.getPiece();
-        if (piece) {
-          const meta = piece.getMeta();
-          if (piece && piece.color === color) {
-            coloredBoard[i][j] = meta;
-          } else {
+    const boardMeta = this.board.getMeta();
+    for (let i = 0; i < boardMeta.length; i++) {
+      for (let j = 0; j < boardMeta[i].length; j++) {
+        const meta = boardMeta[i][j];
+        if (meta) {
+          if (meta.color !== color) {
             meta.rules = []; // when scouting will be available need to add smarter solution
-            coloredBoard[i][j] = meta;
           }
         }
       }
     }
-    return coloredBoard;
+    return boardMeta;
   }
 
   getNewGameInfoForColor(color: Color): NewPlayerGameData {

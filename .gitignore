@@ -1,5 +1,7 @@
 /node_modules
 /dist
 .vscode
-./shared/dist
-./shared/node_modules
+coverage/
+shared/dist/
+shared/node_modules/
+shared/dist

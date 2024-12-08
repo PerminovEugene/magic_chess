@@ -27,7 +27,7 @@ export class GameInitializer {
         collision: true,
         distance: 1,
         directions:
-          color == Color.black
+          color == Color.white
             ? new Set<Direction>([Direction.Down])
             : new Set<Direction>([Direction.Up]),
       }),
@@ -37,7 +37,7 @@ export class GameInitializer {
         collision: true,
         distance: 1,
         directions:
-          color == Color.black
+          color == Color.white
             ? new Set<Direction>([Direction.DownRight, Direction.DownLeft])
             : new Set<Direction>([Direction.UpRight, Direction.UpLeft]),
       }),
@@ -57,14 +57,11 @@ export class GameInitializer {
         moveToKill: true,
         collision: true,
         distance: 8,
-        directions: new Set<Direction>([Direction.Up, Direction.Down]),
+        directions: new Set<Direction>([Direction.Left, Direction.Right]),
       }),
     ];
   }
   getDefaultBishopRules() {
-    return [];
-  }
-  getDefaultKnightRules() {
     return [
       new DiagonalMovementRule({
         moveToEmpty: true,
@@ -79,6 +76,9 @@ export class GameInitializer {
         ]),
       }),
     ];
+  }
+  getDefaultKnightRules() {
+    return [];
   }
   getDefaultQueenRules() {
     return [
@@ -106,7 +106,7 @@ export class GameInitializer {
         moveToKill: true,
         collision: true,
         distance: 8,
-        directions: new Set<Direction>([Direction.Up, Direction.Down]),
+        directions: new Set<Direction>([Direction.Left, Direction.Right]),
       }),
     ];
   }
@@ -136,17 +136,19 @@ export class GameInitializer {
         moveToKill: true,
         collision: true,
         distance: 1,
-        directions: new Set<Direction>([Direction.Up, Direction.Down]),
+        directions: new Set<Direction>([Direction.Left, Direction.Right]),
       }),
     ];
   }
 
   spawnColor(board: Board, color: Color) {
-    const spawnLine = color === Color.black ? 0 : 7;
-    const pawnSpawnLine = color === Color.black ? spawnLine + 1 : spawnLine - 1;
+    const spawnLine = color === Color.white ? 0 : 7;
+    const pawnSpawnLine = color === Color.white ? spawnLine + 1 : spawnLine - 1;
 
     for (let i = 0; i < board.size; i++) {
-      board.squares[pawnSpawnLine][i].putPiece(new Pawn(color, []));
+      board.squares[pawnSpawnLine][i].putPiece(
+        new Pawn(color, this.getDefaultPawnRules(color))
+      );
     }
     board.squares[spawnLine][0].putPiece(
       new Rook(color, this.getDefaultRookRules())
@@ -157,8 +159,12 @@ export class GameInitializer {
     board.squares[spawnLine][2].putPiece(
       new Bishop(color, this.getDefaultBishopRules())
     );
-    board.squares[spawnLine][3].putPiece(new King(color));
-    board.squares[spawnLine][4].putPiece(new Queen(color));
+    board.squares[spawnLine][4].putPiece(
+      new Queen(color, this.getDefaultQueenRules())
+    );
+    board.squares[spawnLine][3].putPiece(
+      new King(color, this.getDefaultKingRules())
+    );
     board.squares[spawnLine][5].putPiece(
       new Bishop(color, this.getDefaultBishopRules())
     );

@@ -37,7 +37,7 @@ export abstract class MovementRule {
       moveToKill: this.moveToKill,
       collision: this.collision,
       distance: this.distance,
-      directions: this.directions,
+      directions: Array.from(this.directions),
     };
   }
 

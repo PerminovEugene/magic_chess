@@ -37,15 +37,10 @@ export abstract class StraightMovementRule extends MovementRule {
     squares: Cell[][]
   ): [number, number][] {
     const moves: [number, number][] = [];
-    let availableDirections = new Set<Direction>([
-      Direction.Up,
-      Direction.Down,
-    ]);
-    // const possibleDirrections = [Direction.Up, Direction.Down];
+    let availableDirections = new Set<Direction>(this.possibleDirrections);
+
     for (let diff = 1; diff <= this.distance; diff++) {
-      for (let dirrection of this.possibleDirrections) {
-        // const newY =
-        //   dirrection == Direction.Up ? fromY + diff : fromY - diff;
+      for (let dirrection of this.directions) {
         const [newX, newY] = this.calculateNewCoord(
           fromX,
           fromY,
@@ -57,15 +52,24 @@ export abstract class StraightMovementRule extends MovementRule {
           if (this.isCoordInvalid(newX, newY, squares.length)) {
             availableDirections.delete(dirrection);
           } else {
-            const possibleMove = squares[newX][newY];
-            const fromCell = squares[fromX][fromY];
-            const color = fromCell?.getPiece()?.color;
+            const possibleMove = squares[newY][newX];
+            const fromCell = squares[fromY][fromX];
+
             if (this.moveToEmpty && possibleMove.isEmpty()) {
               // can move to empty square
               moves.push([newX, newY]);
-            } else if (this.moveToKill && !possibleMove.isEmpty()) {
+            } else if (!possibleMove.isEmpty()) {
+              const fromPiece = fromCell?.getPiece();
+              if (!fromPiece) {
+                throw new Error("Not found piece at from location");
+              }
+
               const newLocationPieceColor = possibleMove.getPiece()!.color;
-              if (newLocationPieceColor !== color) {
+
+              if (
+                this.moveToKill &&
+                newLocationPieceColor !== fromPiece.color
+              ) {
                 // can move to enemy square
                 moves.push([newX, newY]);
               }
@@ -76,7 +80,7 @@ export abstract class StraightMovementRule extends MovementRule {
           }
         }
         if (availableDirections.size === 0) {
-          diff = this.distance + 1;
+          diff = this.distance + 1; // end search, nowhere to go
         }
       }
     }
