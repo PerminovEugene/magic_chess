@@ -1,3 +1,7 @@
+# 0.1.9
+
+Add knight movement rule
+
 # 0.1.8
 
 Add turn formatter to export
