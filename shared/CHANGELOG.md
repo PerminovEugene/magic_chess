@@ -1,3 +1,7 @@
+# 0.1.8
+
+Add turn formatter to export
+
 # 0.1.7
 
 Improved turn parsing

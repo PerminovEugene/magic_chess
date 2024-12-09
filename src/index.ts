@@ -22,6 +22,7 @@ const gameMachines: GameMachine[] = [];
 io.on("connection", (socket) => {
   console.log("connected", socket.id);
   socket.on(WSClientGameEvent.FindGame, (data) => {
+    console.log("length", gameMachines.length);
     console.log("on find game eventt");
     const player = new Player(data.name);
     const match = matchmaker.findMatch(player, socket);
@@ -46,19 +47,19 @@ io.on("connection", (socket) => {
       if (gameMachine) {
         console.log("Finish game");
         gameMachine.handlePlayerDisconnect(socket.id);
-        // todo delete from gameMAchines
+        gameMachines.splice(gameMachines.indexOf(gameMachine), 1);
       }
     }
   });
-  io.on("reconnect", (socket) => {
-    console.log("reconnected", socket.id);
-  });
-  socket.on("error", (error) => {
-    console.log("user error", error);
-  });
-  socket.on("close", () => {
-    console.log("user close");
-  });
+  // io.on("reconnect", (socket) => {
+  //   console.log("reconnected", socket.id);
+  // });
+  // socket.on("error", (error) => {
+  //   console.log("user error", error);
+  // });
+  // socket.on("close", () => {
+  //   console.log("user close");
+  // });
 });
 
 io.listen(4000);
