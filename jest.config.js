@@ -9,6 +9,7 @@ const config = {
   testEnvironment: "node",
   verbose: true, // Optional: Enable verbose output
   collectCoverage: true, // Optional: Enable coverage reports
+  setupFilesAfterEnv: ["<rootDir>/test/jest-setup.ts"],
 };
 
 module.exports = config;

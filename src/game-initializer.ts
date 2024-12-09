@@ -1,3 +1,4 @@
+import { KnightMovementRule } from "../shared/src";
 import { Board } from "../shared/src/chess/board";
 import {
   Bishop,
@@ -78,7 +79,24 @@ export class GameInitializer {
     ];
   }
   getDefaultKnightRules() {
-    return [];
+    return [
+      new KnightMovementRule({
+        moveToEmpty: true,
+        moveToKill: true,
+        collision: false,
+        distance: 1,
+        directions: new Set<Direction>([
+          Direction.UpLeft,
+          Direction.DownLeft,
+          Direction.UpRight,
+          Direction.DownRight,
+          Direction.Up,
+          Direction.Down,
+          Direction.Right,
+          Direction.Right,
+        ]),
+      }),
+    ];
   }
   getDefaultQueenRules() {
     return [
