@@ -82,6 +82,7 @@ export class GameMachine {
   }
 
   private handleTurn(color: Color, turn: Turn) {
+    console.log("Turn", turn);
     try {
       const win = this.game.processTurn(turn);
       if (win) {
@@ -98,6 +99,7 @@ export class GameMachine {
         );
       }
     } catch (error) {
+      console.error(error);
       this.sockets[color].emit(WSServerGameEvent.TurnRejected, {
         reason: "Turn is invalid" + error,
       });

@@ -165,8 +165,8 @@ export class Board {
   ) {
     for (const rule of piece.movementRules) {
       const availableMoves = rule.availableMoves(fromX, fromY, this.squares);
-      const movesFromRule = availableMoves.map(([x, y]) => [x, y]);
-      if (availableMoves.find(([x, y]) => x === toX && y === toY)) {
+      const foundMove = availableMoves.find(([x, y]) => x === toX && y === toY);
+      if (foundMove) {
         return true;
       }
     }

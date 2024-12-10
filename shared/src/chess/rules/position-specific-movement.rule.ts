@@ -79,7 +79,7 @@ export class PositionSpecificMovementRule extends StraightMovementRule {
     const xPositions =
       this.activatePositions.x && Array.from(this.activatePositions.x);
     const yPositions =
-      this.activatePositions.x && Array.from(this.activatePositions.x);
+      this.activatePositions.y && Array.from(this.activatePositions.y);
     return {
       activatePositions: {
         ...(xPositions ? { x: xPositions } : {}),

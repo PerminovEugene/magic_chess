@@ -56,7 +56,7 @@ export class GameInitializer {
             ? new Set<Direction>([Direction.Down])
             : new Set<Direction>([Direction.Up]),
         activatePositions: {
-          x: new Set<number>(color == Color.white ? [1] : [6]),
+          y: new Set<number>(color == Color.white ? [1] : [6]),
         },
       }),
     ];
