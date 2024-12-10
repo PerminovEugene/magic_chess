@@ -11,7 +11,8 @@ import {
 } from "../shared/src/chess/piece";
 import { DiagonalMovementRule } from "../shared/src/chess/rules/diagonal-movement.rule";
 import { HorizontalMovementRule } from "../shared/src/chess/rules/horizontal-movement.rule";
-import { Direction } from "../shared/src/chess/rules/rules";
+import { PositionSpecificMovementRule } from "../shared/src/chess/rules/position-specific-movement.rule";
+import { Direction } from "../shared/src/chess/rules/movement-rule";
 import { VerticalMovementRule } from "../shared/src/chess/rules/vertical-movement.rule";
 
 export class GameInitializer {
@@ -31,6 +32,7 @@ export class GameInitializer {
           color == Color.white
             ? new Set<Direction>([Direction.Down])
             : new Set<Direction>([Direction.Up]),
+        speed: 1,
       }),
       new DiagonalMovementRule({
         moveToEmpty: false,
@@ -41,6 +43,21 @@ export class GameInitializer {
           color == Color.white
             ? new Set<Direction>([Direction.DownRight, Direction.DownLeft])
             : new Set<Direction>([Direction.UpRight, Direction.UpLeft]),
+        speed: 1,
+      }),
+      new PositionSpecificMovementRule({
+        moveToEmpty: true,
+        moveToKill: false,
+        collision: true,
+        distance: 2,
+        speed: 2,
+        directions:
+          color == Color.white
+            ? new Set<Direction>([Direction.Down])
+            : new Set<Direction>([Direction.Up]),
+        activatePositions: {
+          x: new Set<number>(color == Color.white ? [1] : [6]),
+        },
       }),
     ];
   }
@@ -52,6 +69,7 @@ export class GameInitializer {
         collision: true,
         distance: 8,
         directions: new Set<Direction>([Direction.Up, Direction.Down]),
+        speed: 1,
       }),
       new HorizontalMovementRule({
         moveToEmpty: true,
@@ -59,6 +77,7 @@ export class GameInitializer {
         collision: true,
         distance: 8,
         directions: new Set<Direction>([Direction.Left, Direction.Right]),
+        speed: 1,
       }),
     ];
   }
@@ -75,6 +94,7 @@ export class GameInitializer {
           Direction.UpRight,
           Direction.DownRight,
         ]),
+        speed: 1,
       }),
     ];
   }
@@ -93,8 +113,9 @@ export class GameInitializer {
           Direction.Up,
           Direction.Down,
           Direction.Right,
-          Direction.Right,
+          Direction.Left,
         ]),
+        speed: 1,
       }),
     ];
   }
@@ -111,6 +132,7 @@ export class GameInitializer {
           Direction.UpRight,
           Direction.DownRight,
         ]),
+        speed: 1,
       }),
       new VerticalMovementRule({
         moveToEmpty: true,
@@ -118,6 +140,7 @@ export class GameInitializer {
         collision: true,
         distance: 8,
         directions: new Set<Direction>([Direction.Up, Direction.Down]),
+        speed: 1,
       }),
       new HorizontalMovementRule({
         moveToEmpty: true,
@@ -125,6 +148,7 @@ export class GameInitializer {
         collision: true,
         distance: 8,
         directions: new Set<Direction>([Direction.Left, Direction.Right]),
+        speed: 1,
       }),
     ];
   }
@@ -141,6 +165,7 @@ export class GameInitializer {
           Direction.UpRight,
           Direction.DownRight,
         ]),
+        speed: 1,
       }),
       new VerticalMovementRule({
         moveToEmpty: true,
@@ -148,6 +173,7 @@ export class GameInitializer {
         collision: true,
         distance: 1,
         directions: new Set<Direction>([Direction.Up, Direction.Down]),
+        speed: 1,
       }),
       new HorizontalMovementRule({
         moveToEmpty: true,
@@ -155,6 +181,7 @@ export class GameInitializer {
         collision: true,
         distance: 1,
         directions: new Set<Direction>([Direction.Left, Direction.Right]),
+        speed: 1,
       }),
     ];
   }

@@ -1,4 +1,5 @@
-import { Direction } from "./rules";
+import { Coordinate } from "../types";
+import { Direction } from "./movement-rule";
 import {
   StraightMovementRule,
   StraightMovementRuleConfig,
@@ -11,8 +12,9 @@ export class VerticalMovementRule extends StraightMovementRule {
     collision,
     distance,
     directions,
+    speed = 1,
   }: StraightMovementRuleConfig) {
-    super(moveToEmpty, moveToKill, collision, distance, directions);
+    super(moveToEmpty, moveToKill, collision, distance, directions, speed);
   }
 
   protected possibleDirrections = [Direction.Up, Direction.Down];
@@ -21,7 +23,7 @@ export class VerticalMovementRule extends StraightMovementRule {
     y: number,
     diff: number,
     dirrection: Direction
-  ): [number, number] => {
+  ): Coordinate => {
     return [x, dirrection == Direction.Up ? y - diff : y + diff];
   };
 }

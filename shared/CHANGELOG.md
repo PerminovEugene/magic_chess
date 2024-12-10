@@ -1,3 +1,11 @@
+# 0.1.11
+
+Add pawn dash from the inital position
+
+# 0.1.10
+
+Add knight movement rule
+
 # 0.1.9
 
 Add knight movement rule

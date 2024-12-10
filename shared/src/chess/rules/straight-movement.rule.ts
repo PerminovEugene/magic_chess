@@ -1,5 +1,6 @@
 import { Cell } from "../cell";
-import { Direction, MovementRule } from "./rules";
+import { Coordinate } from "../types";
+import { Direction, MovementRule } from "./movement-rule";
 
 export type StraightMovementRuleConfig = {
   moveToEmpty: boolean;
@@ -7,6 +8,7 @@ export type StraightMovementRuleConfig = {
   collision: boolean;
   distance: number;
   directions: Set<Direction>;
+  speed: number;
 };
 export abstract class StraightMovementRule extends MovementRule {
   constructor(
@@ -14,9 +16,10 @@ export abstract class StraightMovementRule extends MovementRule {
     moveToKill: boolean,
     collision: boolean, // true - will move until first enemy, false - will jump like horse
     distance: number,
-    directions: Set<Direction>
+    directions: Set<Direction>,
+    speed: number
   ) {
-    super(moveToEmpty, moveToKill, collision, distance, directions);
+    super(moveToEmpty, moveToKill, collision, distance, directions, speed);
   }
 
   protected abstract possibleDirrections: Direction[];
@@ -25,7 +28,7 @@ export abstract class StraightMovementRule extends MovementRule {
     y: number,
     diff: number,
     dirrection: Direction
-  ) => [number, number];
+  ) => Coordinate;
 
   protected isCoordInvalid(x: number, y: number, size: number) {
     return x >= size || x < 0 || y >= size || y < 0;
@@ -35,11 +38,11 @@ export abstract class StraightMovementRule extends MovementRule {
     fromX: number,
     fromY: number,
     squares: Cell[][]
-  ): [number, number][] {
-    const moves: [number, number][] = [];
+  ): Coordinate[] {
+    const moves: Coordinate[] = [];
     let availableDirections = new Set<Direction>(this.possibleDirrections);
 
-    for (let diff = 1; diff <= this.distance; diff++) {
+    for (let diff = this.speed; diff <= this.distance; diff += this.speed) {
       for (let dirrection of this.directions) {
         const [newX, newY] = this.calculateNewCoord(
           fromX,
@@ -60,6 +63,7 @@ export abstract class StraightMovementRule extends MovementRule {
               moves.push([newX, newY]);
             } else if (!possibleMove.isEmpty()) {
               const fromPiece = fromCell?.getPiece();
+
               if (!fromPiece) {
                 throw new Error("Not found piece at from location");
               }

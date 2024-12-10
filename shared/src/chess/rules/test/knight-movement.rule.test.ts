@@ -1,7 +1,8 @@
 import { Cell } from "../../cell";
 import { Color, Knight, Pawn } from "../../piece";
+import { Coordinate } from "../../types";
 import { KnightMovementRule } from "../knight-movement.rule";
-import { Direction } from "../rules";
+import { Direction } from "../movement-rule";
 import { StraightMovementRuleConfig } from "../straight-movement.rule";
 
 describe("KnightMovementRule", () => {
@@ -34,6 +35,7 @@ describe("KnightMovementRule", () => {
         Direction.Left,
       ]),
       ...config,
+      speed: 1,
     });
   };
 
@@ -41,10 +43,7 @@ describe("KnightMovementRule", () => {
     squares = getDefaultCells();
   });
 
-  const checkMoves = (
-    moves: [number, number][],
-    expectedMoves: [number, number][]
-  ) => {
+  const checkMoves = (moves: Coordinate[], expectedMoves: Coordinate[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
     expect(moves).toContainNestedArray(expectedMoves);
   };
@@ -55,7 +54,7 @@ describe("KnightMovementRule", () => {
 
     it("should return available moves", () => {
       updateRule();
-      const expectedMoves: [number, number][] = [
+      const expectedMoves: Coordinate[] = [
         [1, 0],
         [3, 0],
         [0, 1],
@@ -80,7 +79,7 @@ describe("KnightMovementRule", () => {
       squares[fromY][fromX].putPiece(new Knight(Color.white));
 
       updateRule();
-      const expectedMoves: [number, number][] = [
+      const expectedMoves: Coordinate[] = [
         [2, 1],
         [1, 2],
       ];
@@ -102,7 +101,7 @@ describe("KnightMovementRule", () => {
       squares[2][1].putPiece(new Pawn(Color.white));
       squares[1][2].putPiece(new Pawn(Color.white));
 
-      const expectedMoves: [number, number][] = [];
+      const expectedMoves: Coordinate[] = [];
 
       const moves = rule.availableMoves(fromX, fromY, squares);
 
@@ -119,7 +118,7 @@ describe("KnightMovementRule", () => {
       squares[2][1].putPiece(new Pawn(Color.black));
       squares[1][2].putPiece(new Pawn(Color.black));
 
-      const expectedMoves: [number, number][] = [
+      const expectedMoves: Coordinate[] = [
         [2, 1],
         [1, 2],
       ];

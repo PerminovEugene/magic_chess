@@ -15,8 +15,14 @@ import {
 import {
   DiagonalMovementRule,
   HorizontalMovementRule,
+  KnightMovementRule,
   VerticalMovementRule,
 } from "./rules";
+import {
+  ActivatePositions,
+  PositionSpecificMovementRule,
+} from "./rules/position-specific-movement.rule";
+import { isPositionSpecificMovementRuleMeta, RuleMeta } from "./rules/rules";
 import { fromChessToLogic } from "./turn-formatter";
 
 export class Board {
@@ -59,15 +65,33 @@ export class Board {
     [VerticalMovementRule.name]: VerticalMovementRule,
     [HorizontalMovementRule.name]: HorizontalMovementRule,
     [DiagonalMovementRule.name]: DiagonalMovementRule,
+    [KnightMovementRule.name]: KnightMovementRule,
+    [PositionSpecificMovementRule.name]: PositionSpecificMovementRule,
   };
 
   buildPiece(meta: PieceMeta) {
     const c = this.mapper[meta.type as PieceType];
     return new c(
       meta.color,
-      meta.rules.map((ruleMeta) => {
+      meta.rules.map((ruleMeta: RuleMeta) => {
         const r = this.rulesMapper[ruleMeta.name];
-        return new r({ ...ruleMeta, directions: new Set(ruleMeta.directions) });
+
+        let uniqRulesParams: any = {};
+        if (isPositionSpecificMovementRuleMeta(ruleMeta)) {
+          const activatePositions: ActivatePositions = {};
+          if (ruleMeta.activatePositions.x) {
+            activatePositions.x = new Set(ruleMeta.activatePositions.x);
+          }
+          if (ruleMeta.activatePositions.y) {
+            activatePositions.y = new Set(ruleMeta.activatePositions.y);
+          }
+          uniqRulesParams.activatePositions = activatePositions;
+        }
+        return new r({
+          ...ruleMeta,
+          directions: new Set(ruleMeta.directions),
+          ...uniqRulesParams,
+        });
       })
     );
   }
@@ -141,6 +165,7 @@ export class Board {
   ) {
     for (const rule of piece.movementRules) {
       const availableMoves = rule.availableMoves(fromX, fromY, this.squares);
+      const movesFromRule = availableMoves.map(([x, y]) => [x, y]);
       if (availableMoves.find(([x, y]) => x === toX && y === toY)) {
         return true;
       }

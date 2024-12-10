@@ -4,3 +4,4 @@ export * from "./board";
 export * from "./piece";
 export * from "./rules/index";
 export * from "./turn-formatter";
+export * from "./types";

@@ -1,21 +1,22 @@
 import { Dir } from "fs";
-import { Direction } from "./rules";
+import { Direction } from "./movement-rule";
 import {
   StraightMovementRule,
   StraightMovementRuleConfig,
 } from "./straight-movement.rule";
 import { dir } from "console";
+import { Coordinate } from "../types";
 
 /**
  *           upLeft up
- *      left             upRight
- *     downleft           right
- *          down downRight
- *
+ *        left           upRight
+ *                x y
+ *     downleft            right
+ *           down     downRight
  */
 
 const actionMap: {
-  [key in Direction]: (x: number, y: number, diff: number) => [number, number];
+  [key in Direction]: (x: number, y: number, diff: number) => Coordinate;
 } = {
   [Direction.UpRight]: (x: number, y: number, diff: number) => {
     return [x + diff + 1, y - diff];
@@ -50,8 +51,9 @@ export class KnightMovementRule extends StraightMovementRule {
     collision,
     distance,
     directions,
+    speed,
   }: StraightMovementRuleConfig) {
-    super(moveToEmpty, moveToKill, collision, distance, directions);
+    super(moveToEmpty, moveToKill, collision, distance, directions, speed);
   }
 
   protected possibleDirrections = [
@@ -69,7 +71,7 @@ export class KnightMovementRule extends StraightMovementRule {
     y: number,
     diff: number,
     dirrection: Direction
-  ): [number, number] => {
+  ): Coordinate => {
     return actionMap[dirrection](x, y, diff);
   };
 }

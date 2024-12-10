@@ -1,6 +1,7 @@
 import { Cell } from "../../cell";
 import { Color, Pawn } from "../../piece";
-import { Direction } from "../rules";
+import { Coordinate } from "../../types";
+import { Direction } from "../movement-rule";
 import { StraightMovementRuleConfig } from "../straight-movement.rule";
 import { VerticalMovementRule } from "../vertical-movement.rule";
 
@@ -24,6 +25,7 @@ describe("VerticalMovementRule", () => {
       collision: true,
       distance: 2,
       directions: new Set<Direction>([Direction.Up, Direction.Down]),
+      speed: 1,
       ...config,
     });
   };
@@ -33,12 +35,9 @@ describe("VerticalMovementRule", () => {
     squares = getDefaultCells();
   });
 
-  const checkMoves = (
-    moves: [number, number][],
-    expectedMoves: [number, number][]
-  ) => {
+  const checkMoves = (moves: Coordinate[], expectedMoves: Coordinate[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
-    expect(moves).toEqual(expect.arrayContaining(expectedMoves));
+    expect(moves).toContainNestedArray(expectedMoves);
   };
 
   describe("check from the middle", () => {
@@ -47,7 +46,7 @@ describe("VerticalMovementRule", () => {
 
     it("should return available moves for upward direction", () => {
       updateRule({ directions: new Set<Direction>([Direction.Up]) });
-      const expectedMoves: [number, number][] = [
+      const expectedMoves: Coordinate[] = [
         [2, 0],
         [2, 1],
       ];
@@ -60,7 +59,7 @@ describe("VerticalMovementRule", () => {
 
     it("should return available moves for downward direction", () => {
       updateRule({ directions: new Set<Direction>([Direction.Down]) });
-      const expectedMoves: [number, number][] = [
+      const expectedMoves: Coordinate[] = [
         [2, 3],
         [2, 4],
       ];
@@ -74,7 +73,7 @@ describe("VerticalMovementRule", () => {
       updateRule({
         directions: new Set<Direction>([Direction.Down, Direction.Up]),
       });
-      const expectedMoves: [number, number][] = [
+      const expectedMoves: Coordinate[] = [
         [2, 3],
         [2, 4],
         [2, 0],
@@ -95,7 +94,7 @@ describe("VerticalMovementRule", () => {
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
       updateRule({ directions: new Set<Direction>([Direction.Up]) });
-      const expectedMoves: [number, number][] = [[2, 0]];
+      const expectedMoves: Coordinate[] = [[2, 0]];
 
       const moves = rule.availableMoves(fromX, fromY, squares);
 
@@ -108,7 +107,7 @@ describe("VerticalMovementRule", () => {
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
       updateRule({ directions: new Set<Direction>([Direction.Down]) });
-      const expectedMoves: [number, number][] = [[2, 4]];
+      const expectedMoves: Coordinate[] = [[2, 4]];
 
       const moves = rule.availableMoves(fromX, fromY, squares);
 
@@ -123,7 +122,7 @@ describe("VerticalMovementRule", () => {
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
       updateRule({ directions: new Set<Direction>([Direction.Up]) });
-      const expectedMoves: [number, number][] = [];
+      const expectedMoves: Coordinate[] = [];
 
       const moves = rule.availableMoves(fromX, fromY, squares);
 
@@ -136,7 +135,7 @@ describe("VerticalMovementRule", () => {
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
       updateRule({ directions: new Set<Direction>([Direction.Down]) });
-      const expectedMoves: [number, number][] = [];
+      const expectedMoves: Coordinate[] = [];
 
       const moves = rule.availableMoves(fromX, fromY, squares);
 
@@ -156,7 +155,7 @@ describe("VerticalMovementRule", () => {
       squares[0][2].putPiece(new Pawn(Color.white));
       squares[3][2].putPiece(new Pawn(Color.white));
 
-      const expectedMoves: [number, number][] = [[2, 1]];
+      const expectedMoves: Coordinate[] = [[2, 1]];
 
       const moves = rule.availableMoves(fromX, fromY, squares);
 
@@ -174,7 +173,7 @@ describe("VerticalMovementRule", () => {
       squares[0][2].putPiece(new Pawn(Color.black));
       squares[3][2].putPiece(new Pawn(Color.black));
 
-      const expectedMoves: [number, number][] = [
+      const expectedMoves: Coordinate[] = [
         [2, 0],
         [2, 1],
         [2, 3],
@@ -197,7 +196,7 @@ describe("VerticalMovementRule", () => {
       squares[0][2].putPiece(new Pawn(Color.black));
       squares[3][2].putPiece(new Pawn(Color.black));
 
-      const expectedMoves: [number, number][] = [[2, 1]];
+      const expectedMoves: Coordinate[] = [[2, 1]];
 
       const moves = rule.availableMoves(fromX, fromY, squares);
 
