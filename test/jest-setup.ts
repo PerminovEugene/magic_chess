@@ -1,5 +1,5 @@
 import "jest";
-import { toContainNestedArray } from "./custom-matcher";
+import { isEqlAvailableMoves } from "./custom-matcher";
 import { expect } from "@jest/globals";
 
-expect.extend({ toContainNestedArray });
+expect.extend({ isEqlAvailableMoves });

@@ -1,5 +1,7 @@
 import { Board } from "./board";
-import { Color, PieceMeta } from "./piece";
+import { Color, PieceMeta, PieceType } from "./piece";
+import { Affect } from "./rules";
+import { Coordinate } from "./types";
 
 export class Player {
   constructor(public name: string) {}
@@ -23,8 +25,10 @@ export type NewPlayerGameData = {
 export type Turn = {
   color: Color;
   type: TurnType;
-  from: string;
-  to: string;
+  pieceType: PieceType;
+  from: Coordinate;
+  to: Coordinate;
+  affects?: Affect[];
   timestamp: string;
 };
 
@@ -44,12 +48,12 @@ export class Game {
   }
 
   processTurn(turn: Turn) {
-    const { color, from, to, type, timestamp } = turn;
+    const { color, from, to, type, timestamp, affects } = turn;
     if (this.nextTurnColor !== color) {
       throw new Error("Not your turn");
     }
     if (type === TurnType.Move) {
-      this.board.move(color, from, to);
+      this.board.move(color, from, to, this.turns, affects);
     } else {
       this.board.cast(color, from, to);
     }

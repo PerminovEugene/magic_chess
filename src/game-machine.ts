@@ -82,7 +82,6 @@ export class GameMachine {
   }
 
   private handleTurn(color: Color, turn: Turn) {
-    console.log("Turn", turn);
     try {
       const win = this.game.processTurn(turn);
       if (win) {

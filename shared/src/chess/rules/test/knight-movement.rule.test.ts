@@ -2,7 +2,7 @@ import { Cell } from "../../cell";
 import { Color, Knight, Pawn } from "../../piece";
 import { Coordinate } from "../../types";
 import { KnightMovementRule } from "../knight-movement.rule";
-import { Direction } from "../movement-rule";
+import { AvailableMove, Direction } from "../movement-rule";
 import { StraightMovementRuleConfig } from "../straight-movement.rule";
 
 describe("KnightMovementRule", () => {
@@ -43,9 +43,9 @@ describe("KnightMovementRule", () => {
     squares = getDefaultCells();
   });
 
-  const checkMoves = (moves: Coordinate[], expectedMoves: Coordinate[]) => {
+  const checkMoves = (moves: AvailableMove[], expectedMoves: Coordinate[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
-    expect(moves).toContainNestedArray(expectedMoves);
+    expect(moves).isEqlAvailableMoves(expectedMoves);
   };
 
   describe("check from the middle", () => {
@@ -66,7 +66,7 @@ describe("KnightMovementRule", () => {
       ];
       squares[fromY][fromX].putPiece(new Knight(Color.white));
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -84,7 +84,7 @@ describe("KnightMovementRule", () => {
         [1, 2],
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -103,7 +103,7 @@ describe("KnightMovementRule", () => {
 
       const expectedMoves: Coordinate[] = [];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -123,7 +123,7 @@ describe("KnightMovementRule", () => {
         [1, 2],
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });

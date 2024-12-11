@@ -1,29 +1,49 @@
-// customMatchers.ts
-export const toContainNestedArray = (received: any[], expected: any[][]) => {
-  const pass = expected.every((innerArray) =>
-    received.some(
-      (item) =>
-        Array.isArray(item) &&
-        Array.isArray(innerArray) &&
-        item.length === innerArray.length &&
-        item.every((val, index) => val === innerArray[index])
-    )
-  );
+import { Affect, AvailableMove } from "../shared/src";
+import { isAffectsEql } from "../shared/src/utils/matchers";
 
-  if (pass) {
+// Custom matcher for comparing AvailableMove arrays
+export const isEqlAvailableMoves = (
+  received: AvailableMove[],
+  expected: AvailableMove[]
+): any => {
+  if (received.length !== expected.length) {
     return {
       message: () =>
-        `Expected ${JSON.stringify(
-          received
-        )} not to contain nested arrays ${JSON.stringify(expected)}`,
+        `Expected moves length ${received.length} to equal ${expected.length}`,
+      pass: false,
+    };
+  }
+
+  const errors: string[] = [];
+
+  for (let i = 0; i < received.length; i++) {
+    const [rx, ry, rAffects] = received[i];
+    const fit = expected.find(([ex, ey, eAffects]) => {
+      return ex === rx && ry === ey && isAffectsEql(rAffects, eAffects);
+    });
+    if (!fit) {
+      errors.push(
+        `Received move ${i} doesnt have pair in expected ${JSON.stringify(
+          received[i]
+        )}`
+      );
+    }
+  }
+
+  if (errors.length === 0) {
+    return {
+      message: () =>
+        `Expected moves ${JSON.stringify(received)} to eql ${JSON.stringify(
+          expected
+        )}`,
       pass: true,
     };
   } else {
     return {
       message: () =>
-        `Expected ${JSON.stringify(
+        `Found mismatches:\n${errors.join("\n")}\nReceived: ${JSON.stringify(
           received
-        )} to contain nested arrays ${JSON.stringify(expected)}`,
+        )}\nExpected: ${JSON.stringify(expected)}`,
       pass: false,
     };
   }

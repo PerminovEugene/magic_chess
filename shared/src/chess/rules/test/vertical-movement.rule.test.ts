@@ -1,7 +1,7 @@
 import { Cell } from "../../cell";
 import { Color, Pawn } from "../../piece";
 import { Coordinate } from "../../types";
-import { Direction } from "../movement-rule";
+import { AvailableMove, Direction } from "../movement-rule";
 import { StraightMovementRuleConfig } from "../straight-movement.rule";
 import { VerticalMovementRule } from "../vertical-movement.rule";
 
@@ -35,9 +35,9 @@ describe("VerticalMovementRule", () => {
     squares = getDefaultCells();
   });
 
-  const checkMoves = (moves: Coordinate[], expectedMoves: Coordinate[]) => {
+  const checkMoves = (moves: AvailableMove[], expectedMoves: Coordinate[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
-    expect(moves).toContainNestedArray(expectedMoves);
+    expect(moves).isEqlAvailableMoves(expectedMoves);
   };
 
   describe("check from the middle", () => {
@@ -52,7 +52,7 @@ describe("VerticalMovementRule", () => {
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -64,7 +64,7 @@ describe("VerticalMovementRule", () => {
         [2, 4],
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -81,7 +81,7 @@ describe("VerticalMovementRule", () => {
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -96,7 +96,7 @@ describe("VerticalMovementRule", () => {
       updateRule({ directions: new Set<Direction>([Direction.Up]) });
       const expectedMoves: Coordinate[] = [[2, 0]];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -109,7 +109,7 @@ describe("VerticalMovementRule", () => {
       updateRule({ directions: new Set<Direction>([Direction.Down]) });
       const expectedMoves: Coordinate[] = [[2, 4]];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -124,7 +124,7 @@ describe("VerticalMovementRule", () => {
       updateRule({ directions: new Set<Direction>([Direction.Up]) });
       const expectedMoves: Coordinate[] = [];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -137,7 +137,7 @@ describe("VerticalMovementRule", () => {
       updateRule({ directions: new Set<Direction>([Direction.Down]) });
       const expectedMoves: Coordinate[] = [];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -157,7 +157,7 @@ describe("VerticalMovementRule", () => {
 
       const expectedMoves: Coordinate[] = [[2, 1]];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -179,7 +179,7 @@ describe("VerticalMovementRule", () => {
         [2, 3],
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -198,7 +198,7 @@ describe("VerticalMovementRule", () => {
 
       const expectedMoves: Coordinate[] = [[2, 1]];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });

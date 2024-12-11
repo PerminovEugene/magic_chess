@@ -4,7 +4,7 @@ import {
   PositionSpecificMovementRule,
   PositionSpecificMovementRuleConfig,
 } from "../position-specific-movement.rule";
-import { Direction } from "../movement-rule";
+import { AvailableMove, Direction } from "../movement-rule";
 import { Coordinate } from "../../types";
 
 describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
@@ -47,9 +47,9 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
     squares = getDefaultCells();
   });
 
-  const checkMoves = (moves: Coordinate[], expectedMoves: Coordinate[]) => {
+  const checkMoves = (moves: AvailableMove[], expectedMoves: Coordinate[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
-    expect(moves).toContainNestedArray(expectedMoves);
+    expect(moves).isEqlAvailableMoves(expectedMoves);
   };
 
   describe("check from the position for activation near border", () => {
@@ -69,7 +69,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });
@@ -79,12 +79,11 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
 
       updateRule({
         activatePositions: {
-          // y: new Set<number>([fromX + 1]),
           x: new Set<number>([fromX + 1]),
         },
       });
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
       checkMoves(moves, expectedMoves);
     });
 
@@ -94,11 +93,10 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
       updateRule({
         activatePositions: {
           y: new Set<number>([fromY + 1]),
-          // x: new Set<number>([fromY]),
         },
       });
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
       checkMoves(moves, expectedMoves);
     });
 
@@ -107,12 +105,12 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
 
       updateRule({
         activatePositions: {
-          // y: new Set<number>([fromX]),
           x: new Set<number>([fromX]),
         },
+        directions: new Set<Direction>([Direction.Left, Direction.Right]),
       });
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
-      const moves2 = rule.availableMoves(fromX, fromY, squares);
+      const moves2 = rule.availableMoves(fromX, fromY, squares, []);
       checkMoves(moves2, expectedMoves);
     });
 
@@ -122,11 +120,11 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
       updateRule({
         activatePositions: {
           y: new Set<number>([fromY]),
-          // x: new Set<number>([fromY]),
         },
+        directions: new Set<Direction>([Direction.Up, Direction.Down]),
       });
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
-      const moves2 = rule.availableMoves(fromX, fromY, squares);
+      const moves2 = rule.availableMoves(fromX, fromY, squares, []);
       checkMoves(moves2, expectedMoves);
     });
   });
@@ -150,7 +148,36 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
         [2, 4],
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares);
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
+
+      checkMoves(moves, expectedMoves);
+    });
+
+    it("should return all diagonal moves", () => {
+      const fromX = 2;
+      const fromY = 2;
+      squares[fromY][fromX].putPiece(new Pawn(Color.white));
+
+      updateRule({
+        activatePositions: {
+          x: new Set([fromX]),
+          y: new Set([fromY]),
+        },
+        directions: new Set<Direction>([
+          Direction.UpRight,
+          Direction.DownRight,
+          Direction.UpLeft,
+          Direction.DownLeft,
+        ]),
+      });
+      const expectedMoves: Coordinate[] = [
+        [0, 0],
+        [0, 4],
+        [4, 0],
+        [4, 4],
+      ];
+
+      const moves = rule.availableMoves(fromX, fromY, squares, []);
 
       checkMoves(moves, expectedMoves);
     });

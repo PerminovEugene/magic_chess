@@ -1,6 +1,7 @@
 import { Cell } from "../cell";
+import { Turn } from "../game";
 import { Coordinate } from "../types";
-import { Direction, MovementRule } from "./movement-rule";
+import { AvailableMove, Direction, MovementRule } from "./movement-rule";
 
 export type StraightMovementRuleConfig = {
   moveToEmpty: boolean;
@@ -10,6 +11,51 @@ export type StraightMovementRuleConfig = {
   directions: Set<Direction>;
   speed: number;
 };
+
+const mapDirectionToVector = {
+  [Direction.UpLeft]: (x: number, y: number, diff: number): Coordinate => [
+    x - diff,
+    y - diff,
+  ],
+  [Direction.UpRight]: (x: number, y: number, diff: number): Coordinate => [
+    x + diff,
+    y - diff,
+  ],
+  [Direction.DownLeft]: (x: number, y: number, diff: number): Coordinate => [
+    x - diff,
+    y + diff,
+  ],
+  [Direction.DownRight]: (x: number, y: number, diff: number): Coordinate => [
+    x + diff,
+    y + diff,
+  ],
+  [Direction.Up]: (x: number, y: number, diff: number): Coordinate => [
+    x,
+    y - diff,
+  ],
+  [Direction.Down]: (x: number, y: number, diff: number): Coordinate => [
+    x,
+    y + diff,
+  ],
+  [Direction.Right]: (x: number, y: number, diff: number): Coordinate => [
+    x + diff,
+    y,
+  ],
+  [Direction.Left]: (x: number, y: number, diff: number): Coordinate => [
+    x - diff,
+    y,
+  ],
+};
+
+export function directionToVector(
+  direction: Direction,
+  x: number,
+  y: number,
+  diff: number
+): Coordinate {
+  return mapDirectionToVector[direction](x, y, diff);
+}
+
 export abstract class StraightMovementRule extends MovementRule {
   constructor(
     moveToEmpty: boolean,
@@ -27,8 +73,9 @@ export abstract class StraightMovementRule extends MovementRule {
     x: number,
     y: number,
     diff: number,
-    dirrection: Direction
-  ) => Coordinate;
+    dirrection: Direction,
+    turns: Turn[]
+  ) => AvailableMove;
 
   protected isCoordInvalid(x: number, y: number, size: number) {
     return x >= size || x < 0 || y >= size || y < 0;
@@ -37,21 +84,24 @@ export abstract class StraightMovementRule extends MovementRule {
   public availableMoves(
     fromX: number,
     fromY: number,
-    squares: Cell[][]
-  ): Coordinate[] {
-    const moves: Coordinate[] = [];
+    squares: Cell[][],
+    turns: Turn[]
+  ): AvailableMove[] {
+    const moves: AvailableMove[] = [];
     let availableDirections = new Set<Direction>(this.possibleDirrections);
 
     for (let diff = this.speed; diff <= this.distance; diff += this.speed) {
       for (let dirrection of this.directions) {
-        const [newX, newY] = this.calculateNewCoord(
-          fromX,
-          fromY,
-          diff,
-          dirrection
-        );
-
         if (availableDirections.has(dirrection)) {
+          const availableMove = this.calculateNewCoord(
+            fromX,
+            fromY,
+            diff,
+            dirrection,
+            turns
+          );
+          const [newX, newY] = availableMove;
+
           if (this.isCoordInvalid(newX, newY, squares.length)) {
             availableDirections.delete(dirrection);
           } else {
@@ -60,7 +110,7 @@ export abstract class StraightMovementRule extends MovementRule {
 
             if (this.moveToEmpty && possibleMove.isEmpty()) {
               // can move to empty square
-              moves.push([newX, newY]);
+              moves.push(availableMove);
             } else if (!possibleMove.isEmpty()) {
               const fromPiece = fromCell?.getPiece();
 
@@ -74,8 +124,7 @@ export abstract class StraightMovementRule extends MovementRule {
                 this.moveToKill &&
                 newLocationPieceColor !== fromPiece.color
               ) {
-                // can move to enemy square
-                moves.push([newX, newY]);
+                moves.push(availableMove);
               }
               if (this.collision) {
                 availableDirections.delete(dirrection);

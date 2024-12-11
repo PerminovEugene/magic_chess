@@ -1,6 +1,7 @@
 import { Coordinate } from "../types";
-import { Direction } from "./movement-rule";
+import { AvailableMove, Direction } from "./movement-rule";
 import {
+  directionToVector,
   StraightMovementRule,
   StraightMovementRuleConfig,
 } from "./straight-movement.rule";
@@ -28,19 +29,7 @@ export class DiagonalMovementRule extends StraightMovementRule {
     y: number,
     diff: number,
     dirrection: Direction
-  ): Coordinate => {
-    if (dirrection == Direction.UpLeft) {
-      return [x - diff, y - diff];
-    }
-    if (dirrection == Direction.UpRight) {
-      return [x + diff, y - diff];
-    }
-    if (dirrection == Direction.DownLeft) {
-      return [x - diff, y + diff];
-    }
-    if (dirrection == Direction.DownRight) {
-      return [x + diff, y + diff];
-    }
-    throw new Error("Invalid direction");
+  ): AvailableMove => {
+    return directionToVector(dirrection, x, y, diff);
   };
 }

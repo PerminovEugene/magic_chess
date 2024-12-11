@@ -14,6 +14,7 @@ import { HorizontalMovementRule } from "../shared/src/chess/rules/horizontal-mov
 import { PositionSpecificMovementRule } from "../shared/src/chess/rules/position-specific-movement.rule";
 import { Direction } from "../shared/src/chess/rules/movement-rule";
 import { VerticalMovementRule } from "../shared/src/chess/rules/vertical-movement.rule";
+import { TakeOnThePassMovementRule } from "../shared/src/chess/rules/take-on-the-pass.rule";
 
 export class GameInitializer {
   public spawnPieces(board: Board) {
@@ -57,6 +58,20 @@ export class GameInitializer {
             : new Set<Direction>([Direction.Up]),
         activatePositions: {
           y: new Set<number>(color == Color.white ? [1] : [6]),
+        },
+      }),
+      new TakeOnThePassMovementRule({
+        moveToEmpty: true,
+        moveToKill: false,
+        collision: true,
+        distance: 1,
+        speed: 1,
+        directions:
+          color == Color.white
+            ? new Set<Direction>([Direction.DownLeft, Direction.DownRight])
+            : new Set<Direction>([Direction.UpLeft, Direction.UpRight]),
+        activatePositions: {
+          y: new Set<number>(color == Color.white ? [4] : [3]),
         },
       }),
     ];

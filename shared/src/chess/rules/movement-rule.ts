@@ -1,4 +1,5 @@
 import { Cell } from "../cell";
+import { Turn } from "../game";
 import { Coordinate } from "../types";
 
 export enum Direction {
@@ -21,6 +22,17 @@ export type MovementRuleMeta = {
   directions: Direction[];
   speed: number;
 };
+
+export enum AffectType {
+  move = "move",
+  kill = "kill",
+}
+export type Affect = {
+  from: Coordinate;
+  to?: Coordinate;
+  type: AffectType;
+};
+export type AvailableMove = [number, number, affected?: Affect[]];
 
 export abstract class MovementRule {
   constructor(
@@ -48,6 +60,7 @@ export abstract class MovementRule {
   abstract availableMoves(
     fromX: number,
     fromY: number,
-    squares: Cell[][]
-  ): Coordinate[];
+    squares: Cell[][],
+    turns: Turn[]
+  ): AvailableMove[];
 }

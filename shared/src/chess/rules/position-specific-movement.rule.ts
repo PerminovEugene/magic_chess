@@ -1,9 +1,11 @@
-import { Direction, MovementRuleMeta } from "./movement-rule";
+import { AvailableMove, Direction, MovementRuleMeta } from "./movement-rule";
 import {
+  directionToVector,
   StraightMovementRule,
   StraightMovementRuleConfig,
 } from "./straight-movement.rule";
 import { Coordinate } from "../types";
+import { Turn } from "../game";
 
 /*
   Allows to setup specific positions for activation of the rule, like pawn first double step from initial line
@@ -28,7 +30,7 @@ export type PositionSpecificMovementRuleMeta = {
 } & MovementRuleMeta;
 
 export class PositionSpecificMovementRule extends StraightMovementRule {
-  private activatePositions: ActivatePositions;
+  protected activatePositions: ActivatePositions;
   constructor({
     moveToEmpty,
     moveToKill,
@@ -40,6 +42,32 @@ export class PositionSpecificMovementRule extends StraightMovementRule {
   }: PositionSpecificMovementRuleConfig) {
     super(moveToEmpty, moveToKill, collision, distance, directions, speed);
     this.activatePositions = activatePositions;
+    if (
+      activatePositions.x &&
+      !directions.has(Direction.Left) &&
+      !directions.has(Direction.Right) &&
+      !directions.has(Direction.UpRight) &&
+      !directions.has(Direction.UpLeft) &&
+      !directions.has(Direction.DownRight) &&
+      !directions.has(Direction.DownLeft)
+    ) {
+      throw new Error(
+        "PositionSpecificMovementRule: x position provided but no horizontal directions"
+      );
+    }
+    if (
+      activatePositions.y &&
+      !directions.has(Direction.Up) &&
+      !directions.has(Direction.Down) &&
+      !directions.has(Direction.UpRight) &&
+      !directions.has(Direction.UpLeft) &&
+      !directions.has(Direction.DownRight) &&
+      !directions.has(Direction.DownLeft)
+    ) {
+      throw new Error(
+        "PositionSpecificMovementRule: y position provided but no vertical directions"
+      );
+    }
   }
 
   protected possibleDirrections = [
@@ -47,32 +75,23 @@ export class PositionSpecificMovementRule extends StraightMovementRule {
     Direction.Down,
     Direction.Left,
     Direction.Right,
+    Direction.DownLeft,
+    Direction.UpLeft,
+    Direction.UpRight,
+    Direction.DownRight,
   ];
   protected calculateNewCoord = (
     x: number,
     y: number,
     diff: number,
-    dirrection: Direction
-  ): Coordinate => {
-    let calculatedX = x;
-
-    if (this.activatePositions.x?.has(x)) {
-      if (dirrection === Direction.Left) {
-        calculatedX = x - diff;
-      } else if (dirrection === Direction.Right) {
-        calculatedX = x + diff;
-      }
-    }
-    let calculatedY = y;
-    if (this.activatePositions.y?.has(y)) {
-      if (dirrection === Direction.Down) {
-        calculatedY = y + diff;
-      } else if (dirrection === Direction.Up) {
-        calculatedY = y - diff;
-      }
+    dirrection: Direction,
+    _: Turn[]
+  ): AvailableMove => {
+    if (this.activatePositions.y?.has(y) || this.activatePositions.x?.has(x)) {
+      return directionToVector(dirrection, x, y, diff);
     }
 
-    return [calculatedX, calculatedY];
+    return [x, y];
   };
 
   getMeta(): PositionSpecificMovementRuleMeta {

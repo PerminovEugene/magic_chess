@@ -1,5 +1,6 @@
+import { isAffectsEql } from "../utils/matchers";
 import { Cell } from "./cell";
-import { BoardMeta } from "./game";
+import { BoardMeta, Turn } from "./game";
 import {
   Bishop,
   Color,
@@ -13,6 +14,9 @@ import {
   Rook,
 } from "./piece";
 import {
+  Affect,
+  AffectType,
+  AvailableMove,
   DiagonalMovementRule,
   HorizontalMovementRule,
   KnightMovementRule,
@@ -23,7 +27,9 @@ import {
   PositionSpecificMovementRule,
 } from "./rules/position-specific-movement.rule";
 import { isPositionSpecificMovementRuleMeta, RuleMeta } from "./rules/rules";
+import { TakeOnThePassMovementRule } from "./rules/take-on-the-pass.rule";
 import { fromChessToLogic } from "./turn-formatter";
+import { Coordinate } from "./types";
 
 export class Board {
   public size = 8;
@@ -67,6 +73,7 @@ export class Board {
     [DiagonalMovementRule.name]: DiagonalMovementRule,
     [KnightMovementRule.name]: KnightMovementRule,
     [PositionSpecificMovementRule.name]: PositionSpecificMovementRule,
+    [TakeOnThePassMovementRule.name]: TakeOnThePassMovementRule,
   };
 
   buildPiece(meta: PieceMeta) {
@@ -112,7 +119,7 @@ export class Board {
     return this.squares[y][x];
   }
 
-  updateCellsOnMove(fromCell: Cell, toCell: Cell) {
+  updateCellsOnMove(fromCell: Cell, toCell: Cell, affects?: Affect[]) {
     // really move here
     if (toCell.isEmpty()) {
       const piece = fromCell.popPiece() as Piece;
@@ -122,11 +129,28 @@ export class Board {
       toCell.popPiece();
       toCell.putPiece(piece);
     }
+    if (affects) {
+      affects.forEach(({ from: [fromX, fromY], to, type }) => {
+        if (type === AffectType.kill) {
+          this.squares[fromY][fromX].popPiece();
+        } else if (type === AffectType.move) {
+          // TODO later
+        }
+      });
+    }
   }
 
-  move(color: Color, from: string, to: string) {
-    const [fromX, fromY] = fromChessToLogic(from);
-    const [toX, toY] = fromChessToLogic(to);
+  move(
+    color: Color,
+    from: Coordinate,
+    to: Coordinate,
+    turns: Turn[],
+    clientGenereatedAffects?: Affect[]
+  ) {
+    // const [fromX, fromY] = fromChessToLogic(from);
+    // const [toX, toY] = fromChessToLogic(to);
+    const [fromX, fromY] = from;
+    const [toX, toY] = to;
 
     if (
       !(
@@ -148,30 +172,49 @@ export class Board {
     if (fromPiece?.color !== color) {
       throw new Error("Invalid move. Selected piece is not your color");
     }
-    if (!this.isMoveValid(fromPiece, fromX, fromY, toX, toY)) {
+    const availableMove = this.findValidAvailableMove(
+      fromPiece,
+      fromX,
+      fromY,
+      toX,
+      toY,
+      turns
+    );
+    if (!availableMove) {
       throw new Error("Invalid move. This piece don't have such movement rule");
     }
     const toCell = this.squares[toY][toX];
-    // really move here
-    this.updateCellsOnMove(fromCell, toCell);
+
+    const affects = availableMove[2];
+    if (!isAffectsEql(clientGenereatedAffects, affects)) {
+      throw new Error("Invalid affects");
+    }
+    this.updateCellsOnMove(fromCell, toCell, affects);
   }
 
-  public isMoveValid(
+  public findValidAvailableMove(
     piece: Piece,
     fromX: number,
     fromY: number,
     toX: number,
-    toY: number
-  ) {
+    toY: number,
+    turns: Turn[]
+  ): AvailableMove | undefined {
     for (const rule of piece.movementRules) {
-      const availableMoves = rule.availableMoves(fromX, fromY, this.squares);
-      const foundMove = availableMoves.find(([x, y]) => x === toX && y === toY);
-      if (foundMove) {
-        return true;
+      const allAvailableMovesForRule = rule.availableMoves(
+        fromX,
+        fromY,
+        this.squares,
+        turns
+      );
+      const sameMove = allAvailableMovesForRule.find(
+        ([x, y]) => x === toX && y === toY
+      );
+      if (sameMove) {
+        return sameMove;
       }
     }
-    return false;
   }
 
-  cast(color: Color, from: string, to: string) {}
+  cast(color: Color, from: Coordinate, to: Coordinate) {}
 }

@@ -1,6 +1,7 @@
 import { Coordinate } from "../types";
-import { Direction } from "./movement-rule";
+import { AvailableMove, Direction } from "./movement-rule";
 import {
+  directionToVector,
   StraightMovementRule,
   StraightMovementRuleConfig,
 } from "./straight-movement.rule";
@@ -23,7 +24,7 @@ export class VerticalMovementRule extends StraightMovementRule {
     y: number,
     diff: number,
     dirrection: Direction
-  ): Coordinate => {
-    return [x, dirrection == Direction.Up ? y - diff : y + diff];
+  ): AvailableMove => {
+    return directionToVector(dirrection, x, y, diff);
   };
 }

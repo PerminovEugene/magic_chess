@@ -1,3 +1,23 @@
+# 0.1.16
+
+Fix movement bug
+
+# 0.1.15
+
+Fix movement bug
+
+# 0.1.14
+
+Add pawn take on the pass rule
+
+# 0.1.13
+
+Add pawn take on the pass rule
+
+# 0.1.12
+
+Add pawn take on the pass rule
+
 # 0.1.11
 
 Add pawn dash from the inital position
