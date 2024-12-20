@@ -17,6 +17,7 @@ import {
   Affect,
   AffectType,
   AvailableMove,
+  CheckMateGlobalRule,
   DiagonalMovementRule,
   HorizontalMovementRule,
   KnightMovementRule,
@@ -25,17 +26,25 @@ import {
 import {
   ActivatePositions,
   PositionSpecificMovementRule,
-} from "./rules/position-specific-movement.rule";
-import { isPositionSpecificMovementRuleMeta, RuleMeta } from "./rules/rules";
-import { TakeOnThePassMovementRule } from "./rules/take-on-the-pass.rule";
-import { fromChessToLogic } from "./turn-formatter";
-import { Coordinate } from "./types";
+} from "./rules/piece-movement/position-specific-movement.rule";
+import {
+  isPositionSpecificMovementRuleMeta,
+  RuleMeta,
+} from "./rules/piece-movement/rules";
+import { TakeOnThePassMovementRule } from "./rules/piece-movement/take-on-the-pass.rule";
+import { Coordinate } from "./coordinate";
+import { CastlingMovementRule } from "./rules/piece-movement/castling.rule";
 
 export class Board {
   public size = 8;
   public squares: Cell[][];
+
   constructor() {
-    this.squares = Array.from({ length: this.size }, () =>
+    this.squares = this.buildCells();
+  }
+
+  public buildCells() {
+    return Array.from({ length: this.size }, () =>
       Array.from({ length: this.size }, () => new Cell())
     );
   }
@@ -74,9 +83,10 @@ export class Board {
     [KnightMovementRule.name]: KnightMovementRule,
     [PositionSpecificMovementRule.name]: PositionSpecificMovementRule,
     [TakeOnThePassMovementRule.name]: TakeOnThePassMovementRule,
+    [CastlingMovementRule.name]: CastlingMovementRule,
   };
 
-  buildPiece(meta: PieceMeta) {
+  buildPieceByMeta(meta: PieceMeta) {
     const c = this.mapper[meta.type as PieceType];
     return new c(
       meta.color,
@@ -102,25 +112,79 @@ export class Board {
       })
     );
   }
-
-  fillBoard(metas: BoardMeta) {
+  fillBoardByMeta(metas: BoardMeta) {
     for (let row = 0; row < this.size; row++) {
       for (let col = 0; col < this.size; col++) {
         const meta = metas[row][col];
 
         const cell = this.getCell(col, row);
         if (meta) {
-          cell.putPiece(this.buildPiece(meta));
+          cell.putPiece(this.buildPieceByMeta(meta));
         }
       }
     }
   }
+
   getCell(x: number, y: number) {
     return this.squares[y][x];
   }
 
-  updateCellsOnMove(fromCell: Cell, toCell: Cell, affects?: Affect[]) {
+  updateCellsOnMove(
+    cells: Cell[][],
+    fromCell: Cell,
+    toCell: Cell,
+    affects?: Affect[]
+  ): Piece[] {
     // really move here
+    const killedPieces: Piece[] = [];
+    if (affects) {
+      affects.forEach(({ from, to, type, spawnedPiece }) => {
+        if (type === AffectType.kill) {
+          if (!from) {
+            throw new Error(
+              "Invalid move: kill affect should have from coordinate"
+            );
+          }
+          const [fromX, fromY] = from;
+          const killed = cells[fromY][fromX].popPiece();
+          if (killed) {
+            killedPieces.push(killed);
+          }
+          // } else if (type === AffectType.move) {
+          //   if (!to) {
+          //     throw new Error(
+          //       "Invalid move: move affect should have to coordinate"
+          //     );
+          //   }
+          //   if (!from) {
+          //     throw new Error(
+          //       "Invalid move: kill affect should have from coordinate"
+          //     );
+          //   }
+          //   const [fromX, fromY] = from;
+          //   const [toX, toY] = to;
+
+          //   const pieceMovedByAffect = cells[fromY][fromX].popPiece();
+          //   if (!pieceMovedByAffect) {
+          //     throw new Error("Invalid move: no piece at from coordinate");
+          //   }
+          //   if (!cells[toY][toX].isEmpty()) {
+          //     throw new Error(
+          //       "Invalid move: affect moved piece to not empty cell"
+          //     );
+          //   }
+          //   cells[toY][toX].putPiece(pieceMovedByAffect);
+          // } else if (type === AffectType.spawn) {
+          //   if (!to || !spawnedPiece) {
+          //     throw new Error(
+          //       "Invalid move: spawn affect should have to coordinate and spawnedPiece"
+          //     );
+          //   }
+          //   const [toX, toY] = to;
+          //   cells[toY][toX].putPiece(spawnedPiece);
+        }
+      });
+    }
     if (toCell.isEmpty()) {
       const piece = fromCell.popPiece() as Piece;
       toCell.putPiece(piece);
@@ -130,25 +194,62 @@ export class Board {
       toCell.putPiece(piece);
     }
     if (affects) {
-      affects.forEach(({ from: [fromX, fromY], to, type }) => {
-        if (type === AffectType.kill) {
-          this.squares[fromY][fromX].popPiece();
-        } else if (type === AffectType.move) {
-          // TODO later
+      affects.forEach(({ from, to, type, spawnedPiece }) => {
+        // if (type === AffectType.kill) {
+        //   if (!from) {
+        //     throw new Error(
+        //       "Invalid move: kill affect should have from coordinate"
+        //     );
+        //   }
+        //   const [fromX, fromY] = from;
+        //   const killed = cells[fromY][fromX].popPiece();
+        //   if (killed) {
+        //     killedPieces.push(killed);
+        //   }
+        // } else
+        if (type === AffectType.move) {
+          if (!to) {
+            throw new Error(
+              "Invalid move: move affect should have to coordinate"
+            );
+          }
+          if (!from) {
+            throw new Error(
+              "Invalid move: kill affect should have from coordinate"
+            );
+          }
+          const [fromX, fromY] = from;
+          const [toX, toY] = to;
+
+          const pieceMovedByAffect = cells[fromY][fromX].popPiece();
+          if (!pieceMovedByAffect) {
+            throw new Error(
+              `Invalid move: no piece at from coordinate X:${fromX} y:${fromY}`
+            );
+          }
+          if (!cells[toY][toX].isEmpty()) {
+            throw new Error(
+              "Invalid move: affect moved piece to not empty cell"
+            );
+          }
+          cells[toY][toX].putPiece(pieceMovedByAffect);
+        } else if (type === AffectType.spawn) {
+          if (!to || !spawnedPiece) {
+            throw new Error(
+              "Invalid move: spawn affect should have to coordinate and spawnedPiece"
+            );
+          }
+          const [toX, toY] = to;
+          cells[toY][toX].putPiece(spawnedPiece);
         }
       });
     }
+    return killedPieces;
   }
 
-  move(
-    color: Color,
-    from: Coordinate,
-    to: Coordinate,
-    turns: Turn[],
-    clientGenereatedAffects?: Affect[]
-  ) {
-    // const [fromX, fromY] = fromChessToLogic(from);
-    // const [toX, toY] = fromChessToLogic(to);
+  validateTurn(newTurn: Turn, turns: Turn[]) {
+    const { color, from, to, affects } = newTurn;
+
     const [fromX, fromY] = from;
     const [toX, toY] = to;
 
@@ -162,16 +263,16 @@ export class Board {
     ) {
       throw new Error("Invalid move");
     }
-    const fromCell: Cell = this.squares[fromY][fromX];
-
+    const fromCell: Cell = this.getCell(fromX, fromY);
     if (fromCell.isEmpty()) {
       throw new Error("Invalid move. Selected cell is empty");
     }
-    const fromPiece = fromCell.getPiece();
 
+    const fromPiece = fromCell.getPiece();
     if (fromPiece?.color !== color) {
       throw new Error("Invalid move. Selected piece is not your color");
     }
+
     const availableMove = this.findValidAvailableMove(
       fromPiece,
       fromX,
@@ -183,13 +284,36 @@ export class Board {
     if (!availableMove) {
       throw new Error("Invalid move. This piece don't have such movement rule");
     }
-    const toCell = this.squares[toY][toX];
 
-    const affects = availableMove[2];
-    if (!isAffectsEql(clientGenereatedAffects, affects)) {
+    const serverSideCalculatedAffects = availableMove[2];
+    if (!isAffectsEql(serverSideCalculatedAffects, affects)) {
       throw new Error("Invalid affects");
     }
-    this.updateCellsOnMove(fromCell, toCell, affects);
+  }
+
+  move(newTurn: Turn) {
+    const { from, to, affects } = newTurn;
+    const [fromX, fromY] = from;
+    const [toX, toY] = to;
+
+    const fromCell: Cell = this.getCell(fromX, fromY);
+    const toCell = this.getCell(toX, toY);
+
+    this.updateCellsOnMove(this.squares, fromCell, toCell, affects);
+  }
+
+  public duplicatePosition(cells: Cell[][]): Cell[][] {
+    this.squares.forEach((row, y) => {
+      row.forEach((cell, x) => {
+        const piece = cell.getPiece();
+        if (piece) {
+          cells[y][x].putPiece(piece);
+        } else {
+          cells[y][x].popPiece();
+        }
+      });
+    });
+    return cells;
   }
 
   public findValidAvailableMove(
@@ -214,6 +338,24 @@ export class Board {
         return sameMove;
       }
     }
+  }
+
+  public findUniqPiece(cells: Cell[][], color: Color, pieceType: PieceType) {
+    let king: Coordinate | undefined;
+    for (let i = 0; i < cells.length; i++) {
+      for (let j = 0; j < cells[i].length; j++) {
+        const cell = cells[i][j];
+        const piece = cell.getPiece();
+        if (piece && piece.color === color && piece.type === pieceType) {
+          king = [j, i];
+          break;
+        }
+      }
+    }
+    if (!king) {
+      throw new Error("King not found");
+    }
+    return king;
   }
 
   cast(color: Color, from: Coordinate, to: Coordinate) {}

@@ -1,5 +1,5 @@
-import { MovementRule } from "./rules/movement-rule";
-import { RuleMeta } from "./rules/rules";
+import { MovementRule } from "./rules/piece-movement/movement-rule";
+import { RuleMeta } from "./rules/piece-movement/rules";
 
 export enum PieceType {
   Pawn = "Pawn",

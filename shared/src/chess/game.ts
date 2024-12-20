@@ -1,7 +1,11 @@
 import { Board } from "./board";
 import { Color, PieceMeta, PieceType } from "./piece";
 import { Affect } from "./rules";
-import { Coordinate } from "./types";
+import { Coordinate } from "./coordinate";
+import { CheckMateGlobalRule } from "./rules/global/check-mate.rule";
+import { reverseColor } from "./color";
+import { MovesTree, toKey } from "./rules/global/moves-tree";
+import { GlobalRule } from "./rules/global/check-mate.global-rule copy";
 
 export class Player {
   constructor(public name: string) {}
@@ -30,12 +34,29 @@ export type Turn = {
   to: Coordinate;
   affects?: Affect[];
   timestamp: string;
+  check?: boolean;
 };
 
 export class Game {
-  constructor(public white: Player, public black: Player, public board: Board) {
+  private movesTree: MovesTree;
+
+  constructor(
+    public white: Player,
+    public black: Player,
+    public board: Board,
+    public globalRules: GlobalRule[],
+    public treeLength: number
+  ) {
     this.nextTurnColor = Color.white;
+    this.movesTree = new MovesTree(
+      board,
+      this.turns,
+      globalRules,
+      this.treeLength,
+      this.nextTurnColor
+    );
   }
+
   nextTurnColor: Color;
   turns: Turn[] = [];
   result: Color | "draw" | null = null;
@@ -43,8 +64,7 @@ export class Game {
   timeEnd: string | null = null;
 
   private updateGameNextTurn() {
-    this.nextTurnColor =
-      this.nextTurnColor === Color.black ? Color.white : Color.black;
+    this.nextTurnColor = reverseColor(this.nextTurnColor);
   }
 
   processTurn(turn: Turn) {
@@ -53,14 +73,40 @@ export class Game {
       throw new Error("Not your turn");
     }
     if (type === TurnType.Move) {
-      this.board.move(color, from, to, this.turns, affects);
+      this.board.validateTurn(turn, this.turns);
+
+      const root = this.movesTree.getRoot();
+
+      for (const globalRule of this.globalRules) {
+        if (globalRule.isMoveValid(root, this.board.squares, turn)) {
+          throw new Error(
+            "Move is not valid because of global rule: " +
+              globalRule.constructor.name
+          );
+        }
+      }
+      this.movesTree.processTurn(turn.from, turn.to);
+      this.board.move(turn);
     } else {
       this.board.cast(color, from, to);
     }
+
     this.turns.push(turn);
     this.updateGameNextTurn();
-    // todo check win condition and return true in that case
-    return false;
+    const freshRoot = this.movesTree.getRoot();
+
+    if (freshRoot.winner) {
+      this.result = freshRoot.winner;
+      this.timeEnd = new Date().toISOString();
+    } else if (freshRoot.staleMate) {
+      this.result = "draw";
+      this.timeEnd = new Date().toISOString();
+    } else {
+      // if (!turn.check) {
+      //   throw new Error("Checkmate should be declared");
+      // }
+    }
+    return this.result;
   }
 
   // returns meta board for color, it hides opponent private data, hold minimal data
@@ -71,7 +117,8 @@ export class Game {
         const meta = boardMeta[i][j];
         if (meta) {
           if (meta.color !== color) {
-            meta.rules = []; // when scouting will be available need to add smarter solution
+            // Rules will be hidden for  custom game mode, default mode reqires them for check-mate rule
+            // meta.rules = []; // when scouting will be available need to add smarter solution
           }
         }
       }

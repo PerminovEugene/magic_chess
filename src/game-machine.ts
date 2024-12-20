@@ -75,7 +75,7 @@ export class GameMachine {
         board,
         gameInfo,
       });
-      console.log("Emit game started"), board;
+      console.log("Emit game started");
     }
 
     this.game.timeStart = new Date().toISOString();

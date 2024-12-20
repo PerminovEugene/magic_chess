@@ -1,0 +1,746 @@
+{
+  "color": "white",
+  "movements": {
+    "4,0": {
+      "3,1": {
+        "next": {
+          "color": "black",
+          "movements": {
+            "4,1": {
+              "4,0": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "3,1": {
+                      "2,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,0": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              0
+                            ]
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "7,7": {
+              "6,6": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "3,1": {
+                      "2,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "7,6": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "3,1": {
+                      "2,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "6,7": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "3,1": {
+                      "2,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "5,1": {
+        "next": {
+          "color": "black",
+          "movements": {
+            "4,1": {
+              "4,0": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "5,1": {
+                      "4,0": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              0
+                            ]
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "7,7": {
+              "6,6": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "5,1": {
+                      "4,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "7,6": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "5,1": {
+                      "4,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "6,7": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "5,1": {
+                      "4,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "4,1": {
+        "affects": [
+          {
+            "type": "kill",
+            "from": [
+              4,
+              1
+            ]
+          }
+        ],
+        "next": {
+          "color": "black",
+          "movements": {
+            "7,7": {
+              "6,6": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "4,1": {
+                      "3,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "7,6": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "4,1": {
+                      "3,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "6,7": {
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "4,1": {
+                      "3,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,0": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4,2": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5,1": {
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
