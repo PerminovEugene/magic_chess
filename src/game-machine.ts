@@ -69,13 +69,13 @@ export class GameMachine {
   }
   public beginGame() {
     for (const color of Object.values(Color)) {
-      const board = this.game.getBoardMetaForColor(color);
+      const boardMeta = this.game.getBoardMetaForColor(color);
       const gameInfo = this.game.getNewGameInfoForColor(color);
       this.sockets[color].emit(WSServerGameEvent.GameStarted, {
-        board,
+        boardMeta,
         gameInfo,
       });
-      console.log("Emit game started");
+      console.log("Emit game started", boardMeta);
     }
 
     this.game.timeStart = new Date().toISOString();
@@ -86,8 +86,21 @@ export class GameMachine {
       const win = this.game.processTurn(turn);
       if (win) {
         this.sockets[color].emit(WSServerGameEvent.OpponentWon);
-        this.sockets[this.getOppositColor(color)].emit(
-          WSServerGameEvent.YouLost,
+        let messageForBlack = WSServerGameEvent.Stalemate;
+        let messageForWhite = WSServerGameEvent.Stalemate;
+        if (win === Color.black) {
+          messageForBlack = WSServerGameEvent.YouWon;
+          messageForWhite = WSServerGameEvent.YouLost;
+        } else {
+          messageForBlack = WSServerGameEvent.YouLost;
+          messageForWhite = WSServerGameEvent.YouWon;
+        }
+        this.sockets[this.getOppositColor(Color.white)].emit(
+          messageForWhite,
+          turn
+        );
+        this.sockets[this.getOppositColor(Color.black)].emit(
+          messageForBlack,
           turn
         );
       } else {

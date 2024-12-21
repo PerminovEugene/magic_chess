@@ -4,8 +4,14 @@ import { Affect } from "./rules";
 import { Coordinate } from "./coordinate";
 import { CheckMateGlobalRule } from "./rules/global/check-mate.rule";
 import { reverseColor } from "./color";
-import { MovesTree, toKey } from "./rules/global/moves-tree";
-import { GlobalRule } from "./rules/global/check-mate.global-rule copy";
+import {
+  coordToKey,
+  MovesTree,
+  parseKey,
+  toKey,
+} from "./rules/global/moves-tree";
+import { GlobalRule } from "./rules/global/check-mate.global-rule";
+import { isAffectEql, isAffectsEql } from "../utils/matchers";
 
 export class Player {
   constructor(public name: string) {}
@@ -49,9 +55,9 @@ export class Game {
   ) {
     this.nextTurnColor = Color.white;
     this.movesTree = new MovesTree(
-      board,
+      this.board,
       this.turns,
-      globalRules,
+      this.globalRules,
       this.treeLength,
       this.nextTurnColor
     );
@@ -67,31 +73,69 @@ export class Game {
     this.nextTurnColor = reverseColor(this.nextTurnColor);
   }
 
+  getMoveToCoordinatesObj(coordinate: Coordinate) {
+    const root = this.movesTree.getRoot();
+    return root.movements[coordToKey(coordinate)];
+  }
+
+  getAvailableMovementsForCoordinate(from: Coordinate) {
+    const movements = this.getMoveToCoordinatesObj(from);
+    if (!movements) {
+      return;
+    }
+    const availableCoordinates: Coordinate[] = [];
+    for (const toKey in movements) {
+      availableCoordinates.push(parseKey(toKey));
+    }
+    return availableCoordinates;
+  }
+
+  getMovementResult(from: Coordinate, to: Coordinate) {
+    const movements = this.getMoveToCoordinatesObj(from);
+    if (!movements) {
+      return;
+    }
+    return movements[coordToKey(to)];
+  }
+
   processTurn(turn: Turn) {
     const { color, from, to, type, timestamp, affects } = turn;
     if (this.nextTurnColor !== color) {
       throw new Error("Not your turn");
     }
     if (type === TurnType.Move) {
-      this.board.validateTurn(turn, this.turns);
+      // this.board.validateTurn(turn, this.turns);
 
       const root = this.movesTree.getRoot();
 
-      for (const globalRule of this.globalRules) {
-        if (globalRule.isMoveValid(root, this.board.squares, turn)) {
-          throw new Error(
-            "Move is not valid because of global rule: " +
-              globalRule.constructor.name
-          );
-        }
+      const fromHash = coordToKey(from);
+      if (!root.movements[fromHash]) {
+        throw new Error("Invalid from coordinate");
       }
+      const moveRes = root.movements[fromHash][coordToKey(to)];
+      if (!moveRes) {
+        throw new Error("Invalid to coordinate");
+      }
+      if (!isAffectsEql(moveRes.affects, turn.affects)) {
+        throw new Error("Invalid move affects");
+      }
+
+      // for (const globalRule of this.globalRules) {
+      //   if (!globalRule.isMoveValid(root, this.board.squares, turn)) {
+      //     throw new Error(
+      //       "Move is not valid because of global rule: " +
+      //         globalRule.constructor.name
+      //     );
+      //   }
+      // }
+      // this.board.move(turn);
+      this.turns.push(turn);
       this.movesTree.processTurn(turn.from, turn.to);
-      this.board.move(turn);
     } else {
+      this.turns.push(turn);
       this.board.cast(color, from, to);
     }
 
-    this.turns.push(turn);
     this.updateGameNextTurn();
     const freshRoot = this.movesTree.getRoot();
 

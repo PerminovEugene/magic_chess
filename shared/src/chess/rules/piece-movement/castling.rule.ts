@@ -98,6 +98,7 @@ export class CastlingMovementRule extends MovementRule {
         },
       ],
     ] as AvailableMove;
+    // console.log("--->", newMainCoordinateX, mainCoordinateY);
     return availableMove;
   };
 

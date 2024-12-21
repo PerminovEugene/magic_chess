@@ -6,10 +6,7 @@ import {
 } from "../../../../../../src/game-initializer";
 import { MovesTree } from "../moves-tree";
 import { printCells } from "../../../../utils/board-printer";
-import {
-  CheckMateGlobalRule2,
-  GlobalRule,
-} from "../check-mate.global-rule copy";
+import { CheckMateGlobalRule2, GlobalRule } from "../check-mate.global-rule";
 import * as fs from "fs";
 
 /**

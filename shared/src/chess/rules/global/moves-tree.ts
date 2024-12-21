@@ -9,10 +9,13 @@ import {
 } from "../piece-movement/movement-rule";
 import { reverseColor } from "../../color";
 import { Hash, Node, X, Y } from "./moves-tree.types";
-import { GlobalRule } from "./check-mate.global-rule copy";
+import { GlobalRule } from "./check-mate.global-rule";
 
 export function toKey(x: X, y: Y) {
   return `${x},${y}`;
+}
+export function coordToKey(c: Coordinate) {
+  return `${c[0]},${c[1]}`;
 }
 export function parseKey(key: Hash): Coordinate {
   return key.split(",").map(Number) as Coordinate;
@@ -24,8 +27,7 @@ export function parseKey(key: Hash): Coordinate {
  */
 export class MovesTree {
   private root: Node;
-  // private iterator: Node;
-  private squares: Board["squares"];
+  // private squares: Board["squares"];
 
   constructor(
     private board: Board, // original b
@@ -34,11 +36,10 @@ export class MovesTree {
     private length: number,
     currentColor: Color
   ) {
-    this.squares = board.buildCells();
-    this.board.duplicatePosition(this.squares);
+    // this.squares = board.buildCells();
+    // this.board.duplicatePosition(this.squares);
 
     this.root = this.createEmptyNode(currentColor);
-    // this.iterator = this.root;
     this.fillUpRoot();
   }
 
@@ -50,11 +51,19 @@ export class MovesTree {
     const from = toKey(fromCoordinate[0], fromCoordinate[1]);
     const to = toKey(toCoordinate[0], toCoordinate[1]);
 
+    if (!this.root.movements[from]) {
+      throw new Error(`Invalid from coordinate ${from[0]}:${from[1]}`);
+    }
+    if (!this.root.movements[from][to]) {
+      throw new Error(`Invalid to coordinate ${to[0]}:${to[1]}`);
+    }
     let movementResults = this.root.movements[from][to];
+
     const nextNode = movementResults.next;
     const movementAffects = movementResults.affects;
     this.root = nextNode;
     this.updateSquraes(fromCoordinate, toCoordinate, movementAffects);
+    // this.board.move(turn);
 
     this.raiseTree();
 
@@ -68,27 +77,21 @@ export class MovesTree {
     return this.root;
   }
 
-  /**
-   * Get all possible moves for the current player
-   */
-
   private createEmptyNode(color: Color): Node {
     return {
       color,
       movements: {},
     };
   }
-
-  // private toKey(x: X, y: Y) {
-  //   return `${x},${y}`;
-  // }
-  // private parseKey(key: Hash): Coordinate {
-  //   return key.split(",").map(Number) as Coordinate;
-  // }
-
   private applyGlobalRules(node: Node, prevNode?: Node) {
     for (const rule of this.globalRules) {
-      rule.markNodeWithChilds(node, prevNode, this.squares, this.initialTurns);
+      rule.markNodeWithChilds(
+        node,
+        prevNode,
+        // this.squares,
+        this.board.squares,
+        this.initialTurns
+      );
     }
   }
 
@@ -97,6 +100,7 @@ export class MovesTree {
 
     let i = 1;
     while (i < this.length) {
+      console.log("raise in loop", i);
       this.raiseTree();
       i += 1;
     }
@@ -112,6 +116,7 @@ export class MovesTree {
   }
 
   private raiseTree() {
+    console.log("-raise");
     this.forEachSubTreeLeaf(this.root, (node) => {
       this.fillUpNode(node);
     });
@@ -183,11 +188,12 @@ export class MovesTree {
     const [fromX, fromY] = from;
     const [toX, toY] = to;
 
-    const fromCell = this.squares[fromY][fromX];
-    const toCell = this.squares[toY][toX];
+    const fromCell = this.board.squares[fromY][fromX];
+    const toCell = this.board.squares[toY][toX];
 
     return this.board.updateCellsOnMove(
-      this.squares,
+      // this.squares,
+      this.board.squares,
       fromCell,
       toCell,
       affects
@@ -196,7 +202,7 @@ export class MovesTree {
 
   // it expects empty node which will be filled up by current state of this.squares
   private fillUpNode(node: Node) {
-    this.squares.forEach((row, y) => {
+    this.board.squares.forEach((row, y) => {
       row.forEach((cell, x) => {
         const key = toKey(x, y);
         const piece = cell.getPiece();
@@ -209,7 +215,8 @@ export class MovesTree {
             const ruleMoves = rule.availableMoves(
               x,
               y,
-              this.squares,
+              // this.squares,
+              this.board.squares,
               this.initialTurns
             );
             availableMoves.push(...ruleMoves);

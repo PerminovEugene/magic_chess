@@ -21,7 +21,7 @@ import { VerticalMovementRule } from "../shared/src/chess/rules/piece-movement/v
 import { TakeOnThePassMovementRule } from "../shared/src/chess/rules/piece-movement/take-on-the-pass.rule";
 import { CastlingMovementRule } from "../shared/src/chess/rules/piece-movement/castling.rule";
 import { PieceType } from "../shared/src/chess/piece";
-import { CheckMateGlobalRule2 } from "../shared/src/chess/rules/global/check-mate.global-rule copy";
+import { CheckMateGlobalRule2 } from "../shared/src/chess/rules/global/check-mate.global-rule";
 
 export type Position = {
   [key in Color]: { type: PieceType; coordinate: Coordinate }[];
@@ -100,9 +100,9 @@ export class GameInitializer {
         directions: new Set<Direction>([Direction.Left, Direction.Right]),
         speed: 1,
       }),
-      color === Color.black
-        ? this.getDefaultQueenSideCastling(color)
-        : this.getDefaultKingsideCastling(color),
+      // color === Color.black
+      //   ? this.getDefaultQueenSideCastling(color)
+      //   : this.getDefaultKingsideCastling(color),
     ];
   }
   getDefaultBishopRules() {

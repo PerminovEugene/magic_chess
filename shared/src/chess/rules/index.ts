@@ -8,3 +8,7 @@ export * from "./piece-movement/knight-movement.rule";
 export * from "./piece-movement/position-specific-movement.rule";
 
 export * from "./global/check-mate.rule";
+export * from "./global/moves-tree";
+export * from "./global/moves-tree";
+export * from "./global/check-mate.global-rule";
+export * from "./global/moves-tree.types";

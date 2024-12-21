@@ -38,6 +38,7 @@ import { CastlingMovementRule } from "./rules/piece-movement/castling.rule";
 export class Board {
   public size = 8;
   public squares: Cell[][];
+  private v = "1";
 
   constructor() {
     this.squares = this.buildCells();
@@ -135,53 +136,22 @@ export class Board {
     toCell: Cell,
     affects?: Affect[]
   ): Piece[] {
-    // really move here
     const killedPieces: Piece[] = [];
     if (affects) {
       affects.forEach(({ from, to, type, spawnedPiece }) => {
         if (type === AffectType.kill) {
           if (!from) {
             throw new Error(
-              "Invalid move: kill affect should have from coordinate"
+              `Invalid move: kill affect should have from coordinate. From: ${from}`
             );
           }
           const [fromX, fromY] = from;
           const killed = cells[fromY][fromX].popPiece();
-          if (killed) {
-            killedPieces.push(killed);
+          if (!killed) {
+            console.log(cells[fromY][fromX]);
+            throw new Error(`Invalid affect kill cordinate ${fromX}, ${fromY}`);
           }
-          // } else if (type === AffectType.move) {
-          //   if (!to) {
-          //     throw new Error(
-          //       "Invalid move: move affect should have to coordinate"
-          //     );
-          //   }
-          //   if (!from) {
-          //     throw new Error(
-          //       "Invalid move: kill affect should have from coordinate"
-          //     );
-          //   }
-          //   const [fromX, fromY] = from;
-          //   const [toX, toY] = to;
-
-          //   const pieceMovedByAffect = cells[fromY][fromX].popPiece();
-          //   if (!pieceMovedByAffect) {
-          //     throw new Error("Invalid move: no piece at from coordinate");
-          //   }
-          //   if (!cells[toY][toX].isEmpty()) {
-          //     throw new Error(
-          //       "Invalid move: affect moved piece to not empty cell"
-          //     );
-          //   }
-          //   cells[toY][toX].putPiece(pieceMovedByAffect);
-          // } else if (type === AffectType.spawn) {
-          //   if (!to || !spawnedPiece) {
-          //     throw new Error(
-          //       "Invalid move: spawn affect should have to coordinate and spawnedPiece"
-          //     );
-          //   }
-          //   const [toX, toY] = to;
-          //   cells[toY][toX].putPiece(spawnedPiece);
+          killedPieces.push(killed);
         }
       });
     }
@@ -195,19 +165,8 @@ export class Board {
     }
     if (affects) {
       affects.forEach(({ from, to, type, spawnedPiece }) => {
-        // if (type === AffectType.kill) {
-        //   if (!from) {
-        //     throw new Error(
-        //       "Invalid move: kill affect should have from coordinate"
-        //     );
-        //   }
-        //   const [fromX, fromY] = from;
-        //   const killed = cells[fromY][fromX].popPiece();
-        //   if (killed) {
-        //     killedPieces.push(killed);
-        //   }
-        // } else
         if (type === AffectType.move) {
+          console.log("-cells on move", cells);
           if (!to) {
             throw new Error(
               "Invalid move: move affect should have to coordinate"
@@ -220,9 +179,9 @@ export class Board {
           }
           const [fromX, fromY] = from;
           const [toX, toY] = to;
-
           const pieceMovedByAffect = cells[fromY][fromX].popPiece();
           if (!pieceMovedByAffect) {
+            console.log("----cells", cells);
             throw new Error(
               `Invalid move: no piece at from coordinate X:${fromX} y:${fromY}`
             );
@@ -247,60 +206,60 @@ export class Board {
     return killedPieces;
   }
 
-  validateTurn(newTurn: Turn, turns: Turn[]) {
-    const { color, from, to, affects } = newTurn;
+  // validateTurn(newTurn: Turn, turns: Turn[]) {
+  //   const { color, from, to, affects } = newTurn;
 
-    const [fromX, fromY] = from;
-    const [toX, toY] = to;
+  //   const [fromX, fromY] = from;
+  //   const [toX, toY] = to;
 
-    if (
-      !(
-        this.isIndexInValid(fromX) &&
-        this.isIndexInValid(fromY) &&
-        this.isIndexInValid(toX) &&
-        this.isIndexInValid(toY)
-      )
-    ) {
-      throw new Error("Invalid move");
-    }
-    const fromCell: Cell = this.getCell(fromX, fromY);
-    if (fromCell.isEmpty()) {
-      throw new Error("Invalid move. Selected cell is empty");
-    }
+  //   if (
+  //     !(
+  //       this.isIndexInValid(fromX) &&
+  //       this.isIndexInValid(fromY) &&
+  //       this.isIndexInValid(toX) &&
+  //       this.isIndexInValid(toY)
+  //     )
+  //   ) {
+  //     throw new Error("Invalid move");
+  //   }
+  //   const fromCell: Cell = this.getCell(fromX, fromY);
+  //   if (fromCell.isEmpty()) {
+  //     throw new Error("Invalid move. Selected cell is empty");
+  //   }
 
-    const fromPiece = fromCell.getPiece();
-    if (fromPiece?.color !== color) {
-      throw new Error("Invalid move. Selected piece is not your color");
-    }
+  //   const fromPiece = fromCell.getPiece();
+  //   if (fromPiece?.color !== color) {
+  //     throw new Error("Invalid move. Selected piece is not your color");
+  //   }
 
-    const availableMove = this.findValidAvailableMove(
-      fromPiece,
-      fromX,
-      fromY,
-      toX,
-      toY,
-      turns
-    );
-    if (!availableMove) {
-      throw new Error("Invalid move. This piece don't have such movement rule");
-    }
+  //   const availableMove = this.findValidAvailableMove(
+  //     fromPiece,
+  //     fromX,
+  //     fromY,
+  //     toX,
+  //     toY,
+  //     turns
+  //   );
+  //   if (!availableMove) {
+  //     throw new Error("Invalid move. This piece don't have such movement rule");
+  //   }
 
-    const serverSideCalculatedAffects = availableMove[2];
-    if (!isAffectsEql(serverSideCalculatedAffects, affects)) {
-      throw new Error("Invalid affects");
-    }
-  }
+  //   const serverSideCalculatedAffects = availableMove[2];
+  //   if (!isAffectsEql(serverSideCalculatedAffects, affects)) {
+  //     throw new Error("Invalid affects");
+  //   }
+  // }
 
-  move(newTurn: Turn) {
-    const { from, to, affects } = newTurn;
-    const [fromX, fromY] = from;
-    const [toX, toY] = to;
+  // move(newTurn: Turn) {
+  //   const { from, to, affects } = newTurn;
+  //   const [fromX, fromY] = from;
+  //   const [toX, toY] = to;
 
-    const fromCell: Cell = this.getCell(fromX, fromY);
-    const toCell = this.getCell(toX, toY);
+  //   const fromCell: Cell = this.getCell(fromX, fromY);
+  //   const toCell = this.getCell(toX, toY);
 
-    this.updateCellsOnMove(this.squares, fromCell, toCell, affects);
-  }
+  //   this.updateCellsOnMove(this.squares, fromCell, toCell, affects);
+  // }
 
   public duplicatePosition(cells: Cell[][]): Cell[][] {
     this.squares.forEach((row, y) => {

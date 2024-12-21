@@ -55,6 +55,7 @@ export class CheckMateGlobalRule2 extends GlobalRule {
           ? to
           : kingCoordinate;
         if (isCoordinateEql(actualCurrentKingCoordinate, nextTo)) {
+          console.log("-> ", actualCurrentKingCoordinate, nextTo);
           return false;
         }
       }

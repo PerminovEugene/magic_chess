@@ -47,7 +47,7 @@ export class Matchmaker {
       this.gameInitializer.getDefaultGlobalRules(board);
 
     return {
-      game: new Game(player, opponent.player, board, defaultGloobalRules),
+      game: new Game(player, opponent.player, board, defaultGloobalRules, 3),
       opponentSocket: opponent.socket,
     };
   }
