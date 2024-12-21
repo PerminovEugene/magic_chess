@@ -55,7 +55,6 @@ export class CheckMateGlobalRule2 extends GlobalRule {
           ? to
           : kingCoordinate;
         if (isCoordinateEql(actualCurrentKingCoordinate, nextTo)) {
-          console.log("-> ", actualCurrentKingCoordinate, nextTo);
           return false;
         }
       }
@@ -93,14 +92,10 @@ export class CheckMateGlobalRule2 extends GlobalRule {
         const nextNode = moveResultData.next;
 
         if (prevNode && enemyKingKey === movementTo) {
-          // this move to king, means opponent under check now
-          //
           prevNode.underCheck = true;
         }
 
         let leadsToCurrentColorCheck = false;
-
-        // console.log("-handle->", from, to);
 
         // we search for enemy moves to current color kings position
         for (const nextMovementFrom in nextNode.movements) {
@@ -117,73 +112,17 @@ export class CheckMateGlobalRule2 extends GlobalRule {
           );
 
           if (nextNode.movements[nextMovementFrom][nextToKey]) {
-            // opponen will eat king. Current color under check for its initial move
-            // console.log("move to king exist");
-            // console.log(
-            //   "marked",
-            //   nextNode.movements[nextMovementFrom][nextToKey].next
-            // );
-            // meant current color will be killed in this scenario, means check
             leadsToCurrentColorCheck = true;
-            // nextNode.movements[nextMovementFrom][nextToKey].next.underCheck =
-            //   true;
             moveResultData.suisidal = true;
-            // nextNode.underCheck = true;
           }
-          // if (isCoordinateEql(actualCurrentKingCoordinate, nextTo)) {
-          //   nextNode.movements[nextMovementFrom][
-          //     nextMovementTo
-          //   ].next.underCheck = true;
-          // }
-          // if king made a move we need to use its new position
-
-          // TODO add checking kill affects later
         }
         if (!leadsToCurrentColorCheck) {
           // at least one currentColor move doesn't lead to immediate check
-          // console.log("not all moves leads to check");
           allMovesLeadToMateForCurrentColor = false;
         }
       }
-
-      //   for (const nextMovementTo in nextNode.movements[nextMovementFrom]) {
-      //     // we search for enemy moves to current color kings position
-      //     const nextTo = parseKey(nextMovementTo);
-
-      //     // if king made a move we need to use its new position
-      //     const actualCurrentKingCoordinate = isCoordinateEql(
-      //       kingCoordinate,
-      //       from
-      //     )
-      //       ? from
-      //       : to;
-      //     // TODO add checking kill affects later
-      //     console.log(
-      //       "actualCurrentKingCoordinate",
-      //       actualCurrentKingCoordinate
-      //     );
-      //     if (isCoordinateEql(actualCurrentKingCoordinate, nextTo)) {
-      //       nextNode.movements[nextMovementFrom][
-      //         nextMovementTo
-      //       ].next.underCheck = true;
-      //       leadsToCheck = true;
-      //     }
-      //   }
-      // }
-      // if (!leadsToCheck) {
-      //   // at least one currentColor move doesn't lead to immediate check
-      //   allMovesLeadToMate = false;
-      // }
-      // }
     }
-    // console.log("-", node);
     if (allMovesLeadToMateForCurrentColor) {
-      // console.log("allMovesLeadToMate", node);
-      // if (prevNode.underCheck) {
-      //   node.winner = reverseColor(currentColor);
-      // } else {
-      //   node.staleMate = true;
-      // }
     }
   }
 }

@@ -11,7 +11,6 @@ export enum WSServerGameEvent {
   OpponenSurrender = "opponent_surrender",
   OpponentDisconnected = "opponent_disconnected",
   OpponentWon = "opponent_won",
-  YouLost = "you_lost",
   YouWon = "you_won",
   GameStarted = "game_starterd",
   WaitingForOpponent = "waiting_for_opponent",

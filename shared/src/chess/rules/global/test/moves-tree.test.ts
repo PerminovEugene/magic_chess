@@ -203,11 +203,6 @@ describe("MovesTree", () => {
       const after = process.memoryUsage().heapUsed;
 
       const sizeMb = (after - before) / 1024 / 1024;
-      // console.log(
-      //   `Approximate object size in memory: ${
-      //     (after - before) / 1024 / 1024
-      //   } MB`
-      // );
 
       expect(data).toBeDefined();
       expect(sizeMb).toBeLessThan(25);

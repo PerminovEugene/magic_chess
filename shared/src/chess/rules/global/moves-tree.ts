@@ -100,7 +100,6 @@ export class MovesTree {
 
     let i = 1;
     while (i < this.length) {
-      console.log("raise in loop", i);
       this.raiseTree();
       i += 1;
     }
@@ -116,7 +115,6 @@ export class MovesTree {
   }
 
   private raiseTree() {
-    console.log("-raise");
     this.forEachSubTreeLeaf(this.root, (node) => {
       this.fillUpNode(node);
     });
@@ -133,6 +131,9 @@ export class MovesTree {
           delete this.root.movements[fromKey][toKey];
         }
       });
+      if (Object.keys(this.root.movements[fromKey]).length === 0) {
+        delete this.root.movements[fromKey];
+      }
     });
   }
 

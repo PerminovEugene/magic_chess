@@ -148,7 +148,6 @@ export class Board {
           const [fromX, fromY] = from;
           const killed = cells[fromY][fromX].popPiece();
           if (!killed) {
-            console.log(cells[fromY][fromX]);
             throw new Error(`Invalid affect kill cordinate ${fromX}, ${fromY}`);
           }
           killedPieces.push(killed);
@@ -166,7 +165,6 @@ export class Board {
     if (affects) {
       affects.forEach(({ from, to, type, spawnedPiece }) => {
         if (type === AffectType.move) {
-          console.log("-cells on move", cells);
           if (!to) {
             throw new Error(
               "Invalid move: move affect should have to coordinate"
@@ -181,7 +179,6 @@ export class Board {
           const [toX, toY] = to;
           const pieceMovedByAffect = cells[fromY][fromX].popPiece();
           if (!pieceMovedByAffect) {
-            console.log("----cells", cells);
             throw new Error(
               `Invalid move: no piece at from coordinate X:${fromX} y:${fromY}`
             );

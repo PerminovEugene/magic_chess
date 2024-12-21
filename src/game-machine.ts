@@ -75,7 +75,6 @@ export class GameMachine {
         boardMeta,
         gameInfo,
       });
-      console.log("Emit game started", boardMeta);
     }
 
     this.game.timeStart = new Date().toISOString();
@@ -83,16 +82,15 @@ export class GameMachine {
 
   private handleTurn(color: Color, turn: Turn) {
     try {
-      const win = this.game.processTurn(turn);
-      if (win) {
-        this.sockets[color].emit(WSServerGameEvent.OpponentWon);
+      const gameResult = this.game.processTurn(turn);
+      if (gameResult) {
         let messageForBlack = WSServerGameEvent.Stalemate;
         let messageForWhite = WSServerGameEvent.Stalemate;
-        if (win === Color.black) {
+        if (gameResult === Color.black) {
           messageForBlack = WSServerGameEvent.YouWon;
-          messageForWhite = WSServerGameEvent.YouLost;
-        } else {
-          messageForBlack = WSServerGameEvent.YouLost;
+          messageForWhite = WSServerGameEvent.OpponentWon;
+        } else if (gameResult === Color.white) {
+          messageForBlack = WSServerGameEvent.OpponentWon;
           messageForWhite = WSServerGameEvent.YouWon;
         }
         this.sockets[this.getOppositColor(Color.white)].emit(

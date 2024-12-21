@@ -2,14 +2,8 @@ import { Board } from "./board";
 import { Color, PieceMeta, PieceType } from "./piece";
 import { Affect } from "./rules";
 import { Coordinate } from "./coordinate";
-import { CheckMateGlobalRule } from "./rules/global/check-mate.rule";
 import { reverseColor } from "./color";
-import {
-  coordToKey,
-  MovesTree,
-  parseKey,
-  toKey,
-} from "./rules/global/moves-tree";
+import { coordToKey, MovesTree, parseKey } from "./rules/global/moves-tree";
 import { GlobalRule } from "./rules/global/check-mate.global-rule";
 import { isAffectEql, isAffectsEql } from "../utils/matchers";
 
@@ -139,16 +133,13 @@ export class Game {
     this.updateGameNextTurn();
     const freshRoot = this.movesTree.getRoot();
 
-    if (freshRoot.winner) {
-      this.result = freshRoot.winner;
+    if (Object.keys(freshRoot.movements).length === 0) {
+      if (freshRoot.underCheck) {
+        this.result = reverseColor(color);
+      } else {
+        this.result = "draw";
+      }
       this.timeEnd = new Date().toISOString();
-    } else if (freshRoot.staleMate) {
-      this.result = "draw";
-      this.timeEnd = new Date().toISOString();
-    } else {
-      // if (!turn.check) {
-      //   throw new Error("Checkmate should be declared");
-      // }
     }
     return this.result;
   }
