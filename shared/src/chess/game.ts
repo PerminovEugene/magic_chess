@@ -131,6 +131,7 @@ export class Game {
     }
 
     this.updateGameNextTurn();
+
     const freshRoot = this.movesTree.getRoot();
 
     if (Object.keys(freshRoot.movements).length === 0) {

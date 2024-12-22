@@ -1,4 +1,3 @@
-import { isAffectsEql } from "../utils/matchers";
 import { Cell } from "./cell";
 import { BoardMeta, Turn } from "./game";
 import {
@@ -17,7 +16,6 @@ import {
   Affect,
   AffectType,
   AvailableMove,
-  CheckMateGlobalRule,
   DiagonalMovementRule,
   HorizontalMovementRule,
   KnightMovementRule,

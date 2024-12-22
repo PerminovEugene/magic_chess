@@ -51,12 +51,6 @@ export class MovesTree {
     const from = toKey(fromCoordinate[0], fromCoordinate[1]);
     const to = toKey(toCoordinate[0], toCoordinate[1]);
 
-    if (!this.root.movements[from]) {
-      throw new Error(`Invalid from coordinate ${from[0]}:${from[1]}`);
-    }
-    if (!this.root.movements[from][to]) {
-      throw new Error(`Invalid to coordinate ${to[0]}:${to[1]}`);
-    }
     let movementResults = this.root.movements[from][to];
 
     const nextNode = movementResults.next;
