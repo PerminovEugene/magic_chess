@@ -1,14 +1,18 @@
 import { Cell } from "../../../cell";
-import { Color, Knight, Pawn } from "../../../piece";
+import { Color } from "../../../color";
+import { Pawn, Knight } from "../../../pieces";
 import { Coordinate } from "../../../coordinate";
 import { KnightMovementRule } from "../knight-movement.rule";
-import { AffectType, AvailableMove, Direction } from "../movement-rule";
+import { AvailableMove, Direction } from "../movement-rule";
 import { StraightMovementRuleConfig } from "../straight-movement.rule";
+import { AffectType } from "../../../affect.types";
+import { MovementRules } from "../movement-rules.const";
 
 describe("KnightMovementRule", () => {
   let rule: KnightMovementRule;
   let squares: Cell[][];
-
+  const getPiece = (x: number, y: number) => squares[y][x].getPiece();
+  const size = 5;
   const getDefaultCells = () => {
     return [
       [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
@@ -20,6 +24,7 @@ describe("KnightMovementRule", () => {
   };
   const updateRule = (config?: Partial<StraightMovementRuleConfig>) => {
     rule = new KnightMovementRule({
+      name: MovementRules.KnightMovementRule,
       moveToEmpty: true,
       moveToKill: true,
       collision: true,
@@ -69,7 +74,7 @@ describe("KnightMovementRule", () => {
       ];
       squares[fromY][fromX].putPiece(new Knight(Color.white));
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -87,7 +92,7 @@ describe("KnightMovementRule", () => {
         [1, 2],
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -106,7 +111,7 @@ describe("KnightMovementRule", () => {
 
       const expectedMoves: Coordinate[] = [];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -126,7 +131,7 @@ describe("KnightMovementRule", () => {
         [1, 2, [{ type: AffectType.kill, from: [1, 2] }]],
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });

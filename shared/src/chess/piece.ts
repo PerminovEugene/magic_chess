@@ -1,68 +1,46 @@
-import { MovementRule } from "./rules/piece-movement/movement-rule";
-import { RuleMeta } from "./rules/piece-movement/rules";
-
-export enum PieceType {
-  Pawn = "Pawn",
-  Bishop = "Bishop",
-  Knight = "Knight",
-  Rook = "Rook",
-  Queen = "Queen",
-  King = "King",
-}
-export enum Color {
-  white = "white",
-  black = "black",
-}
-
-export type PieceMeta = {
-  type: PieceType;
-  color: Color;
-  rules: RuleMeta[];
-};
+import { Color } from "./color";
+import { PieceType } from "./piece.consts";
+import {
+  MovementRules,
+  PostMovementRules,
+} from "./rules/piece-movement/movement-rules.const";
 
 export abstract class Piece {
   constructor(
     public type: PieceType,
     public color: Color,
-    public movementRules: MovementRule[]
+    public movementRules: MovementRules[],
+    public postMovementRules?: PostMovementRules[]
   ) {}
 
   getMeta() {
     return {
       type: this.type,
       color: this.color,
-      rules: this.movementRules.map((rule) => rule.getMeta()),
+      rules: this.movementRules,
+      postMovementRulesMeta: this.postMovementRules,
     };
   }
-}
 
-export class Pawn extends Piece {
-  constructor(color: Color, movementRules: MovementRule[] = []) {
-    super(PieceType.Pawn, color, movementRules);
-  }
-}
-export class King extends Piece {
-  constructor(color: Color, movementRules: MovementRule[] = []) {
-    super(PieceType.King, color, movementRules);
-  }
-}
-export class Queen extends Piece {
-  constructor(color: Color, movementRules: MovementRule[] = []) {
-    super(PieceType.Queen, color, movementRules);
-  }
-}
-export class Rook extends Piece {
-  constructor(color: Color, movementRules: MovementRule[] = []) {
-    super(PieceType.Rook, color, movementRules);
-  }
-}
-export class Knight extends Piece {
-  constructor(color: Color, movementRules: MovementRule[] = []) {
-    super(PieceType.Knight, color, movementRules);
-  }
-}
-export class Bishop extends Piece {
-  constructor(color: Color, movementRules: MovementRule[] = []) {
-    super(PieceType.Bishop, color, movementRules);
-  }
+  // public getPieceAvailableMoves(
+  //   x: number,
+  //   y: number,
+  //   getPiece: GetPiece,
+  //   turns: Turn[],
+  //   size: number
+  // ): AvailableMove[] {
+  //   const availableMoves: AvailableMove[] = [];
+
+  //   this.movementRules.forEach((rule) => {
+  //     const ruleMoves = rule.availableMoves(x, y, getPiece, turns, size);
+  //     availableMoves.push(...ruleMoves);
+  //   });
+  //   let updatedMoves: AvailableMove[] = availableMoves;
+  //   this.postMovementRules?.forEach((rule) => {
+  //     // OMG iT"S UGLY
+  //     updatedMoves = rule.updateMovesAffects(updatedMoves, this);
+  //   });
+
+  //   return updatedMoves;
+  // }
 }

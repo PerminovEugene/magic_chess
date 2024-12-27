@@ -1,16 +1,19 @@
 import { Cell } from "../../../cell";
-import { Color, Pawn } from "../../../piece";
+import { Color } from "../../../color";
+import { Pawn } from "../../../pieces";
 import {
   PositionSpecificMovementRule,
   PositionSpecificMovementRuleConfig,
 } from "../position-specific-movement.rule";
 import { AvailableMove, Direction } from "../movement-rule";
 import { Coordinate } from "../../../coordinate";
+import { MovementRules } from "../movement-rules.const";
 
 describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
   let rule: PositionSpecificMovementRule;
   let squares: Cell[][];
-
+  const getPiece = (x: number, y: number) => squares[y][x].getPiece();
+  const size = 5;
   const speed = 2;
 
   const getDefaultCells = () => {
@@ -24,6 +27,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
   };
   const updateRule = (config?: Partial<PositionSpecificMovementRuleConfig>) => {
     rule = new PositionSpecificMovementRule({
+      name: MovementRules.PositionSpecificMovementRule,
       moveToEmpty: true,
       moveToKill: true,
       collision: true,
@@ -69,7 +73,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -83,7 +87,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
         },
       });
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
       checkMoves(moves, expectedMoves);
     });
 
@@ -96,7 +100,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
         },
       });
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
       checkMoves(moves, expectedMoves);
     });
 
@@ -110,7 +114,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
         directions: new Set<Direction>([Direction.Left, Direction.Right]),
       });
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
-      const moves2 = rule.availableMoves(fromX, fromY, squares, []);
+      const moves2 = rule.availableMoves(fromX, fromY, getPiece, [], size);
       checkMoves(moves2, expectedMoves);
     });
 
@@ -124,7 +128,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
         directions: new Set<Direction>([Direction.Up, Direction.Down]),
       });
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
-      const moves2 = rule.availableMoves(fromX, fromY, squares, []);
+      const moves2 = rule.availableMoves(fromX, fromY, getPiece, [], size);
       checkMoves(moves2, expectedMoves);
     });
   });
@@ -148,7 +152,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
         [2, 4],
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -177,7 +181,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
         [4, 4],
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });

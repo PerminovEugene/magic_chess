@@ -1,13 +1,20 @@
+import { AffectType } from "../../../affect.types";
 import { Cell } from "../../../cell";
-import { Color, Pawn } from "../../../piece";
+import { Color } from "../../../color";
 import { Coordinate } from "../../../coordinate";
-import { AffectType, AvailableMove, Direction } from "../movement-rule";
+import { Pawn } from "../../../pieces";
+import { AvailableMove, Direction } from "../movement-rule";
+import { MovementRules } from "../movement-rules.const";
 import { StraightMovementRuleConfig } from "../straight-movement.rule";
 import { VerticalMovementRule } from "../vertical-movement.rule";
 
 describe("VerticalMovementRule", () => {
   let rule: VerticalMovementRule;
   let squares: Cell[][];
+  const size = 5;
+  const getPiece = (x: number, y: number) => {
+    return squares[y][x].getPiece();
+  };
 
   const getDefaultCells = () => {
     return [
@@ -20,6 +27,7 @@ describe("VerticalMovementRule", () => {
   };
   const updateRule = (config?: Partial<StraightMovementRuleConfig>) => {
     rule = new VerticalMovementRule({
+      name: MovementRules.VerticalMovementRule,
       moveToEmpty: true,
       moveToKill: true,
       collision: true,
@@ -55,7 +63,7 @@ describe("VerticalMovementRule", () => {
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -67,7 +75,7 @@ describe("VerticalMovementRule", () => {
         [2, 4],
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -84,7 +92,7 @@ describe("VerticalMovementRule", () => {
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -99,7 +107,7 @@ describe("VerticalMovementRule", () => {
       updateRule({ directions: new Set<Direction>([Direction.Up]) });
       const expectedMoves: Coordinate[] = [[2, 0]];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -112,7 +120,7 @@ describe("VerticalMovementRule", () => {
       updateRule({ directions: new Set<Direction>([Direction.Down]) });
       const expectedMoves: Coordinate[] = [[2, 4]];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -127,7 +135,7 @@ describe("VerticalMovementRule", () => {
       updateRule({ directions: new Set<Direction>([Direction.Up]) });
       const expectedMoves: Coordinate[] = [];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -140,7 +148,7 @@ describe("VerticalMovementRule", () => {
       updateRule({ directions: new Set<Direction>([Direction.Down]) });
       const expectedMoves: Coordinate[] = [];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -160,7 +168,7 @@ describe("VerticalMovementRule", () => {
 
       const expectedMoves: Coordinate[] = [[2, 1]];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -182,7 +190,7 @@ describe("VerticalMovementRule", () => {
         [2, 3, [{ type: AffectType.kill, from: [2, 3] }]],
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });
@@ -201,7 +209,7 @@ describe("VerticalMovementRule", () => {
 
       const expectedMoves: Coordinate[] = [[2, 1]];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, []);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
 
       checkMoves(moves, expectedMoves);
     });

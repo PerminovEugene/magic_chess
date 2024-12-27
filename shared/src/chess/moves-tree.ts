@@ -1,25 +1,15 @@
-import { Board } from "../../board";
-import { Coordinate } from "../../coordinate";
-import { Turn } from "../../game";
-import { Color, Piece } from "../../piece";
-import {
-  Affect,
-  AvailableMove,
-  reverseAffects,
-} from "../piece-movement/movement-rule";
-import { reverseColor } from "../../color";
-import { Hash, Node, X, Y } from "./moves-tree.types";
-import { GlobalRule } from "./check-mate.global-rule";
-
-export function toKey(x: X, y: Y) {
-  return `${x},${y}`;
-}
-export function coordToKey(c: Coordinate) {
-  return `${c[0]},${c[1]}`;
-}
-export function parseKey(key: Hash): Coordinate {
-  return key.split(",").map(Number) as Coordinate;
-}
+import { Board } from "./board";
+import { Coordinate } from "./coordinate";
+import { Turn } from "./turn";
+import { PieceType } from "./piece.consts";
+import { Color } from "./color";
+import { AvailableMove } from "./rules/piece-movement/movement-rule";
+import { Affect, AffectType } from "./affect.types";
+import { reverseAffects } from "./affect";
+import { reverseColor } from "./color";
+import { Node } from "./moves-tree.types";
+import { GlobalRule } from "./rules/global/check-mate.global-rule";
+import { toKey, parseKey, parseToKey } from "./moves-tree.utils";
 
 /**
  * This structure keep all possible moves for both players
@@ -27,7 +17,6 @@ export function parseKey(key: Hash): Coordinate {
  */
 export class MovesTree {
   private root: Node;
-  // private squares: Board["squares"];
 
   constructor(
     private board: Board, // original b
@@ -36,36 +25,55 @@ export class MovesTree {
     private length: number,
     currentColor: Color
   ) {
-    // this.squares = board.buildCells();
-    // this.board.duplicatePosition(this.squares);
-
     this.root = this.createEmptyNode(currentColor);
     this.fillUpRoot();
   }
 
   /**
    * Move root to the next level by turn data
-   * @param turn
+   * @param fromCoordinate
+   * @param fromCoordinate
+   * @param selectedPieceType - using for transforming pawn to another piece
    */
-  public processTurn(fromCoordinate: Coordinate, toCoordinate: Coordinate) {
+  public processTurn(
+    fromCoordinate: Coordinate,
+    toCoordinate: Coordinate,
+    selectedPieceType?: PieceType // this is donkey solution, but for now it's not clear how to keep dynamic data
+  ) {
     const from = toKey(fromCoordinate[0], fromCoordinate[1]);
-    const to = toKey(toCoordinate[0], toCoordinate[1]);
+    const to = toKey(toCoordinate[0], toCoordinate[1], selectedPieceType);
 
     let movementResults = this.root.movements[from][to];
 
-    const nextNode = movementResults.next;
     const movementAffects = movementResults.affects;
+
+    if (selectedPieceType) {
+      const transformationAffect = movementAffects?.find(
+        (a) => a.type === AffectType.transformation
+      );
+      if (!transformationAffect) {
+        throw new Error("Transformation affect is not found");
+      }
+      transformationAffect.destPieceType = selectedPieceType;
+    }
+
+    const nextNode = movementResults.next;
+    // console.log(JSON.stringify(nextNode, null, 2));
     this.root = nextNode;
-    this.updateSquraes(fromCoordinate, toCoordinate, movementAffects);
-    // this.board.move(turn);
+    this.updateBoard(fromCoordinate, toCoordinate, movementAffects);
 
     this.raiseTree();
 
     this.forEachChild(this.root, (node) => {
       this.applyGlobalRules(node, this.root);
     });
+
     this.treeShaking();
+
+    // handling transformation
   }
+
+  processTurnDynamicData(turn: Turn) {}
 
   public getRoot() {
     return this.root;
@@ -83,7 +91,7 @@ export class MovesTree {
         node,
         prevNode,
         // this.squares,
-        this.board.squares,
+        this.board,
         this.initialTurns
       );
     }
@@ -97,15 +105,14 @@ export class MovesTree {
       this.raiseTree();
       i += 1;
     }
-
     this.applyGlobalRules(this.root);
-    this.treeShaking();
 
     if (this.length > 1) {
       this.forEachChild(this.root, (node) => {
         this.applyGlobalRules(node, this.root);
       });
     }
+    this.treeShaking();
   }
 
   private raiseTree() {
@@ -122,6 +129,7 @@ export class MovesTree {
     Object.keys(this.root.movements).forEach((fromKey) => {
       Object.keys(this.root.movements[fromKey]).forEach((toKey) => {
         if (this.root.movements[fromKey][toKey].suisidal) {
+          console.log("delete suisidal", fromKey, toKey);
           delete this.root.movements[fromKey][toKey];
         }
       });
@@ -139,13 +147,17 @@ export class MovesTree {
         const movementResultAffects = movementResult.affects;
 
         const from = parseKey(fromKey);
-        const to = parseKey(toKey);
-        const killed = this.updateSquraes(from, to, movementResultAffects);
+        const [toX, toY] = parseToKey(toKey);
+
+        this.updateBoard(from, [toX, toY], movementResultAffects);
 
         callback(nextNode);
 
-        const reversedAffects = reverseAffects(movementResultAffects, killed);
-        this.updateSquraes(to, from, reversedAffects);
+        const reversedAffects = reverseAffects(movementResultAffects);
+        if (reversedAffects?.length) {
+          console.log("reversedAffects", reversedAffects);
+        }
+        this.updateBoard([toX, toY], from, reversedAffects);
       });
     });
   }
@@ -161,73 +173,57 @@ export class MovesTree {
         const movementResultAffects = movementResult.affects;
 
         const from = parseKey(fromKey);
-        const to = parseKey(toKey);
+        const [toX, toY] = parseToKey(toKey);
 
-        const killed = this.updateSquraes(from, to, movementResultAffects);
+        this.updateBoard(from, [toX, toY], movementResultAffects);
         if (Object.keys(nextNode.movements).length === 0) {
           callback(nextNode);
         } else {
           this.forEachSubTreeLeaf(nextNode, callback);
         }
-        const reversedAffects = reverseAffects(movementResultAffects, killed);
-        this.updateSquraes(to, from, reversedAffects);
+        // console.log("killed", killed, movementResultAffects);
+        const reversedAffects = reverseAffects(movementResultAffects);
+        // console.log("reversedAffects", reversedAffects);
+        this.updateBoard([toX, toY], from, reversedAffects);
       });
     });
   }
 
-  private updateSquraes(
-    from: Coordinate,
-    to: Coordinate,
-    affects?: Affect[]
-  ): Piece[] {
-    const [fromX, fromY] = from;
+  private updateBoard(from: Coordinate, to: Coordinate, affects?: Affect[]) {
     const [toX, toY] = to;
+    const move = [toX, toY, affects] as AvailableMove;
 
-    const fromCell = this.board.squares[fromY][fromX];
-    const toCell = this.board.squares[toY][toX];
-
-    return this.board.updateCellsOnMove(
-      // this.squares,
-      this.board.squares,
-      fromCell,
-      toCell,
-      affects
-    );
+    this.board.updateCellsOnMove(from, move);
   }
 
   // it expects empty node which will be filled up by current state of this.squares
   private fillUpNode(node: Node) {
-    this.board.squares.forEach((row, y) => {
-      row.forEach((cell, x) => {
-        const key = toKey(x, y);
-        const piece = cell.getPiece();
-        if (piece && piece.color === node.color) {
-          node.movements[key] = {};
+    this.board.forEachPiece(node.color, (piece, x, y) => {
+      const key = toKey(x, y);
+      if (piece && piece.color === node.color) {
+        node.movements[key] = {};
 
-          const availableMoves: AvailableMove[] = [];
+        const availableMoves: AvailableMove[] =
+          this.board.getPieceAvailableMoves(x, y, this.initialTurns);
 
-          piece.movementRules.forEach((rule) => {
-            const ruleMoves = rule.availableMoves(
-              x,
-              y,
-              // this.squares,
-              this.board.squares,
-              this.initialTurns
-            );
-            availableMoves.push(...ruleMoves);
-          });
-          const reversedColor = reverseColor(node.color);
-          availableMoves.forEach(([toX, toY, affects]) => {
-            const nextMoveKey = toKey(toX, toY);
+        const reversedColor = reverseColor(node.color);
+        availableMoves.forEach(([toX, toY, affects]) => {
+          const transformationAffect = affects?.find(
+            (a) => a.type === AffectType.transformation
+          );
+          const nextMoveKey = toKey(
+            toX,
+            toY,
+            transformationAffect?.destPieceType
+          );
 
-            let newNode: Node = this.createEmptyNode(reversedColor);
-            node.movements[key][nextMoveKey] = {
-              affects,
-              next: newNode,
-            };
-          });
-        }
-      });
+          let newNode: Node = this.createEmptyNode(reversedColor);
+          node.movements[key][nextMoveKey] = {
+            ...(affects ? { affects } : {}),
+            next: newNode,
+          };
+        });
+      }
     });
   }
 }

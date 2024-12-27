@@ -1,10 +1,8 @@
-import { Dir } from "fs";
 import { Direction } from "./movement-rule";
 import {
   StraightMovementRule,
   StraightMovementRuleConfig,
 } from "./straight-movement.rule";
-import { dir } from "console";
 import { Coordinate } from "../../coordinate";
 
 /**
@@ -46,6 +44,7 @@ const actionMap: {
 
 export class KnightMovementRule extends StraightMovementRule {
   constructor({
+    name,
     moveToEmpty,
     moveToKill,
     collision,
@@ -53,7 +52,15 @@ export class KnightMovementRule extends StraightMovementRule {
     directions,
     speed,
   }: StraightMovementRuleConfig) {
-    super(moveToEmpty, moveToKill, collision, distance, directions, speed);
+    super(
+      name,
+      moveToEmpty,
+      moveToKill,
+      collision,
+      distance,
+      directions,
+      speed
+    );
   }
 
   protected possibleDirrections = [

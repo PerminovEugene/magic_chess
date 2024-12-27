@@ -1,14 +1,20 @@
 import { Cell } from "../../../cell";
-import { Color, Pawn, PieceType } from "../../../piece";
+import { PieceType } from "../../../piece.consts";
 import { Coordinate } from "../../../coordinate";
-import { AffectType, AvailableMove, Direction } from "../movement-rule";
+import { AvailableMove, Direction } from "../movement-rule";
 import { PositionSpecificMovementRuleConfig } from "../position-specific-movement.rule";
 import { TakeOnThePassMovementRule } from "../take-on-the-pass.rule";
-import { TurnType } from "../../../game";
+import { TurnType } from "../../../turn";
+import { Pawn } from "../../../pieces";
+import { Color } from "../../../color";
+import { AffectType } from "../../../affect.types";
+import { MovementRules } from "../movement-rules.const";
 
 describe("VerticalMovementRule", () => {
   let rule: TakeOnThePassMovementRule;
   let squares: Cell[][];
+  const getPiece = (x: number, y: number) => squares[y][x].getPiece();
+  const size = 5;
 
   const getDefaultCells = () => {
     return [
@@ -21,6 +27,7 @@ describe("VerticalMovementRule", () => {
   };
   const updateRule = (config?: Partial<PositionSpecificMovementRuleConfig>) => {
     rule = new TakeOnThePassMovementRule({
+      name: MovementRules.TakeOnThePassMovementRule,
       moveToEmpty: true,
       moveToKill: true,
       collision: true,
@@ -80,7 +87,7 @@ describe("VerticalMovementRule", () => {
         },
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, turns);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, turns, size);
       checkMoves(moves, expectedMoves);
     });
 
@@ -112,7 +119,7 @@ describe("VerticalMovementRule", () => {
         },
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, turns);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, turns, size);
       checkMoves(moves, expectedMoves);
     });
 
@@ -146,7 +153,7 @@ describe("VerticalMovementRule", () => {
         },
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, turns);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, turns, size);
       checkMoves(moves, expectedMoves);
     });
 
@@ -178,7 +185,7 @@ describe("VerticalMovementRule", () => {
         },
       ];
 
-      const moves = rule.availableMoves(fromX, fromY, squares, turns);
+      const moves = rule.availableMoves(fromX, fromY, getPiece, turns, size);
       checkMoves(moves, expectedMoves);
     });
   });

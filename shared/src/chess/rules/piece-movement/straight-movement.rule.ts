@@ -1,15 +1,12 @@
-import { Cell } from "../../cell";
-import { Turn } from "../../game";
+import { Turn } from "../../turn";
 import { Coordinate } from "../../coordinate";
-import {
-  Affect,
-  AffectType,
-  AvailableMove,
-  Direction,
-  MovementRule,
-} from "./movement-rule";
+import { AvailableMove, Direction, MovementRule } from "./movement-rule";
+import { GetPiece } from "../../get-piece";
+import { Affect, AffectType } from "../../affect.types";
+import { MovementRules } from "./movement-rules.const";
 
 export type StraightMovementRuleConfig = {
+  name: MovementRules;
   moveToEmpty: boolean;
   moveToKill: boolean;
   collision: boolean;
@@ -64,6 +61,7 @@ export function directionToVector(
 
 export abstract class StraightMovementRule extends MovementRule {
   constructor(
+    mname: MovementRules,
     moveToEmpty: boolean,
     moveToKill: boolean,
     collision: boolean, // true - will move until first enemy, false - will jump like horse
@@ -71,7 +69,15 @@ export abstract class StraightMovementRule extends MovementRule {
     directions: Set<Direction>,
     speed: number
   ) {
-    super(moveToEmpty, moveToKill, collision, distance, directions, speed);
+    super(
+      mname,
+      moveToEmpty,
+      moveToKill,
+      collision,
+      distance,
+      directions,
+      speed
+    );
   }
 
   protected abstract possibleDirrections: Direction[];
@@ -97,8 +103,9 @@ export abstract class StraightMovementRule extends MovementRule {
   public availableMoves(
     fromX: number,
     fromY: number,
-    squares: Cell[][],
-    turns: Turn[]
+    getPiece: GetPiece,
+    turns: Turn[],
+    size: number
   ): AvailableMove[] {
     const moves: AvailableMove[] = [];
     let availableDirections = new Set<Direction>(this.possibleDirrections);
@@ -119,23 +126,22 @@ export abstract class StraightMovementRule extends MovementRule {
           }
           const [newX, newY] = availableMove;
 
-          if (this.isCoordInvalid(newX, newY, squares.length)) {
+          if (this.isCoordInvalid(newX, newY, size)) {
+            // todo remove magic
             availableDirections.delete(dirrection);
           } else {
-            const possibleMove = squares[newY][newX];
-            const fromCell = squares[fromY][fromX];
+            const toPiece = getPiece(newX, newY);
+            const fromPiece = getPiece(fromX, fromY);
 
-            if (this.moveToEmpty && possibleMove.isEmpty()) {
+            if (this.moveToEmpty && !toPiece) {
               // can move to empty square
               moves.push(availableMove);
-            } else if (!possibleMove.isEmpty()) {
-              const fromPiece = fromCell?.getPiece();
-
+            } else if (toPiece) {
               if (!fromPiece) {
                 throw new Error("Not found piece at from location");
               }
 
-              const newLocationPieceColor = possibleMove.getPiece()!.color;
+              const newLocationPieceColor = toPiece.color;
 
               if (
                 this.moveToKill &&

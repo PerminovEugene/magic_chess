@@ -7,6 +7,7 @@ import {
 
 export class HorizontalMovementRule extends StraightMovementRule {
   constructor({
+    name,
     moveToEmpty,
     moveToKill,
     collision,
@@ -14,7 +15,15 @@ export class HorizontalMovementRule extends StraightMovementRule {
     directions,
     speed,
   }: StraightMovementRuleConfig) {
-    super(moveToEmpty, moveToKill, collision, distance, directions, speed);
+    super(
+      name,
+      moveToEmpty,
+      moveToKill,
+      collision,
+      distance,
+      directions,
+      speed
+    );
   }
 
   protected possibleDirrections = [Direction.Left, Direction.Right];

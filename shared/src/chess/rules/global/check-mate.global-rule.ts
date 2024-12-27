@@ -1,12 +1,10 @@
 import { Board } from "../../board";
-import { Cell } from "../../cell";
 import { reverseColor } from "../../color";
-import { Coordinate, isCoordinateEql } from "../../coordinate";
-import { Turn } from "../../game";
-import { Color, PieceType } from "../../piece";
-import { AvailableMove } from "..";
-import { MovesTree, parseKey, toKey } from "./moves-tree";
-import { Node } from "./moves-tree.types";
+import { isCoordinateEql } from "../../coordinate";
+import { Turn } from "../../turn";
+import { PieceType } from "../../piece.consts";
+import { parseKey, parseToKey, toKey } from "../../moves-tree.utils";
+import { Node } from "../../moves-tree.types";
 
 type TurnSubSet = Pick<Turn, "from" | "to" | "color">;
 
@@ -14,33 +12,30 @@ export abstract class GlobalRule {
   public abstract markNodeWithChilds(
     node: Node,
     prevNode: Node | undefined,
-    cells: Cell[][],
+    board: Board,
     turns: Turn[]
   ): void;
   public abstract isMoveValid(
     node: Node,
-    cells: Cell[][],
+    board: Board,
     turn: TurnSubSet
   ): boolean;
 }
+
 export class CheckMateGlobalRule2 extends GlobalRule {
-  constructor(private board: Board) {
+  constructor() {
     super();
   }
 
   private mainPieceType = PieceType.King;
 
-  public isMoveValid(node: Node, cells: Cell[][], turn: TurnSubSet) {
+  public isMoveValid(node: Node, board: Board, turn: TurnSubSet) {
     const from = turn.from;
     const to = turn.to;
     const fromHash = toKey(from[0], from[1]);
     const toHash = toKey(to[0], to[1]);
 
-    const kingCoordinate = this.board.findUniqPiece(
-      cells,
-      turn.color,
-      this.mainPieceType
-    );
+    const kingCoordinate = board.findUniqPiece(turn.color, this.mainPieceType);
 
     const nextNode = node.movements[fromHash][toHash].next;
 
@@ -62,36 +57,46 @@ export class CheckMateGlobalRule2 extends GlobalRule {
     return true;
   }
 
-  public markNodeWithChilds(
-    node: Node, // black -> white -> black
-    prevNode: Node,
-    cells: Cell[][] // in node position
-  ) {
+  public markNodeWithChilds(node: Node, prevNode: Node, board: Board) {
     let currentColor = node.color;
 
-    const kingCoordinate = this.board.findUniqPiece(
-      cells,
+    const kingCoordinate = board.findUniqPiece(
       currentColor,
       this.mainPieceType
     );
 
-    const enemyKingCoordinate = this.board.findUniqPiece(
-      cells,
+    const enemyKingCoordinate = board.findUniqPiece(
       reverseColor(currentColor),
       this.mainPieceType
     );
-    const enemyKingKey = toKey(enemyKingCoordinate[0], enemyKingCoordinate[1]);
 
     let allMovesLeadToMateForCurrentColor = true;
     for (const movementFrom in node.movements) {
       const from = parseKey(movementFrom);
       for (const movementTo in node.movements[movementFrom]) {
-        const to = parseKey(movementTo);
+        const to = parseToKey(movementTo);
+        if (
+          prevNode &&
+          to[0] === enemyKingCoordinate[0] &&
+          to[1] === enemyKingCoordinate[1]
+        ) {
+          console.log(
+            "node under check",
+            prevNode.color,
+            Object.keys(prevNode.movements)
+          );
+          prevNode.underCheck = true;
+        }
+
         const moveResultData = node.movements[movementFrom][movementTo];
 
         const nextNode = moveResultData.next;
 
-        if (prevNode && enemyKingKey === movementTo) {
+        if (
+          prevNode &&
+          enemyKingCoordinate[0] === to[0] &&
+          enemyKingCoordinate[1] === to[1]
+        ) {
           prevNode.underCheck = true;
         }
 
@@ -106,12 +111,14 @@ export class CheckMateGlobalRule2 extends GlobalRule {
           )
             ? to
             : kingCoordinate;
-          const nextToKey = toKey(
+          const nextMoveToCurrentKingKey = toKey(
+            // it doesn't detect if has transforming choice
             actualCurrentKingCoordinate[0],
             actualCurrentKingCoordinate[1]
+            // actualCurrentKingCoordinate[2]
           );
 
-          if (nextNode.movements[nextMovementFrom][nextToKey]) {
+          if (nextNode.movements[nextMovementFrom][nextMoveToCurrentKingKey]) {
             leadsToCurrentColorCheck = true;
             moveResultData.suisidal = true;
           }

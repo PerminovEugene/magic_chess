@@ -4,8 +4,8 @@ import {
   StraightMovementRule,
   StraightMovementRuleConfig,
 } from "./straight-movement.rule";
-import { Coordinate } from "../../coordinate";
-import { Turn } from "../../game";
+import { Turn } from "../../turn";
+import { MovementRules } from "./movement-rules.const";
 
 /*
   Allows to setup specific positions for activation of the rule, like pawn first double step from initial line
@@ -32,6 +32,7 @@ export type PositionSpecificMovementRuleMeta = {
 export class PositionSpecificMovementRule extends StraightMovementRule {
   protected activatePositions: ActivatePositions;
   constructor({
+    name,
     moveToEmpty,
     moveToKill,
     collision,
@@ -40,7 +41,15 @@ export class PositionSpecificMovementRule extends StraightMovementRule {
     speed,
     activatePositions,
   }: PositionSpecificMovementRuleConfig) {
-    super(moveToEmpty, moveToKill, collision, distance, directions, speed);
+    super(
+      name,
+      moveToEmpty,
+      moveToKill,
+      collision,
+      distance,
+      directions,
+      speed
+    );
     this.activatePositions = activatePositions;
     if (
       activatePositions.x &&

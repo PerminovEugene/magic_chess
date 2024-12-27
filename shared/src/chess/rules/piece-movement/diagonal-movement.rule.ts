@@ -7,6 +7,7 @@ import {
 
 export class DiagonalMovementRule extends StraightMovementRule {
   constructor({
+    name,
     moveToEmpty,
     moveToKill,
     collision,
@@ -14,7 +15,15 @@ export class DiagonalMovementRule extends StraightMovementRule {
     directions,
     speed = 1,
   }: StraightMovementRuleConfig) {
-    super(moveToEmpty, moveToKill, collision, distance, directions, speed);
+    super(
+      name,
+      moveToEmpty,
+      moveToKill,
+      collision,
+      distance,
+      directions,
+      speed
+    );
   }
 
   protected possibleDirrections = [

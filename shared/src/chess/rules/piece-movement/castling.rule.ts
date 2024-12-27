@@ -1,14 +1,12 @@
-import { Turn } from "../../game";
-import { Color, PieceType } from "../../piece";
+import { Turn } from "../../turn";
+import { PieceType } from "../../piece.consts";
+import { Color } from "../../color";
 import { Coordinate, isCoordinateEql } from "../../coordinate";
-import {
-  AffectType,
-  AvailableMove,
-  MovementRule,
-  MovementRuleMeta,
-} from "./movement-rule";
+import { AvailableMove, MovementRule, MovementRuleMeta } from "./movement-rule";
 import { StraightMovementRuleConfig } from "./straight-movement.rule";
-import { Cell } from "../../cell";
+import { GetPiece } from "../../get-piece";
+import { AffectType } from "../../affect.types";
+import { MovementRules } from "./movement-rules.const";
 
 export type CastlingRuleSpecificConfig = {
   mainPieceCoordinate: Coordinate;
@@ -27,6 +25,7 @@ export type CastlingMovementRuleMeta = MovementRuleMeta & {
 export class CastlingMovementRule extends MovementRule {
   private color: Color;
   constructor({
+    name,
     moveToEmpty,
     moveToKill,
     collision,
@@ -37,7 +36,15 @@ export class CastlingMovementRule extends MovementRule {
     mainPieceCoordinate,
     foreginPieceCoordinate,
   }: CastlingMovementRuleConfig) {
-    super(moveToEmpty, moveToKill, collision, distance, directions, speed);
+    super(
+      name,
+      moveToEmpty,
+      moveToKill,
+      collision,
+      distance,
+      directions,
+      speed
+    );
     this.color = color;
     this.mainPieceCoordinate = mainPieceCoordinate;
     this.foreginPieceCoordinate = foreginPieceCoordinate;
@@ -52,7 +59,7 @@ export class CastlingMovementRule extends MovementRule {
     from: Coordinate
   ) {
     if (turns && turns.length) {
-      return turns.find((turn) => {
+      return !!turns.find((turn) => {
         return (
           turn.pieceType === pieceType &&
           turn.color === color &&
@@ -69,12 +76,12 @@ export class CastlingMovementRule extends MovementRule {
     return mainCoordinate[0] > foreginCoordinate[0] ? -1 : 1;
   }
 
-  private isSpaceBeetweenLocked(squares: Cell[][]) {
+  private isSpaceBeetweenLocked(getPiece: GetPiece) {
     const [mainCoordX, mainCoordY] = this.mainPieceCoordinate;
     const [foreginCoordX, foreginCoordY] = this.foreginPieceCoordinate;
     const sign = this.getSign();
     for (let i = (mainCoordX + 1 * sign) * sign; i < foreginCoordX; i++) {
-      if (!squares[mainCoordY][i * sign].isEmpty()) {
+      if (getPiece(i * sign, mainCoordY)) {
         return true;
       }
     }
@@ -101,26 +108,28 @@ export class CastlingMovementRule extends MovementRule {
     return availableMove;
   };
 
-  private isPieceNotExist(squares: Cell[][], [x, y]: Coordinate) {
-    return squares[y][x].isEmpty();
+  private isPieceNotExist(getPiece: GetPiece, [x, y]: Coordinate) {
+    return !getPiece(x, y);
   }
 
-  private isColorDifferent(squares: Cell[][], [x, y]: Coordinate) {
-    return squares[y][x].getPiece()?.color !== this.color;
+  private isColorDifferent(getPiece: GetPiece, [x, y]: Coordinate) {
+    const piece = getPiece(x, y);
+    return piece?.color !== this.color;
   }
 
   public availableMoves(
     _fromX: number,
     _fromY: number,
-    squares: Cell[][],
+    getPiece: GetPiece,
     turns: Turn[]
   ): AvailableMove[] {
     const moves: AvailableMove[] = [];
+
     if (
-      this.isPieceNotExist(squares, this.mainPieceCoordinate) ||
-      this.isPieceNotExist(squares, this.foreginPieceCoordinate) ||
-      this.isColorDifferent(squares, this.mainPieceCoordinate) ||
-      this.isColorDifferent(squares, this.foreginPieceCoordinate) ||
+      this.isPieceNotExist(getPiece, this.mainPieceCoordinate) ||
+      this.isPieceNotExist(getPiece, this.foreginPieceCoordinate) ||
+      this.isColorDifferent(getPiece, this.mainPieceCoordinate) ||
+      this.isColorDifferent(getPiece, this.foreginPieceCoordinate) ||
       this.isPieceMoved(
         turns,
         PieceType.King,
@@ -133,7 +142,7 @@ export class CastlingMovementRule extends MovementRule {
         this.color,
         this.foreginPieceCoordinate
       ) ||
-      this.isSpaceBeetweenLocked(squares)
+      this.isSpaceBeetweenLocked(getPiece)
     ) {
       return moves;
     }

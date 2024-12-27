@@ -1,22 +1,18 @@
 import { Board } from "./board";
-import { Color, PieceMeta, PieceType } from "./piece";
-import { Affect } from "./rules";
+import { PieceType } from "./piece.consts";
+import { Color } from "./color";
 import { Coordinate } from "./coordinate";
 import { reverseColor } from "./color";
-import { coordToKey, MovesTree, parseKey } from "./rules/global/moves-tree";
+import { MovesTree } from "./moves-tree";
+import { coordToKey, parseToKey, TurnChoosableData } from "./moves-tree.utils";
 import { GlobalRule } from "./rules/global/check-mate.global-rule";
-import { isAffectEql, isAffectsEql } from "../utils/matchers";
+import { isAffectsEql } from "../utils/matchers";
+import { Turn, TurnType } from "./turn";
+import { BoardMeta } from "./board.types";
 
 export class Player {
   constructor(public name: string) {}
 }
-
-export enum TurnType {
-  Move = "move",
-  Skill = "skill",
-}
-
-export type BoardMeta = PieceMeta[][];
 
 export type NewPlayerGameData = {
   players: { [key in Color]: { name: string } };
@@ -24,17 +20,6 @@ export type NewPlayerGameData = {
   timeStart: string;
   timeForWhite: number;
   timeForBlack: number;
-};
-
-export type Turn = {
-  color: Color;
-  type: TurnType;
-  pieceType: PieceType;
-  from: Coordinate;
-  to: Coordinate;
-  affects?: Affect[];
-  timestamp: string;
-  check?: boolean;
 };
 
 export class Game {
@@ -77,23 +62,28 @@ export class Game {
     if (!movements) {
       return;
     }
-    const availableCoordinates: Coordinate[] = [];
+    const availableCoordinates: TurnChoosableData[] = [];
     for (const toKey in movements) {
-      availableCoordinates.push(parseKey(toKey));
+      availableCoordinates.push(parseToKey(toKey));
     }
     return availableCoordinates;
   }
 
-  getMovementResult(from: Coordinate, to: Coordinate) {
+  getMovementResult(
+    from: Coordinate,
+    to: Coordinate,
+    selectedPieceType?: PieceType
+  ) {
     const movements = this.getMoveToCoordinatesObj(from);
     if (!movements) {
       return;
     }
-    return movements[coordToKey(to)];
+    return movements[coordToKey(to, selectedPieceType)];
   }
 
   processTurn(turn: Turn) {
-    const { color, from, to, type, timestamp, affects } = turn;
+    const { color, from, to, type, timestamp, affects, selectedPieceType } =
+      turn;
     if (this.nextTurnColor !== color) {
       throw new Error("Not your turn");
     }
@@ -106,7 +96,9 @@ export class Game {
       if (!root.movements[fromHash]) {
         throw new Error("Invalid from coordinate");
       }
-      const moveRes = root.movements[fromHash][coordToKey(to)];
+
+      const moveRes =
+        root.movements[fromHash][coordToKey(to, turn.selectedPieceType)];
       if (!moveRes) {
         throw new Error("Invalid to coordinate");
       }
@@ -114,24 +106,14 @@ export class Game {
         throw new Error("Invalid move affects");
       }
 
-      // for (const globalRule of this.globalRules) {
-      //   if (!globalRule.isMoveValid(root, this.board.squares, turn)) {
-      //     throw new Error(
-      //       "Move is not valid because of global rule: " +
-      //         globalRule.constructor.name
-      //     );
-      //   }
-      // }
-      // this.board.move(turn);
       this.turns.push(turn);
-      this.movesTree.processTurn(turn.from, turn.to);
+      this.movesTree.processTurn(from, to, selectedPieceType);
     } else {
       this.turns.push(turn);
       this.board.cast(color, from, to);
     }
 
     this.updateGameNextTurn();
-
     const freshRoot = this.movesTree.getRoot();
 
     if (Object.keys(freshRoot.movements).length === 0) {

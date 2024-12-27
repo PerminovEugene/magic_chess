@@ -1,14 +1,16 @@
-import { Turn } from "../../game";
-import { PieceType } from "../../piece";
-import { Affect, AffectType, AvailableMove, Direction } from "./movement-rule";
+import { Turn } from "../../turn";
+import { PieceType } from "../../piece.consts";
+import { AvailableMove, Direction } from "./movement-rule";
 import {
   PositionSpecificMovementRule,
   PositionSpecificMovementRuleConfig,
 } from "./position-specific-movement.rule";
 import { directionToVector } from "./straight-movement.rule";
+import { Affect, AffectType } from "../../affect.types";
 
 export class TakeOnThePassMovementRule extends PositionSpecificMovementRule {
   constructor({
+    name,
     moveToEmpty,
     moveToKill,
     collision,
@@ -18,6 +20,7 @@ export class TakeOnThePassMovementRule extends PositionSpecificMovementRule {
     activatePositions,
   }: PositionSpecificMovementRuleConfig) {
     super({
+      name,
       moveToEmpty,
       moveToKill,
       collision,

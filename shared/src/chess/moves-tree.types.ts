@@ -1,5 +1,5 @@
-import { Color } from "../../piece";
-import { Affect } from "../piece-movement/movement-rule";
+import { Color } from "./color";
+import { Affect } from "./affect.types";
 
 export type X = number;
 export type Y = number;

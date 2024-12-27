@@ -1,26 +1,24 @@
 import { Cell } from "../../../cell";
-import {
-  Bishop,
-  Color,
-  King,
-  Pawn,
-  PieceType,
-  Queen,
-  Rook,
-} from "../../../piece";
+import { Bishop, King, Queen, Rook } from "../../../pieces";
+import { PieceType } from "../../../piece.consts";
+import { Color } from "../../../color";
 import { Coordinate } from "../../../coordinate";
-import { AffectType, AvailableMove, Direction } from "../movement-rule";
+import { AvailableMove, Direction } from "../movement-rule";
 import {
   CastlingMovementRule,
   CastlingMovementRuleConfig,
 } from "../castling.rule";
-import { Turn, TurnType } from "../../../game";
+import { TurnType } from "../../../turn";
+import { Turn } from "../../../turn";
+import { AffectType } from "../../../affect.types";
+import { MovementRules } from "../movement-rules.const";
 
 describe("CastlingMovementRule", () => {
   let rule: CastlingMovementRule;
   let squares: Cell[][];
+  const getPiece = (x: number, y: number) => squares[y][x].getPiece();
+
   let turns: Turn[] = [];
-  const distnace = 2;
 
   const getDefaultCells = () => {
     return [
@@ -42,6 +40,7 @@ describe("CastlingMovementRule", () => {
     config?: Partial<CastlingMovementRuleConfig>
   ) => {
     rule = new CastlingMovementRule({
+      name: MovementRules.CastlingMovementRule,
       moveToEmpty: true,
       moveToKill: false,
       collision: true,
@@ -114,7 +113,7 @@ describe("CastlingMovementRule", () => {
       turns.push(createTurn(PieceType.King, [kingX, 0], [kingX - 1, 0]));
       const expectedMoves: Coordinate[] = [];
 
-      const moves = rule.availableMoves(kingX, 0, squares, turns);
+      const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
       checkMoves(moves, expectedMoves);
     });
@@ -124,7 +123,7 @@ describe("CastlingMovementRule", () => {
       );
       const expectedMoves: Coordinate[] = [];
 
-      const moves = rule.availableMoves(kingX, 0, squares, turns);
+      const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
       checkMoves(moves, expectedMoves);
     });
@@ -133,7 +132,7 @@ describe("CastlingMovementRule", () => {
 
       addKingsBishop();
 
-      const moves = rule.availableMoves(kingX, 0, squares, turns);
+      const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
       checkMoves(moves, expectedMoves);
     });
@@ -152,7 +151,7 @@ describe("CastlingMovementRule", () => {
         ],
       ];
 
-      const moves = rule.availableMoves(kingX, 0, squares, turns);
+      const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
       checkMoves(moves, expectedMoves);
     });
@@ -172,7 +171,7 @@ describe("CastlingMovementRule", () => {
       turns.push(createTurn(PieceType.King, [kingX, 0], [kingX - 1, 0]));
       const expectedMoves: Coordinate[] = [];
 
-      const moves = rule.availableMoves(kingX, 0, squares, turns);
+      const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
       checkMoves(moves, expectedMoves);
     });
@@ -182,7 +181,7 @@ describe("CastlingMovementRule", () => {
       );
       const expectedMoves: Coordinate[] = [];
 
-      const moves = rule.availableMoves(kingX, 0, squares, turns);
+      const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
       checkMoves(moves, expectedMoves);
     });
@@ -191,7 +190,7 @@ describe("CastlingMovementRule", () => {
 
       addQueen();
 
-      const moves = rule.availableMoves(kingX, 0, squares, turns);
+      const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
       checkMoves(moves, expectedMoves);
     });
@@ -210,7 +209,7 @@ describe("CastlingMovementRule", () => {
         ],
       ];
 
-      const moves = rule.availableMoves(kingX, 0, squares, turns);
+      const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
       checkMoves(moves, expectedMoves);
     });

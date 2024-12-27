@@ -2,7 +2,7 @@ import { Socket } from "socket.io";
 import { Board } from "../shared/src/chess/board";
 import { Game, Player } from "../shared/src/chess/game";
 import { GameInitializer } from "./game-initializer";
-import { MovesTree } from "../shared/src/chess/rules/global/moves-tree";
+import { MovesTree } from "../shared/src/chess/moves-tree";
 
 type QueueItem = {
   player: Player;
@@ -41,7 +41,8 @@ export class Matchmaker {
       return null;
     }
     const board = new Board();
-    this.gameInitializer.spawnDefaultRulesAndDefaultPosition(board);
+    // this.gameInitializer.spawnDefaultRulesAndDefaultPosition(board);
+    this.gameInitializer.spawnBeforeTransformPostiion(board);
 
     const defaultGloobalRules =
       this.gameInitializer.getDefaultGlobalRules(board);

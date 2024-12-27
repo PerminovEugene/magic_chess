@@ -1,10 +1,11 @@
-import { Color, PieceType } from "../../../piece";
+import { PieceType } from "../../../piece.consts";
+import { Color } from "../../../color";
 import { Board } from "../../../board";
 import {
   GameInitializer,
   Position,
 } from "../../../../../../src/game-initializer";
-import { MovesTree } from "../moves-tree";
+import { MovesTree } from "../../../moves-tree";
 import { printCells } from "../../../../utils/board-printer";
 import { CheckMateGlobalRule2, GlobalRule } from "../check-mate.global-rule";
 import * as fs from "fs";
@@ -30,10 +31,9 @@ describe("MovesTree", () => {
     globalRules: GlobalRule[] = []
   ) => {
     // let board = new Board();
-    board.buildCells();
-    gameInitializer.spawnDefaultRulesCustomPosition(board, position);
+    gameInitializer.spawnDefaultRulesCustomPosition(board, position, false);
 
-    printCells(board.squares);
+    printCells(board.getMeta());
 
     return new MovesTree(board, [], globalRules, 3, initialColor);
   };
@@ -47,7 +47,7 @@ describe("MovesTree", () => {
       |  |  |  |  |  |  |  
     --------------------
      */
-    it("should return correct tree with three levels and in 1 case Pb doesn't have available moves (Kw to 4:0)", () => {
+    it.only("should return correct tree with three levels and in 1 case Pb doesn't have available moves (Kw to 4:0)", () => {
       let board = new Board();
       const tree = setup(board, {
         [Color.white]: [
@@ -60,6 +60,10 @@ describe("MovesTree", () => {
           {
             type: PieceType.Pawn,
             coordinate: [4, 1],
+          },
+          {
+            type: PieceType.King,
+            coordinate: [5, 1],
           },
         ],
       });
@@ -95,7 +99,7 @@ describe("MovesTree", () => {
             },
           ],
         },
-        [new CheckMateGlobalRule2(board)]
+        [new CheckMateGlobalRule2()]
       );
 
       const root = tree.getRoot();
@@ -134,16 +138,14 @@ describe("MovesTree", () => {
             },
           ],
         },
-        [new CheckMateGlobalRule2(board)]
+        [new CheckMateGlobalRule2()]
       );
 
       const root = tree.getRoot();
 
       expect(root).toEqual({
         color: "white",
-        movements: {
-          "4,0": {},
-        },
+        movements: {},
       });
     });
 
@@ -173,20 +175,24 @@ describe("MovesTree", () => {
             },
           ],
         },
-        [new CheckMateGlobalRule2(board)]
+        [new CheckMateGlobalRule2()]
       );
+
+      console.log("keys", Object.keys(tree.getRoot().movements));
 
       tree.processTurn([4, 0], [3, 0]);
 
+      console.log("keys-2", Object.keys(tree.getRoot().movements));
+
       tree.processTurn([0, 1], [0, 0]);
+
+      console.log("keys-3", Object.keys(tree.getRoot().movements));
 
       const root = tree.getRoot();
 
       expect(root).toEqual({
         color: "white",
-        movements: {
-          "3,0": {},
-        },
+        movements: {},
         underCheck: true,
       });
     });

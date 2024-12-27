@@ -3,8 +3,9 @@ import {
   WSClientGameEvent,
   WSServerGameEvent,
 } from "../shared/src/socket/const";
-import { Game, Turn } from "../shared/src/chess/game";
-import { Color } from "../shared/src/chess/piece";
+import { Game } from "../shared/src/chess/game";
+import { Color } from "../shared/src/chess/color";
+import { Turn } from "../shared/src/chess/turn";
 
 type Listener = (args: any) => void;
 type ListenersMap = Map<WSClientGameEvent, Listener>;

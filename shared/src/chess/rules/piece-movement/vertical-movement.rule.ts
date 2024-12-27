@@ -1,4 +1,3 @@
-import { Coordinate } from "../../coordinate";
 import { AvailableMove, Direction } from "./movement-rule";
 import {
   directionToVector,
@@ -8,6 +7,7 @@ import {
 
 export class VerticalMovementRule extends StraightMovementRule {
   constructor({
+    name,
     moveToEmpty,
     moveToKill,
     collision,
@@ -15,7 +15,15 @@ export class VerticalMovementRule extends StraightMovementRule {
     directions,
     speed = 1,
   }: StraightMovementRuleConfig) {
-    super(moveToEmpty, moveToKill, collision, distance, directions, speed);
+    super(
+      name,
+      moveToEmpty,
+      moveToKill,
+      collision,
+      distance,
+      directions,
+      speed
+    );
   }
 
   protected possibleDirrections = [Direction.Up, Direction.Down];
