@@ -1,22 +1,22 @@
-import { Cell } from "./cell";
-import { Turn } from "./turn";
-import { Color } from "./color";
-import { Piece } from "./piece";
-import { PieceMeta } from "./piece.types";
-import { PieceType } from "./piece.consts";
-import { Action } from "./rules/piece-movement/movement-rule";
-import { Coordinate } from "./coordinate";
-import { MetaStorage } from "./meta-storage";
+import { Cell } from "../cell";
+import { Turn } from "../turn";
+import { Color } from "../color";
+import { Piece } from "../piece/piece";
+import { PieceMeta } from "../piece/piece.types";
+import { PieceType } from "../piece/piece.constants";
+import { Action } from "../rules/piece-movement/movement-rule";
+import { Coordinate } from "../coordinate";
+import { MetaStorage } from "../meta-storage";
 import {
   handleKillAffect,
   handleMoveAffect,
   handleSpawnAffect,
   handleTransformAffect,
-} from "./affect";
-import { buildPieceByMeta } from "./piece-builder";
+} from "../affect/affect";
+import { buildPieceByMeta } from "../piece/piece-builder";
 import { BoardMeta } from "./board.types";
-import { RulesEngine } from "./rules-engine";
-import { AffectType } from "./affect.types";
+import { RulesEngine } from "../rules-engine";
+import { AffectType } from "../affect/affect.types";
 
 /**
  * Board keeps data about current game position and pieces on the array of cells

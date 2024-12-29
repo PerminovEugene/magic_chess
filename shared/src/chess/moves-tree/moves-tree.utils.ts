@@ -4,10 +4,10 @@ import {
   AffectType,
   MoveAffect,
   TransformationAffect,
-} from "./affect.types";
-import { Coordinate } from "./coordinate";
+} from "../affect/affect.types";
+import { Coordinate } from "../coordinate";
 import { X, Y } from "./moves-tree.types";
-import { PieceType } from "./piece.consts";
+import { PieceType } from "../piece/piece.constants";
 
 const postfixToPieceType = {
   Q: PieceType.Queen,

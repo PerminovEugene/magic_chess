@@ -1,7 +1,7 @@
-import { PieceMeta } from "./piece.types";
-import { PieceType } from "./piece.consts";
+import { PieceMeta } from "./piece/piece.types";
+import { PieceType } from "./piece/piece.constants";
 import { Color } from "./color";
-import { BoardMeta } from "./board.types";
+import { BoardMeta } from "./board/board.types";
 
 export class MetaStorage {
   constructor() {}

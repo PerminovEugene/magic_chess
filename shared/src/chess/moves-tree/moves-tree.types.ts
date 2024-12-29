@@ -1,5 +1,5 @@
-import { Color } from "./color";
-import { Action } from "./rules";
+import { Color } from "../color";
+import { Action } from "../rules";
 
 export type X = number;
 export type Y = number;

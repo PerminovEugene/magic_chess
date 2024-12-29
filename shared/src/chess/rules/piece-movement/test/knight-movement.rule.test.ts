@@ -1,6 +1,6 @@
 import { Cell } from "../../../cell";
 import { Color } from "../../../color";
-import { Pawn, Knight } from "../../../pieces";
+import { Pawn, Knight } from "../../../piece/pieces";
 import { Coordinate } from "../../../coordinate";
 import { KnightMovementRule } from "../knight-movement.rule";
 import { Action, Direction } from "../movement-rule";
@@ -10,7 +10,7 @@ import {
   buildKillAffect,
   buildMoveAffect,
   markAsUserSelected,
-} from "../../../affect.utils";
+} from "../../../affect/affect.utils";
 
 describe("KnightMovementRule", () => {
   let rule: KnightMovementRule;

@@ -1,7 +1,7 @@
-import { Cell } from "./cell";
-import { MetaStorage } from "./meta-storage";
-import { Piece } from "./piece";
-import { buildPieceByMeta } from "./piece-builder";
+import { Cell } from "../cell";
+import { MetaStorage } from "../meta-storage";
+import { Piece } from "../piece/piece";
+import { buildPieceByMeta } from "../piece/piece-builder";
 import {
   Affect,
   Affects,
@@ -18,7 +18,7 @@ import {
   isSpawnAffect,
   isTransformationAffect,
 } from "./affect.utils";
-import { Coordinate } from "./coordinate";
+import { Coordinate } from "../coordinate";
 
 export function handleKillAffect(
   affect: Affect,

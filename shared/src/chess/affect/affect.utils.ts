@@ -8,8 +8,8 @@ import {
   ReversedTranformationAffect,
   Affect,
 } from "./affect.types";
-import { Coordinate } from "./coordinate";
-import { PieceType } from "./piece.consts";
+import { Coordinate } from "../coordinate";
+import { PieceType } from "../piece/piece.constants";
 
 export function isKillAffect(affect: any): affect is KillAffect {
   return affect.type === AffectType.kill;

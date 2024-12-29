@@ -1,10 +1,10 @@
-import { Color } from "./color";
+import { Color } from "../color";
 import { Piece } from "./piece";
-import { PieceType } from "./piece.consts";
+import { PieceType } from "./piece.constants";
 import {
   MovementRules,
   PostMovementRules,
-} from "./rules/piece-movement/movement-rules.const";
+} from "../rules/piece-movement/movement-rules.const";
 
 export class Pawn extends Piece {
   constructor(

@@ -4,11 +4,11 @@ import {
   PostMovementRule,
   TransformationOnPositionRule,
 } from "../shared/src";
-import { Board } from "../shared/src/chess/board";
-import { BoardMeta } from "../shared/src/chess/board.types";
+import { Board } from "../shared/src/chess/board/board";
+import { BoardMeta } from "../shared/src/chess/board/board.types";
 import { Color } from "../shared/src/chess/color";
-import { PieceMeta } from "../shared/src/chess/piece.types";
-import { PieceType } from "../shared/src/chess/piece.consts";
+import { PieceMeta } from "../shared/src/chess/piece/piece.types";
+import { PieceType } from "../shared/src/chess/piece/piece.constants";
 import { MovementRule } from "../shared/src/chess/rules/piece-movement/movement-rule";
 import { DiagonalMovementRule } from "../shared/src/chess/rules/piece-movement/diagonal-movement.rule";
 import { HorizontalMovementRule } from "../shared/src/chess/rules/piece-movement/horizontal-movement.rule";

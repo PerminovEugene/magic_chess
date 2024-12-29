@@ -6,8 +6,8 @@ import {
 } from "./straight-movement.rule";
 import { Turn } from "../../turn";
 import { MovementRules } from "./movement-rules.const";
-import { AffectType } from "../../affect.types";
-import { buildMoveAffect, markAsUserSelected } from "../../affect.utils";
+import { AffectType } from "../../affect/affect.types";
+import { buildMoveAffect, markAsUserSelected } from "../../affect/affect.utils";
 
 /*
   Allows to setup specific positions for activation of the rule, like pawn first double step from initial line

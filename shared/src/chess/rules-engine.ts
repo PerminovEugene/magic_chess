@@ -23,7 +23,7 @@ import {
 } from "./rules/piece-movement/movement-rules.const";
 import { GetPiece } from "./get-piece";
 import { Turn } from "./turn";
-import { PieceType } from "./piece.consts";
+import { PieceType } from "./piece/piece.constants";
 
 const rulesMapper = {
   [MovementRules.VerticalMovementRule]: VerticalMovementRule,

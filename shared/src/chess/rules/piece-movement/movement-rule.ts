@@ -1,6 +1,6 @@
 import { Turn } from "../../turn";
 import { GetPiece } from "../../get-piece";
-import { Affects } from "../../affect.types";
+import { Affects } from "../../affect/affect.types";
 import { MovementRules } from "./movement-rules.const";
 
 export enum Direction {

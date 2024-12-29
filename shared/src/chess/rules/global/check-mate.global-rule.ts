@@ -1,14 +1,11 @@
-import { Board } from "../../board";
+import { Board } from "../../board/board";
 import { reverseColor } from "../../color";
 import { isCoordinateEql } from "../../coordinate";
 import { Turn } from "../../turn";
-import { PieceType } from "../../piece.consts";
-import {
-  serializeCoordinate,
-  serializeToCoordinate,
-} from "../../moves-tree.utils";
-import { Node } from "../../moves-tree.types";
-import { getUserSelectedMoveAffect } from "../../affect.utils";
+import { PieceType } from "../../piece/piece.constants";
+import { serializeToCoordinate } from "../../moves-tree/moves-tree.utils";
+import { Node } from "../../moves-tree/moves-tree.types";
+import { getUserSelectedMoveAffect } from "../../affect/affect.utils";
 
 type TurnSubSet = Pick<Turn, "affects" | "color">;
 

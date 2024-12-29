@@ -1,14 +1,12 @@
-import { Board } from "./board";
-import { Coordinate } from "./coordinate";
-import { Turn, TurnType } from "./turn";
-import { PieceType } from "./piece.consts";
-import { Color } from "./color";
-import { Action } from "./rules/piece-movement/movement-rule";
-import { AffectType } from "./affect.types";
-import { reverseAffects } from "./affect";
-import { reverseColor } from "./color";
+import { Board } from "../board/board";
+import { Turn, TurnType } from "../turn";
+import { Color } from "../color";
+import { Action } from "../rules/piece-movement/movement-rule";
+import { AffectType } from "../affect/affect.types";
+import { reverseAffects } from "../affect/affect";
+import { reverseColor } from "../color";
 import { Node } from "./moves-tree.types";
-import { GlobalRule } from "./rules/global/check-mate.global-rule";
+import { GlobalRule } from "../rules/global/check-mate.global-rule";
 import {
   serializeAffects,
   serializeCoordinate,

@@ -1,7 +1,7 @@
-import { Affects } from "./affect.types";
+import { Affects } from "./affect/affect.types";
 import { Color } from "./color";
 // import { Coordinate } from "./coordinate";
-import { PieceType } from "./piece.consts";
+import { PieceType } from "./piece/piece.constants";
 
 export enum TurnType {
   Move = "move",

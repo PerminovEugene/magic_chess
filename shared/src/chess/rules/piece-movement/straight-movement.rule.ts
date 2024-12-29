@@ -2,9 +2,9 @@ import { Turn } from "../../turn";
 import { Coordinate } from "../../coordinate";
 import { Action, Direction, MovementRule } from "./movement-rule";
 import { GetPiece } from "../../get-piece";
-import { Affect, AffectType, KillAffect } from "../../affect.types";
+import { Affect, AffectType, KillAffect } from "../../affect/affect.types";
 import { MovementRules } from "./movement-rules.const";
-import { buildKillAffect } from "../../affect.utils";
+import { buildKillAffect } from "../../affect/affect.utils";
 
 export type StraightMovementRuleConfig = {
   name: MovementRules;

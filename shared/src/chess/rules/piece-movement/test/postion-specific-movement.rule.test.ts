@@ -1,6 +1,6 @@
 import { Cell } from "../../../cell";
 import { Color } from "../../../color";
-import { Pawn } from "../../../pieces";
+import { Pawn } from "../../../piece/pieces";
 import {
   PositionSpecificMovementRule,
   PositionSpecificMovementRuleConfig,
@@ -8,7 +8,10 @@ import {
 import { Action, Direction } from "../movement-rule";
 import { Coordinate } from "../../../coordinate";
 import { MovementRules } from "../movement-rules.const";
-import { buildMoveAffect, markAsUserSelected } from "../../../affect.utils";
+import {
+  buildMoveAffect,
+  markAsUserSelected,
+} from "../../../affect/affect.utils";
 
 describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
   let rule: PositionSpecificMovementRule;

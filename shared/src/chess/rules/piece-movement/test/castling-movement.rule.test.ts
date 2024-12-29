@@ -1,6 +1,6 @@
 import { Cell } from "../../../cell";
-import { Bishop, King, Queen, Rook } from "../../../pieces";
-import { PieceType } from "../../../piece.consts";
+import { Bishop, King, Queen, Rook } from "../../../piece/pieces";
+import { PieceType } from "../../../piece/piece.constants";
 import { Color } from "../../../color";
 import { Coordinate } from "../../../coordinate";
 import { Action, Direction } from "../movement-rule";
@@ -10,9 +10,12 @@ import {
 } from "../castling.rule";
 import { TurnType } from "../../../turn";
 import { Turn } from "../../../turn";
-import { Affects } from "../../../affect.types";
+import { Affects } from "../../../affect/affect.types";
 import { MovementRules } from "../movement-rules.const";
-import { buildMoveAffect, markAsUserSelected } from "../../../affect.utils";
+import {
+  buildMoveAffect,
+  markAsUserSelected,
+} from "../../../affect/affect.utils";
 
 describe("CastlingMovementRule", () => {
   let rule: CastlingMovementRule;

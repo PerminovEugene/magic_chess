@@ -1,5 +1,5 @@
 import { Turn } from "../../turn";
-import { PieceType } from "../../piece.consts";
+import { PieceType } from "../../piece/piece.constants";
 import { Color } from "../../color";
 import { Coordinate, isCoordinateEql } from "../../coordinate";
 import { Action, MovementRule, MovementRuleMeta } from "./movement-rule";
@@ -9,7 +9,7 @@ import {
   buildMoveAffect,
   getUserSelectedMoveAffect,
   markAsUserSelected,
-} from "../../affect.utils";
+} from "../../affect/affect.utils";
 
 export type CastlingRuleSpecificConfig = {
   mainPieceCoordinate: Coordinate;

@@ -1,21 +1,10 @@
-import { Board } from "./board";
-import { PieceType } from "./piece.consts";
+import { Board } from "./board/board";
 import { Color } from "./color";
-import { Coordinate } from "./coordinate";
 import { reverseColor } from "./color";
-import { MovesTree } from "./moves-tree";
-import // coordToKey,
-// parseToKey,
-// serializeAffects,
-// TurnChoosableData,
-"./moves-tree.utils";
+import { MovesTree } from "./moves-tree/moves-tree";
 import { GlobalRule } from "./rules/global/check-mate.global-rule";
-import { isAffectsEql } from "../utils/matchers";
 import { Turn, TurnType } from "./turn";
-import { BoardMeta } from "./board.types";
-import { AffectType } from "./affect.types";
-import { Action } from "./rules";
-import { serializeCoordinate } from "./moves-tree.utils";
+import { BoardMeta } from "./board/board.types";
 
 export class Player {
   constructor(public name: string) {}

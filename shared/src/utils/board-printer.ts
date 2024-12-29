@@ -1,4 +1,4 @@
-import { BoardMeta } from "../chess/board.types";
+import { BoardMeta } from "../chess/board/board.types";
 
 export function printCells(cells: BoardMeta) {
   let r = "";

@@ -1,7 +1,7 @@
 import { PieceMeta } from "./piece.types";
-import { PieceType } from "./piece.consts";
+import { PieceType } from "./piece.constants";
 import { Pawn, Bishop, Knight, Rook, Queen, King } from "./pieces";
-import { PostMovementRuleMeta, RuleMeta } from "./rules";
+import { PostMovementRuleMeta, RuleMeta } from "../rules";
 
 export function buildPieceByMeta(meta: PieceMeta) {
   const c = mapper[meta.type as PieceType];

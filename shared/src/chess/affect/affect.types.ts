@@ -1,5 +1,5 @@
-import { Coordinate } from "./coordinate";
-import { PieceType } from "./piece.consts";
+import { Coordinate } from "../coordinate";
+import { PieceType } from "../piece/piece.constants";
 
 export enum AffectType {
   move = "move",

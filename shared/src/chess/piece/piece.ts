@@ -1,9 +1,9 @@
-import { Color } from "./color";
-import { PieceType } from "./piece.consts";
+import { Color } from "../color";
+import { PieceType } from "./piece.constants";
 import {
   MovementRules,
   PostMovementRules,
-} from "./rules/piece-movement/movement-rules.const";
+} from "../rules/piece-movement/movement-rules.const";
 
 export abstract class Piece {
   constructor(

@@ -1,5 +1,5 @@
-import { AffectType } from "../../affect.types";
-import { buildMoveAffect, markAsUserSelected } from "../../affect.utils";
+import { AffectType } from "../../affect/affect.types";
+import { buildMoveAffect, markAsUserSelected } from "../../affect/affect.utils";
 import { Action, Direction } from "./movement-rule";
 import {
   directionToVector,

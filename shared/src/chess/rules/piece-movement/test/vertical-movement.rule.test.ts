@@ -1,13 +1,13 @@
-import { AffectType } from "../../../affect.types";
+import { AffectType } from "../../../affect/affect.types";
 import {
   buildKillAffect,
   buildMoveAffect,
   markAsUserSelected,
-} from "../../../affect.utils";
+} from "../../../affect/affect.utils";
 import { Cell } from "../../../cell";
 import { Color } from "../../../color";
 import { Coordinate } from "../../../coordinate";
-import { Pawn } from "../../../pieces";
+import { Pawn } from "../../../piece/pieces";
 import { Action, Direction } from "../movement-rule";
 import { MovementRules } from "../movement-rules.const";
 import { StraightMovementRuleConfig } from "../straight-movement.rule";

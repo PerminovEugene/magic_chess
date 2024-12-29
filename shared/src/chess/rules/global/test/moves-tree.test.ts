@@ -1,15 +1,18 @@
-import { PieceType } from "../../../piece.consts";
+import { PieceType } from "../../../piece/piece.constants";
 import { Color } from "../../../color";
-import { Board } from "../../../board";
+import { Board } from "../../../board/board";
 import {
   GameInitializer,
   Position,
 } from "../../../../../../src/game-initializer";
-import { MovesTree } from "../../../moves-tree";
+import { MovesTree } from "../../../moves-tree/moves-tree";
 import { printCells } from "../../../../utils/board-printer";
 import { CheckMateGlobalRule2, GlobalRule } from "../check-mate.global-rule";
 import * as fs from "fs";
-import { buildMoveAffect, markAsUserSelected } from "../../../affect.utils";
+import {
+  buildMoveAffect,
+  markAsUserSelected,
+} from "../../../affect/affect.utils";
 import { Turn } from "../../../turn";
 
 /**

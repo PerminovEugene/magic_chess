@@ -1,7 +1,7 @@
 import { Color } from "../../color";
 import { Action } from "../piece-movement/movement-rule";
 import { PostMovementRules } from "../piece-movement/movement-rules.const";
-import { PieceType } from "../../piece.consts";
+import { PieceType } from "../../piece/piece.constants";
 
 export abstract class PostMovementRule {
   constructor(public name: PostMovementRules) {}
