@@ -2,7 +2,22 @@ import { Cell } from "./cell";
 import { MetaStorage } from "./meta-storage";
 import { Piece } from "./piece";
 import { buildPieceByMeta } from "./piece-builder";
-import { Affect, Affects, AffectType } from "./affect.types";
+import {
+  Affect,
+  Affects,
+  AffectType,
+  KillAffect,
+  MoveAffect,
+  SpawnAffect,
+  TransformationAffect,
+} from "./affect.types";
+import {
+  isKillAffect,
+  isMoveAffect,
+  isNotMainMoveAffect,
+  isSpawnAffect,
+  isTransformationAffect,
+} from "./affect.utils";
 import { Coordinate } from "./coordinate";
 
 export function handleKillAffect(
@@ -11,20 +26,14 @@ export function handleKillAffect(
 ): Piece | undefined {
   const { from, type } = affect;
 
-  if (type !== AffectType.kill) {
-    return;
+  if (isKillAffect(affect)) {
+    const [fromX, fromY] = from;
+    const killed = cells[fromY][fromX].popPiece();
+    if (!killed) {
+      throw new Error(`Invalid affect kill cordinate ${fromX}, ${fromY}`);
+    }
+    return killed;
   }
-  if (!from) {
-    throw new Error(
-      `Invalid move: kill affect should have from coordinate. From: ${from}`
-    );
-  }
-  const [fromX, fromY] = from;
-  const killed = cells[fromY][fromX].popPiece();
-  if (!killed) {
-    throw new Error(`Invalid affect kill cordinate ${fromX}, ${fromY}`);
-  }
-  return killed;
 }
 
 export function handleTransformAffect(
@@ -32,16 +41,8 @@ export function handleTransformAffect(
   cells: Cell[][],
   metaStorage: MetaStorage
 ) {
-  if (affect.type === AffectType.transformation) {
-    const { from, type, sourcePieceType, destPieceType } = affect;
-    if (type !== AffectType.transformation) {
-      return;
-    }
-    if (!from) {
-      throw new Error(
-        "Invalid move: transformation affect should have from coordinate"
-      );
-    }
+  if (isTransformationAffect(affect)) {
+    const { from, sourcePieceType, destPieceType } = affect;
     if (!sourcePieceType) {
       throw new Error(
         "Invalid move: transformation affect should have sourcePieceType"
@@ -77,14 +78,10 @@ export function handleMoveAffect(
   cells: Cell[][],
   metaStorage: MetaStorage
 ) {
-  const { from, type, to } = affect;
-  if (type === AffectType.move) {
-    if (!to) {
-      throw new Error("Invalid move: move affect should have to coordinate");
-    }
-    if (!from) {
-      throw new Error("Invalid move: kill affect should have from coordinate");
-    }
+  if (isMoveAffect(affect) || isNotMainMoveAffect(affect)) {
+    checkAffectToAttribute(affect);
+
+    const { from, to } = affect;
     const [fromX, fromY] = from;
     const [toX, toY] = to;
     const pieceMovedByAffect = cells[fromY][fromX].popPiece();
@@ -104,21 +101,8 @@ export function handleSpawnAffect(
   cells: Cell[][],
   spawnedPiece: Piece
 ) {
-  const {
-    from,
-    type,
-    // spawnedPiece
-  } = affect;
-  if (type === AffectType.spawn) {
-    if (
-      !from
-      // || !spawnedPiece
-    ) {
-      throw new Error(
-        "Invalid move: spawn affect should have from coordinate and spawnedPiece"
-      );
-    }
-    const [fromX, fromY] = from;
+  if (isSpawnAffect(affect)) {
+    const [fromX, fromY] = affect.from;
     cells[fromY][fromX].putPiece(spawnedPiece);
   }
 }
@@ -129,13 +113,13 @@ function checkAffectFromAttribute(affect: Affect): void {
   }
 }
 
-function checkAffectToAttribute(affect: Affect): void {
+function checkAffectToAttribute(affect: MoveAffect): void {
   if (!affect.to) {
     throw new Error("To attribute is not provided for affect");
   }
 }
 
-function reverseKillAffect(affect: Affect): Affect {
+function reverseKillAffect(affect: KillAffect): SpawnAffect {
   checkAffectFromAttribute(affect);
   return {
     type: AffectType.spawn,
@@ -144,7 +128,7 @@ function reverseKillAffect(affect: Affect): Affect {
   };
 }
 
-function reverseSpawnAffect(affect: Affect): Affect {
+function reverseSpawnAffect(affect: SpawnAffect): KillAffect {
   checkAffectFromAttribute(affect);
   return {
     type: AffectType.kill,
@@ -152,7 +136,7 @@ function reverseSpawnAffect(affect: Affect): Affect {
   };
 }
 
-function reverseMoveAffect(affect: Affect) {
+function reverseMoveAffect(affect: MoveAffect): MoveAffect {
   checkAffectFromAttribute(affect);
   checkAffectToAttribute(affect);
   return {
@@ -162,35 +146,34 @@ function reverseMoveAffect(affect: Affect) {
   };
 }
 
-function reverseTransformationAffect(affect: Affect) {
+function reverseTransformationAffect(
+  affect: TransformationAffect
+): TransformationAffect {
   checkAffectFromAttribute(affect);
   return {
     type: AffectType.transformation,
     from: affect.from,
     sourcePieceType: affect.destPieceType,
     destPieceType: affect.sourcePieceType,
-    pieceTypesForTransformation: affect.pieceTypesForTransformation,
-    before: true,
+    // pieceTypesForTransformation: affect.pieceTypesForTransformation,
+    // before: true,
   };
 }
 
-export function reverseAffects(
-  affects: Affects | undefined
-  // killed?: Piece[]
-): Affects | undefined {
-  return affects
-    ? affects.map((affect) => {
-        if (affect.type === AffectType.kill) {
-          return reverseKillAffect(affect);
-        } else if (affect.type === AffectType.move) {
-          return reverseMoveAffect(affect);
-        } else if (affect.type === AffectType.spawn) {
-          return reverseSpawnAffect(affect);
-        } else if (affect.type === AffectType.transformation) {
-          return reverseTransformationAffect(affect);
-        } else {
-          throw new Error("Invalid affect type");
-        }
-      })
-    : undefined;
+export function reverseAffects(affects: Affects): Affects {
+  return affects.reverse().map((affect) => {
+    if (isKillAffect(affect)) {
+      return reverseKillAffect(affect);
+    } else if (isMoveAffect(affect)) {
+      return reverseMoveAffect(affect);
+    } else if (isNotMainMoveAffect(affect)) {
+      return reverseMoveAffect(affect);
+    } else if (isSpawnAffect(affect)) {
+      return reverseSpawnAffect(affect);
+    } else if (isTransformationAffect(affect)) {
+      return reverseTransformationAffect(affect);
+    } else {
+      throw new Error("Invalid affect type");
+    }
+  });
 }

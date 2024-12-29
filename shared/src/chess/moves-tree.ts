@@ -1,15 +1,19 @@
 import { Board } from "./board";
 import { Coordinate } from "./coordinate";
-import { Turn } from "./turn";
+import { Turn, TurnType } from "./turn";
 import { PieceType } from "./piece.consts";
 import { Color } from "./color";
-import { AvailableMove } from "./rules/piece-movement/movement-rule";
-import { Affect, AffectType } from "./affect.types";
+import { Action } from "./rules/piece-movement/movement-rule";
+import { AffectType } from "./affect.types";
 import { reverseAffects } from "./affect";
 import { reverseColor } from "./color";
 import { Node } from "./moves-tree.types";
 import { GlobalRule } from "./rules/global/check-mate.global-rule";
-import { toKey, parseKey, parseToKey } from "./moves-tree.utils";
+import {
+  serializeAffects,
+  serializeCoordinate,
+  serializeXY,
+} from "./moves-tree.utils";
 
 /**
  * This structure keep all possible moves for both players
@@ -36,31 +40,38 @@ export class MovesTree {
    * @param selectedPieceType - using for transforming pawn to another piece
    */
   public processTurn(
-    fromCoordinate: Coordinate,
-    toCoordinate: Coordinate,
-    selectedPieceType?: PieceType // this is donkey solution, but for now it's not clear how to keep dynamic data
+    turn: Turn
+    // toCoordinate: Coordinate,
+    // selectedPieceType?: PieceType // this is donkey solution, but for now it's not clear how to keep dynamic data
   ) {
-    const from = toKey(fromCoordinate[0], fromCoordinate[1]);
-    const to = toKey(toCoordinate[0], toCoordinate[1], selectedPieceType);
+    const fromCoordinate = turn.affects.find(
+      (a) => a.type === AffectType.move && a.userSelected
+    )?.from;
+    if (!fromCoordinate) {
+      throw new Error("From coordinate is not found");
+    }
+    const from = serializeCoordinate(fromCoordinate);
+    const to = serializeAffects(turn.affects);
 
+    // bullshit
     let movementResults = this.root.movements[from][to];
 
-    const movementAffects = movementResults.affects;
+    // const movementAffects = movementResults.affects;
 
-    if (selectedPieceType) {
-      const transformationAffect = movementAffects?.find(
-        (a) => a.type === AffectType.transformation
-      );
-      if (!transformationAffect) {
-        throw new Error("Transformation affect is not found");
-      }
-      transformationAffect.destPieceType = selectedPieceType;
-    }
+    // if (selectedPieceType) {
+    //   const transformationAffect = movementAffects?.find(
+    //     (a) => a.type === AffectType.transformation
+    //   );
+    //   if (!transformationAffect) {
+    //     throw new Error("Transformation affect is not found");
+    //   }
+    //   transformationAffect.destPieceType = selectedPieceType;
+    // }
 
     const nextNode = movementResults.next;
-    // console.log(JSON.stringify(nextNode, null, 2));
+
     this.root = nextNode;
-    this.updateBoard(fromCoordinate, toCoordinate, movementAffects);
+    this.updateBoard(movementResults.affects);
 
     this.raiseTree();
 
@@ -72,8 +83,6 @@ export class MovesTree {
 
     // handling transformation
   }
-
-  processTurnDynamicData(turn: Turn) {}
 
   public getRoot() {
     return this.root;
@@ -129,7 +138,6 @@ export class MovesTree {
     Object.keys(this.root.movements).forEach((fromKey) => {
       Object.keys(this.root.movements[fromKey]).forEach((toKey) => {
         if (this.root.movements[fromKey][toKey].suisidal) {
-          console.log("delete suisidal", fromKey, toKey);
           delete this.root.movements[fromKey][toKey];
         }
       });
@@ -146,18 +154,12 @@ export class MovesTree {
         const nextNode = movementResult.next;
         const movementResultAffects = movementResult.affects;
 
-        const from = parseKey(fromKey);
-        const [toX, toY] = parseToKey(toKey);
-
-        this.updateBoard(from, [toX, toY], movementResultAffects);
+        this.updateBoard(movementResultAffects);
 
         callback(nextNode);
 
         const reversedAffects = reverseAffects(movementResultAffects);
-        if (reversedAffects?.length) {
-          console.log("reversedAffects", reversedAffects);
-        }
-        this.updateBoard([toX, toY], from, reversedAffects);
+        this.updateBoard(reversedAffects);
       });
     });
   }
@@ -172,54 +174,44 @@ export class MovesTree {
         const nextNode = movementResult.next;
         const movementResultAffects = movementResult.affects;
 
-        const from = parseKey(fromKey);
-        const [toX, toY] = parseToKey(toKey);
-
-        this.updateBoard(from, [toX, toY], movementResultAffects);
+        this.updateBoard(movementResultAffects);
         if (Object.keys(nextNode.movements).length === 0) {
           callback(nextNode);
         } else {
           this.forEachSubTreeLeaf(nextNode, callback);
         }
-        // console.log("killed", killed, movementResultAffects);
         const reversedAffects = reverseAffects(movementResultAffects);
-        // console.log("reversedAffects", reversedAffects);
-        this.updateBoard([toX, toY], from, reversedAffects);
+        this.updateBoard(reversedAffects);
       });
     });
   }
 
-  private updateBoard(from: Coordinate, to: Coordinate, affects?: Affect[]) {
-    const [toX, toY] = to;
-    const move = [toX, toY, affects] as AvailableMove;
-
-    this.board.updateCellsOnMove(from, move);
+  private updateBoard(action: Action) {
+    this.board.updateCellsOnMove(action);
   }
 
   // it expects empty node which will be filled up by current state of this.squares
   private fillUpNode(node: Node) {
     this.board.forEachPiece(node.color, (piece, x, y) => {
-      const key = toKey(x, y);
+      const fromKey = serializeXY(x, y);
       if (piece && piece.color === node.color) {
-        node.movements[key] = {};
+        node.movements[fromKey] = {};
 
-        const availableMoves: AvailableMove[] =
-          this.board.getPieceAvailableMoves(x, y, this.initialTurns);
+        const availableMoves: Action[] = this.board.getPieceAvailableMoves(
+          x,
+          y,
+          this.initialTurns
+        );
 
         const reversedColor = reverseColor(node.color);
-        availableMoves.forEach(([toX, toY, affects]) => {
-          const transformationAffect = affects?.find(
-            (a) => a.type === AffectType.transformation
-          );
-          const nextMoveKey = toKey(
-            toX,
-            toY,
-            transformationAffect?.destPieceType
-          );
+
+        availableMoves.forEach((affects) => {
+          const toKey = serializeAffects(affects);
 
           let newNode: Node = this.createEmptyNode(reversedColor);
-          node.movements[key][nextMoveKey] = {
-            ...(affects ? { affects } : {}),
+
+          node.movements[fromKey][toKey] = {
+            affects,
             next: newNode,
           };
         });

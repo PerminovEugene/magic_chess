@@ -2,11 +2,14 @@ import { Turn } from "../../turn";
 import { PieceType } from "../../piece.consts";
 import { Color } from "../../color";
 import { Coordinate, isCoordinateEql } from "../../coordinate";
-import { AvailableMove, MovementRule, MovementRuleMeta } from "./movement-rule";
+import { Action, MovementRule, MovementRuleMeta } from "./movement-rule";
 import { StraightMovementRuleConfig } from "./straight-movement.rule";
 import { GetPiece } from "../../get-piece";
-import { AffectType } from "../../affect.types";
-import { MovementRules } from "./movement-rules.const";
+import {
+  buildMoveAffect,
+  getUserSelectedMoveAffect,
+  markAsUserSelected,
+} from "../../affect.utils";
 
 export type CastlingRuleSpecificConfig = {
   mainPieceCoordinate: Coordinate;
@@ -61,9 +64,9 @@ export class CastlingMovementRule extends MovementRule {
     if (turns && turns.length) {
       return !!turns.find((turn) => {
         return (
-          turn.pieceType === pieceType &&
+          turn.pieceType === pieceType && // todo turn.pieceType sucks
           turn.color === color &&
-          isCoordinateEql(turn.from, from)
+          isCoordinateEql(getUserSelectedMoveAffect(turn.affects).from, from)
         );
       });
     }
@@ -88,24 +91,24 @@ export class CastlingMovementRule extends MovementRule {
     return false;
   }
 
-  protected calculateNewCoord = (): AvailableMove => {
+  protected calculateNewCoord = (): Action => {
     const [mainCoordinateX, mainCoordinateY] = this.mainPieceCoordinate;
     const [foreginCoordinateX, foreginCoordinateY] =
       this.foreginPieceCoordinate;
     const sign = this.getSign();
     const newMainCoordinateX = mainCoordinateX + this.distance * sign;
-    const availableMove = [
-      newMainCoordinateX,
-      mainCoordinateY,
-      [
-        {
-          type: AffectType.move,
-          from: [foreginCoordinateX, foreginCoordinateY],
-          to: [newMainCoordinateX - sign, foreginCoordinateY],
-        },
-      ],
-    ] as AvailableMove;
-    return availableMove;
+    return [
+      markAsUserSelected(
+        buildMoveAffect(this.mainPieceCoordinate, [
+          newMainCoordinateX,
+          mainCoordinateY,
+        ])
+      ),
+      buildMoveAffect(
+        [foreginCoordinateX, foreginCoordinateY],
+        [newMainCoordinateX - sign, foreginCoordinateY]
+      ),
+    ];
   };
 
   private isPieceNotExist(getPiece: GetPiece, [x, y]: Coordinate) {
@@ -122,8 +125,8 @@ export class CastlingMovementRule extends MovementRule {
     _fromY: number,
     getPiece: GetPiece,
     turns: Turn[]
-  ): AvailableMove[] {
-    const moves: AvailableMove[] = [];
+  ): Action[] {
+    const moves: Action[] = [];
 
     if (
       this.isPieceNotExist(getPiece, this.mainPieceCoordinate) ||

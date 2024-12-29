@@ -1,4 +1,6 @@
-import { AvailableMove, Direction } from "./movement-rule";
+import { AffectType } from "../../affect.types";
+import { buildMoveAffect, markAsUserSelected } from "../../affect.utils";
+import { Action, Direction } from "./movement-rule";
 import {
   directionToVector,
   StraightMovementRule,
@@ -37,7 +39,11 @@ export class DiagonalMovementRule extends StraightMovementRule {
     y: number,
     diff: number,
     dirrection: Direction
-  ): AvailableMove => {
-    return directionToVector(dirrection, x, y, diff);
+  ): Action => {
+    return [
+      markAsUserSelected(
+        buildMoveAffect([x, y], directionToVector(dirrection, x, y, diff))
+      ),
+    ];
   };
 }

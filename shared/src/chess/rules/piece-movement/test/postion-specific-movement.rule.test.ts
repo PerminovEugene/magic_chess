@@ -5,9 +5,10 @@ import {
   PositionSpecificMovementRule,
   PositionSpecificMovementRuleConfig,
 } from "../position-specific-movement.rule";
-import { AvailableMove, Direction } from "../movement-rule";
+import { Action, Direction } from "../movement-rule";
 import { Coordinate } from "../../../coordinate";
 import { MovementRules } from "../movement-rules.const";
+import { buildMoveAffect, markAsUserSelected } from "../../../affect.utils";
 
 describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
   let rule: PositionSpecificMovementRule;
@@ -51,7 +52,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
     squares = getDefaultCells();
   });
 
-  const checkMoves = (moves: AvailableMove[], expectedMoves: Coordinate[]) => {
+  const checkMoves = (moves: Action[], expectedMoves: Action[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
     expect(moves).isEqlAvailableMoves(expectedMoves);
   };
@@ -59,6 +60,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
   describe("check from the position for activation near border", () => {
     const fromX = 1;
     const fromY = 1;
+    const from: Coordinate = [fromX, fromY];
 
     it("should return available moves 1-3 and 3-1", () => {
       updateRule({
@@ -67,9 +69,9 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
           x: new Set<number>([fromY]),
         },
       });
-      const expectedMoves: Coordinate[] = [
-        [1, 3],
-        [3, 1],
+      const expectedMoves: Action[] = [
+        [markAsUserSelected(buildMoveAffect(from, [1, 3]))],
+        [markAsUserSelected(buildMoveAffect(from, [3, 1]))],
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
@@ -79,7 +81,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
     });
 
     it("should return empty available moves when position is not for activation by x", () => {
-      const expectedMoves: Coordinate[] = [];
+      const expectedMoves: Action[] = [];
 
       updateRule({
         activatePositions: {
@@ -92,7 +94,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
     });
 
     it("should return empty available moves when position is not for activation by y", () => {
-      const expectedMoves: Coordinate[] = [];
+      const expectedMoves: Action[] = [];
 
       updateRule({
         activatePositions: {
@@ -105,7 +107,9 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
     });
 
     it("should return available moves when position is for activation by x", () => {
-      const expectedMoves: Coordinate[] = [[fromX + speed, fromY]];
+      const expectedMoves: Action[] = [
+        [markAsUserSelected(buildMoveAffect(from, [fromX + speed, fromY]))],
+      ];
 
       updateRule({
         activatePositions: {
@@ -119,7 +123,9 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
     });
 
     it("should return available moves when position is for activation by y", () => {
-      const expectedMoves: Coordinate[] = [[fromX, fromY + speed]];
+      const expectedMoves: Action[] = [
+        [markAsUserSelected(buildMoveAffect(from, [fromX, fromY + speed]))],
+      ];
 
       updateRule({
         activatePositions: {
@@ -137,6 +143,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
     it("should return all available moves", () => {
       const fromX = 2;
       const fromY = 2;
+      const from: Coordinate = [fromX, fromY];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
       updateRule({
@@ -145,11 +152,11 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
           y: new Set([2]),
         },
       });
-      const expectedMoves: Coordinate[] = [
-        [2, 0],
-        [0, 2],
-        [4, 2],
-        [2, 4],
+      const expectedMoves: Action[] = [
+        [markAsUserSelected(buildMoveAffect(from, [2, 0]))],
+        [markAsUserSelected(buildMoveAffect(from, [0, 2]))],
+        [markAsUserSelected(buildMoveAffect(from, [4, 2]))],
+        [markAsUserSelected(buildMoveAffect(from, [2, 4]))],
       ];
 
       const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);
@@ -160,6 +167,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
     it("should return all diagonal moves", () => {
       const fromX = 2;
       const fromY = 2;
+      const from: Coordinate = [fromX, fromY];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
 
       updateRule({
@@ -174,11 +182,11 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
           Direction.DownLeft,
         ]),
       });
-      const expectedMoves: Coordinate[] = [
-        [0, 0],
-        [0, 4],
-        [4, 0],
-        [4, 4],
+      const expectedMoves: Action[] = [
+        [markAsUserSelected(buildMoveAffect(from, [0, 0]))],
+        [markAsUserSelected(buildMoveAffect(from, [0, 4]))],
+        [markAsUserSelected(buildMoveAffect(from, [4, 0]))],
+        [markAsUserSelected(buildMoveAffect(from, [4, 4]))],
       ];
 
       const moves = rule.availableMoves(fromX, fromY, getPiece, [], size);

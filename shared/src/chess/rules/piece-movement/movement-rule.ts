@@ -24,7 +24,7 @@ export type MovementRuleMeta = {
   speed: number;
 };
 
-export type AvailableMove = [number, number, affected?: Affects];
+export type Action = Affects;
 
 export abstract class MovementRule {
   constructor(
@@ -55,5 +55,5 @@ export abstract class MovementRule {
     getPiece: GetPiece,
     turns: Turn[],
     size: number
-  ): AvailableMove[];
+  ): Action[];
 }

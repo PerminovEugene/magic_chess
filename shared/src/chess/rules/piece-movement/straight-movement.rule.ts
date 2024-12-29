@@ -1,9 +1,10 @@
 import { Turn } from "../../turn";
 import { Coordinate } from "../../coordinate";
-import { AvailableMove, Direction, MovementRule } from "./movement-rule";
+import { Action, Direction, MovementRule } from "./movement-rule";
 import { GetPiece } from "../../get-piece";
-import { Affect, AffectType } from "../../affect.types";
+import { Affect, AffectType, KillAffect } from "../../affect.types";
 import { MovementRules } from "./movement-rules.const";
+import { buildKillAffect } from "../../affect.utils";
 
 export type StraightMovementRuleConfig = {
   name: MovementRules;
@@ -87,17 +88,10 @@ export abstract class StraightMovementRule extends MovementRule {
     diff: number,
     dirrection: Direction,
     turns: Turn[]
-  ) => AvailableMove | null;
+  ) => Action;
 
   protected isCoordInvalid(x: number, y: number, size: number) {
     return x >= size || x < 0 || y >= size || y < 0;
-  }
-
-  private getKillAffect(toX: number, toY: number): Affect {
-    return {
-      type: AffectType.kill,
-      from: [toX, toY],
-    };
   }
 
   public availableMoves(
@@ -106,25 +100,31 @@ export abstract class StraightMovementRule extends MovementRule {
     getPiece: GetPiece,
     turns: Turn[],
     size: number
-  ): AvailableMove[] {
-    const moves: AvailableMove[] = [];
+  ): Action[] {
+    const moves: Action[] = [];
     let availableDirections = new Set<Direction>(this.possibleDirrections);
 
     for (let diff = this.speed; diff <= this.distance; diff += this.speed) {
       for (let dirrection of this.directions) {
         if (availableDirections.has(dirrection)) {
-          const availableMove = this.calculateNewCoord(
+          const affects = this.calculateNewCoord(
             fromX,
             fromY,
             diff,
             dirrection,
             turns
           );
-          if (!availableMove) {
+          if (!affects.length) {
             availableDirections.delete(dirrection);
             continue;
           }
-          const [newX, newY] = availableMove;
+          // const [newX, newY] = availableMove;
+          const moveAffect = affects.find((a) => a.type === AffectType.move);
+
+          if (!moveAffect) {
+            throw new Error("Move affect not found");
+          }
+          const [newX, newY] = moveAffect.to;
 
           if (this.isCoordInvalid(newX, newY, size)) {
             // todo remove magic
@@ -133,23 +133,23 @@ export abstract class StraightMovementRule extends MovementRule {
             const toPiece = getPiece(newX, newY);
             const fromPiece = getPiece(fromX, fromY);
 
+            if (!fromPiece) {
+              throw new Error("Not found piece at from location");
+            }
+
             if (this.moveToEmpty && !toPiece) {
               // can move to empty square
-              moves.push(availableMove);
+              moves.push(affects);
             } else if (toPiece) {
-              if (!fromPiece) {
-                throw new Error("Not found piece at from location");
-              }
-
               const newLocationPieceColor = toPiece.color;
 
               if (
                 this.moveToKill &&
                 newLocationPieceColor !== fromPiece.color
               ) {
-                const killAffect = this.getKillAffect(newX, newY);
-                availableMove.push([killAffect]);
-                moves.push(availableMove);
+                const killAffect = buildKillAffect(moveAffect.to);
+                // affects.push(killAffect);
+                moves.push([killAffect, ...affects]);
               }
               if (this.collision) {
                 availableDirections.delete(dirrection);

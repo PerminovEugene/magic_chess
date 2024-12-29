@@ -1,5 +1,5 @@
 import { Color } from "./color";
-import { Affect } from "./affect.types";
+import { Action } from "./rules";
 
 export type X = number;
 export type Y = number;
@@ -24,7 +24,7 @@ export type Node = {
     [key in Hash]: {
       [key in Hash]: {
         next: Node;
-        affects?: Affect[];
+        affects: Action;
         suisidal?: boolean;
       };
     };

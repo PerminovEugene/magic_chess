@@ -4,7 +4,7 @@ import { Color } from "./color";
 import { Piece } from "./piece";
 import { PieceMeta } from "./piece.types";
 import { PieceType } from "./piece.consts";
-import { AvailableMove } from "./rules/piece-movement/movement-rule";
+import { Action } from "./rules/piece-movement/movement-rule";
 import { Coordinate } from "./coordinate";
 import { MetaStorage } from "./meta-storage";
 import {
@@ -16,6 +16,7 @@ import {
 import { buildPieceByMeta } from "./piece-builder";
 import { BoardMeta } from "./board.types";
 import { RulesEngine } from "./rules-engine";
+import { AffectType } from "./affect.types";
 
 /**
  * Board keeps data about current game position and pieces on the array of cells
@@ -43,7 +44,7 @@ export class Board {
     );
   }
 
-  public isIndexInValid = (index: number) => index >= 0 || index < this.size;
+  public isIndexValid = (index: number) => index >= 0 && index < this.size;
 
   public getMeta(): BoardMeta {
     const boardMeta: any[][] = Array.from({ length: this.squares.length }, () =>
@@ -88,6 +89,9 @@ export class Board {
   public getPiece = (x: number, y: number) => {
     return this.squares[y][x].getPiece();
   };
+  public getPieceByCoordinate = (xy: Coordinate) => {
+    return this.squares[xy[1]][xy[0]].getPiece();
+  };
 
   private getCell(x: number, y: number) {
     return this.squares[y][x];
@@ -110,16 +114,12 @@ export class Board {
   // now [x, y, affects]
   // to action: affects[]. Affects with user choice marked with field and will be used for tree building
   //
-  public getPieceAvailableMoves(
-    x: number,
-    y: number,
-    turns: Turn[]
-  ): AvailableMove[] {
-    const availableMoves: AvailableMove[] = [];
+  public getPieceAvailableMoves(x: number, y: number, turns: Turn[]): Action[] {
+    const availableMoves: Action[] = [];
 
     const piece = this.getPiece(x, y);
     if (!piece) {
-      throw new Error("Can not get moves for invlaid piece coordinates");
+      throw new Error("Can not get moves for invalid piece coordinates");
     }
     const { movementRules, postMovementRules } = piece;
 
@@ -134,7 +134,7 @@ export class Board {
       );
       availableMoves.push(...ruleMoves);
     });
-    let updatedMoves: AvailableMove[] = availableMoves;
+    let updatedMoves: Action[] = availableMoves;
     postMovementRules?.forEach((rule) => {
       updatedMoves = this.rulesEngine.addPostMovementCorrections(
         rule,
@@ -152,42 +152,59 @@ export class Board {
    */
   private killed: Piece[] = [];
 
-  public updateCellsOnMove(from: Coordinate, AvailableMove: AvailableMove) {
-    const [toX, toY, affects] = AvailableMove;
-    const [fromX, fromY] = from;
+  // private typesOrder = {
+  //   [AffectType.kill]: 10,
+  //   [AffectType.reversedTransformation]: 9,
+  //   [AffectType.move]: 5,
+  //   [AffectType.spawn]: 2,
+  //   [AffectType.transformation]: 1,
+  // }
 
-    if (affects) {
-      affects.forEach((affect) => {
-        const unspawned = handleKillAffect(affect, this.squares);
-        if (unspawned) {
-          this.killed.push(unspawned);
-        }
-        if (affect.before) {
-          handleTransformAffect(affect, this.squares, this.metaStorage);
-        }
-      });
-    }
-    const fromCell = this.getCell(fromX, fromY);
-    const toCell = this.getCell(toX, toY);
+  public updateCellsOnMove(affects: Action) {
+    affects.forEach((affect) => {
+      const killed = handleKillAffect(affect, this.squares);
+      if (killed) {
+        this.killed.push(killed);
+      }
+      handleMoveAffect(affect, this.squares, this.metaStorage);
 
-    if (toCell.isEmpty()) {
-      const piece = fromCell.popPiece() as Piece;
-      toCell.putPiece(piece);
-    } else {
-      const piece = fromCell.popPiece() as Piece;
-      const killed = toCell.popPiece();
-      this.killed.push(killed as Piece);
-      toCell.putPiece(piece);
-    }
-    if (affects) {
-      affects.forEach((affect) => {
-        if (!affect.before) {
-          handleTransformAffect(affect, this.squares, this.metaStorage);
-        }
-        handleMoveAffect(affect, this.squares, this.metaStorage);
-        handleSpawnAffect(affect, this.squares, this.killed.pop() as Piece);
-      });
-    }
+      handleTransformAffect(affect, this.squares, this.metaStorage);
+
+      handleSpawnAffect(affect, this.squares, this.killed.pop() as Piece);
+    });
+
+    // if (affects) {
+    //   affects.forEach((affect) => {
+    //     // const unspawned = handleKillAffect(affect, this.squares);
+    //     if (unspawned) {
+    //       this.killed.push(unspawned);
+    //     }
+    //     if (affect.before) {
+    //       handleTransformAffect(affect, this.squares, this.metaStorage);
+    //     }
+    //   });
+    // }
+    // const fromCell = this.getCell(fromX, fromY);
+    // const toCell = this.getCell(toX, toY);
+
+    // if (toCell.isEmpty()) {
+    //   const piece = fromCell.popPiece() as Piece;
+    //   toCell.putPiece(piece);
+    // } else {
+    //   const piece = fromCell.popPiece() as Piece;
+    //   const killed = toCell.popPiece();
+    //   this.killed.push(killed as Piece);
+    //   toCell.putPiece(piece);
+    // }
+    // if (affects) {
+    //   affects.forEach((affect) => {
+    //     if (!affect.before) {
+    //       handleTransformAffect(affect, this.squares, this.metaStorage);
+    //     }
+    //     handleMoveAffect(affect, this.squares, this.metaStorage);
+    //     handleSpawnAffect(affect, this.squares, this.killed.pop() as Piece);
+    //   });
+    // }
   }
 
   public duplicatePosition(cells: Cell[][]): Cell[][] {

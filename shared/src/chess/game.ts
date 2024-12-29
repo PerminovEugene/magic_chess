@@ -4,11 +4,18 @@ import { Color } from "./color";
 import { Coordinate } from "./coordinate";
 import { reverseColor } from "./color";
 import { MovesTree } from "./moves-tree";
-import { coordToKey, parseToKey, TurnChoosableData } from "./moves-tree.utils";
+import // coordToKey,
+// parseToKey,
+// serializeAffects,
+// TurnChoosableData,
+"./moves-tree.utils";
 import { GlobalRule } from "./rules/global/check-mate.global-rule";
 import { isAffectsEql } from "../utils/matchers";
 import { Turn, TurnType } from "./turn";
 import { BoardMeta } from "./board.types";
+import { AffectType } from "./affect.types";
+import { Action } from "./rules";
+import { serializeCoordinate } from "./moves-tree.utils";
 
 export class Player {
   constructor(public name: string) {}
@@ -52,65 +59,64 @@ export class Game {
     this.nextTurnColor = reverseColor(this.nextTurnColor);
   }
 
-  getMoveToCoordinatesObj(coordinate: Coordinate) {
-    const root = this.movesTree.getRoot();
-    return root.movements[coordToKey(coordinate)];
-  }
+  // getMoveToCoordinatesObj(coordinate: Coordinate) {
+  //   const root = this.movesTree.getRoot();
+  //   return root.movements[serializeCoordinate(coordinate)];
+  // }
 
-  getAvailableMovementsForCoordinate(from: Coordinate) {
-    const movements = this.getMoveToCoordinatesObj(from);
-    if (!movements) {
-      return;
-    }
-    const availableCoordinates: TurnChoosableData[] = [];
-    for (const toKey in movements) {
-      availableCoordinates.push(parseToKey(toKey));
-    }
-    return availableCoordinates;
-  }
+  // getAvailableActionsForCoordinate(from: Coordinate) {
+  //   const movements = this.getMoveToCoordinatesObj(from);
+  //   if (!movements) {
+  //     return;
+  //   }
+  //   const actions: Action[] = [];
+  //   for (const toKey in movements) {
+  //     actions.push(movements[toKey].affects));
+  //   }
+  //   return actions;
+  // }
 
-  getMovementResult(
-    from: Coordinate,
-    to: Coordinate,
-    selectedPieceType?: PieceType
-  ) {
-    const movements = this.getMoveToCoordinatesObj(from);
-    if (!movements) {
-      return;
-    }
-    return movements[coordToKey(to, selectedPieceType)];
-  }
+  // getMovementResult(
+  //   affects: Action,
+  // ) {
+  //   const movements = this.getMoveToCoordinatesObj(from);
+  //   if (!movements) {
+  //     return;
+  //   }
+  //   return movements[coordToKey(to, selectedPieceType)];
+  // }
 
   processTurn(turn: Turn) {
-    const { color, from, to, type, timestamp, affects, selectedPieceType } =
-      turn;
+    const { color, type, affects, selectedPieceType } = turn;
     if (this.nextTurnColor !== color) {
       throw new Error("Not your turn");
     }
     if (type === TurnType.Move) {
       // this.board.validateTurn(turn, this.turns);
 
-      const root = this.movesTree.getRoot();
+      // const root = this.movesTree.getRoot();
 
-      const fromHash = coordToKey(from);
-      if (!root.movements[fromHash]) {
-        throw new Error("Invalid from coordinate");
-      }
+      // const from = turn.affects.find(
+      //   (a) => a.type === AffectType.move && a.userSelected
+      // )?.from;
+      // const fromHash = coordToKey(from);
+      // if (!root.movements[fromHash]) {
+      //   throw new Error("Invalid from coordinate");
+      // }
 
-      const moveRes =
-        root.movements[fromHash][coordToKey(to, turn.selectedPieceType)];
-      if (!moveRes) {
-        throw new Error("Invalid to coordinate");
-      }
-      if (!isAffectsEql(moveRes.affects, turn.affects)) {
-        throw new Error("Invalid move affects");
-      }
+      // const moveRes = root.movements[fromHash][serializeAffects(affects)];
+      // if (!moveRes) {
+      //   throw new Error("Invalid to coordinate");
+      // }
+      // if (!isAffectsEql(moveRes.affects, turn.affects)) {
+      //   throw new Error("Invalid move affects");
+      // }
 
+      this.movesTree.processTurn(turn);
       this.turns.push(turn);
-      this.movesTree.processTurn(from, to, selectedPieceType);
     } else {
-      this.turns.push(turn);
-      this.board.cast(color, from, to);
+      // this.turns.push(turn);
+      // this.board.cast(color, from, to);
     }
 
     this.updateGameNextTurn();

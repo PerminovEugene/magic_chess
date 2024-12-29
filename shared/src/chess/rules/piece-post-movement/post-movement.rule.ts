@@ -1,14 +1,14 @@
 import { Color } from "../../color";
-import { AvailableMove } from "../piece-movement/movement-rule";
+import { Action } from "../piece-movement/movement-rule";
 import { PostMovementRules } from "../piece-movement/movement-rules.const";
 import { PieceType } from "../../piece.consts";
 
 export abstract class PostMovementRule {
   constructor(public name: PostMovementRules) {}
   public abstract updateMovesAffects(
-    moves: AvailableMove[],
+    moves: Action[],
     pieceType: PieceType
-  ): AvailableMove[];
+  ): Action[];
   public abstract getMeta(): any;
 }
 

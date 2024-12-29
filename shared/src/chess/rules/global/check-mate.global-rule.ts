@@ -3,10 +3,14 @@ import { reverseColor } from "../../color";
 import { isCoordinateEql } from "../../coordinate";
 import { Turn } from "../../turn";
 import { PieceType } from "../../piece.consts";
-import { parseKey, parseToKey, toKey } from "../../moves-tree.utils";
+import {
+  serializeCoordinate,
+  serializeToCoordinate,
+} from "../../moves-tree.utils";
 import { Node } from "../../moves-tree.types";
+import { getUserSelectedMoveAffect } from "../../affect.utils";
 
-type TurnSubSet = Pick<Turn, "from" | "to" | "color">;
+type TurnSubSet = Pick<Turn, "affects" | "color">;
 
 export abstract class GlobalRule {
   public abstract markNodeWithChilds(
@@ -15,11 +19,11 @@ export abstract class GlobalRule {
     board: Board,
     turns: Turn[]
   ): void;
-  public abstract isMoveValid(
-    node: Node,
-    board: Board,
-    turn: TurnSubSet
-  ): boolean;
+  // public abstract isMoveValid(
+  //   node: Node,
+  //   board: Board,
+  //   turn: TurnSubSet
+  // ): boolean;
 }
 
 export class CheckMateGlobalRule2 extends GlobalRule {
@@ -29,33 +33,34 @@ export class CheckMateGlobalRule2 extends GlobalRule {
 
   private mainPieceType = PieceType.King;
 
-  public isMoveValid(node: Node, board: Board, turn: TurnSubSet) {
-    const from = turn.from;
-    const to = turn.to;
-    const fromHash = toKey(from[0], from[1]);
-    const toHash = toKey(to[0], to[1]);
+  // public isMoveValid(node: Node, board: Board, turn: TurnSubSet) {
+  //   const from = getUserSelectedMoveAffect(turn.affects).from;
+  //   const to = getUserSelectedMoveAffect(turn.affects).to;
 
-    const kingCoordinate = board.findUniqPiece(turn.color, this.mainPieceType);
+  //   const fromHash = serializeCoordinate(from);
+  //   const toHash = serializeCoordinate(to);
 
-    const nextNode = node.movements[fromHash][toHash].next;
+  //   const kingCoordinate = board.findUniqPiece(turn.color, this.mainPieceType);
 
-    for (const nextMovementFrom in nextNode.movements) {
-      for (const nextMovementTo in nextNode.movements[nextMovementFrom]) {
-        const nextTo = parseKey(nextMovementTo);
+  //   const nextNode = node.movements[fromHash][toHash].next;
 
-        const actualCurrentKingCoordinate = isCoordinateEql(
-          kingCoordinate,
-          from
-        )
-          ? to
-          : kingCoordinate;
-        if (isCoordinateEql(actualCurrentKingCoordinate, nextTo)) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
+  //   for (const nextMovementFrom in nextNode.movements) {
+  //     for (const nextMovementTo in nextNode.movements[nextMovementFrom]) {
+  //       const nextTo = parseKey(nextMovementTo);
+
+  //       const actualCurrentKingCoordinate = isCoordinateEql(
+  //         kingCoordinate,
+  //         from
+  //       )
+  //         ? to
+  //         : kingCoordinate;
+  //       if (isCoordinateEql(actualCurrentKingCoordinate, nextTo)) {
+  //         return false;
+  //       }
+  //     }
+  //   }
+  //   return true;
+  // }
 
   public markNodeWithChilds(node: Node, prevNode: Node, board: Board) {
     let currentColor = node.color;
@@ -70,66 +75,61 @@ export class CheckMateGlobalRule2 extends GlobalRule {
       this.mainPieceType
     );
 
-    let allMovesLeadToMateForCurrentColor = true;
+    // let allMovesLeadToMateForCurrentColor = true;
     for (const movementFrom in node.movements) {
-      const from = parseKey(movementFrom);
+      // const from = parseKey(movementFrom);
       for (const movementTo in node.movements[movementFrom]) {
-        const to = parseToKey(movementTo);
+        const moveResultData = node.movements[movementFrom][movementTo];
+
+        // const to = parseToKey(movementTo);
+        const moveAffect = getUserSelectedMoveAffect(moveResultData.affects);
         if (
           prevNode &&
-          to[0] === enemyKingCoordinate[0] &&
-          to[1] === enemyKingCoordinate[1]
+          moveAffect.to[0] === enemyKingCoordinate[0] &&
+          moveAffect.to[1] === enemyKingCoordinate[1]
         ) {
-          console.log(
-            "node under check",
-            prevNode.color,
-            Object.keys(prevNode.movements)
-          );
           prevNode.underCheck = true;
         }
-
-        const moveResultData = node.movements[movementFrom][movementTo];
 
         const nextNode = moveResultData.next;
 
-        if (
-          prevNode &&
-          enemyKingCoordinate[0] === to[0] &&
-          enemyKingCoordinate[1] === to[1]
-        ) {
-          prevNode.underCheck = true;
-        }
-
-        let leadsToCurrentColorCheck = false;
+        // let leadsToCurrentColorCheck = false;
 
         // we search for enemy moves to current color kings position
         for (const nextMovementFrom in nextNode.movements) {
           const actualCurrentKingCoordinate = isCoordinateEql(
             // in case king made a move
             kingCoordinate,
-            from
+            moveAffect.from
           )
-            ? to
+            ? moveAffect.to
             : kingCoordinate;
-          const nextMoveToCurrentKingKey = toKey(
+
+          const nextMoveToCurrentKingKey = serializeToCoordinate(
             // it doesn't detect if has transforming choice
-            actualCurrentKingCoordinate[0],
-            actualCurrentKingCoordinate[1]
-            // actualCurrentKingCoordinate[2]
+            actualCurrentKingCoordinate
           );
 
+          const toObj = nextNode.movements[nextMovementFrom];
+          for (const nextMoveTo in toObj) {
+            if (nextMoveTo.startsWith(nextMoveToCurrentKingKey)) {
+              // leadsToCurrentColorCheck = true;
+              moveResultData.suisidal = true;
+            }
+          }
+
           if (nextNode.movements[nextMovementFrom][nextMoveToCurrentKingKey]) {
-            leadsToCurrentColorCheck = true;
+            // leadsToCurrentColorCheck = true;
             moveResultData.suisidal = true;
           }
         }
-        if (!leadsToCurrentColorCheck) {
-          // at least one currentColor move doesn't lead to immediate check
-          allMovesLeadToMateForCurrentColor = false;
-        }
+        // if (!leadsToCurrentColorCheck) {
+        //   // at least one currentColor move doesn't lead to immediate check
+        //   allMovesLeadToMateForCurrentColor = false;
+        // }
       }
     }
-    if (allMovesLeadToMateForCurrentColor) {
-    }
+    // if (allMovesLeadToMateForCurrentColor) {
+    // }
   }
 }

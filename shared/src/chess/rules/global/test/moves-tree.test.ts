@@ -9,6 +9,8 @@ import { MovesTree } from "../../../moves-tree";
 import { printCells } from "../../../../utils/board-printer";
 import { CheckMateGlobalRule2, GlobalRule } from "../check-mate.global-rule";
 import * as fs from "fs";
+import { buildMoveAffect, markAsUserSelected } from "../../../affect.utils";
+import { Turn } from "../../../turn";
 
 /**
  * Writes a given object to a file as JSON using callback-based fs methods.
@@ -180,11 +182,15 @@ describe("MovesTree", () => {
 
       console.log("keys", Object.keys(tree.getRoot().movements));
 
-      tree.processTurn([4, 0], [3, 0]);
+      tree.processTurn({
+        affects: [markAsUserSelected(buildMoveAffect([4, 0], [3, 0]))],
+      } as Turn);
 
       console.log("keys-2", Object.keys(tree.getRoot().movements));
 
-      tree.processTurn([0, 1], [0, 0]);
+      tree.processTurn({
+        affects: [markAsUserSelected(buildMoveAffect([0, 1], [0, 0]))],
+      } as Turn);
 
       console.log("keys-3", Object.keys(tree.getRoot().movements));
 

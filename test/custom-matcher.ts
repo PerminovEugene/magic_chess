@@ -1,10 +1,10 @@
-import { Affect, AvailableMove } from "../shared/src";
+import { Action } from "../shared/src";
 import { isAffectsEql } from "../shared/src/utils/matchers";
 
 // Custom matcher for comparing AvailableMove arrays
 export const isEqlAvailableMoves = (
-  received: AvailableMove[],
-  expected: AvailableMove[]
+  received: Action[],
+  expected: Action[]
 ): any => {
   if (received.length !== expected.length) {
     return {
@@ -17,9 +17,9 @@ export const isEqlAvailableMoves = (
   const errors: string[] = [];
 
   for (let i = 0; i < received.length; i++) {
-    const [rx, ry, rAffects] = received[i];
-    const fit = expected.find(([ex, ey, eAffects]) => {
-      return ex === rx && ry === ey && isAffectsEql(rAffects, eAffects);
+    const rActions = received[i];
+    const fit = expected.find((eAffect) => {
+      return isAffectsEql(rActions, eAffect);
     });
     if (!fit) {
       errors.push(

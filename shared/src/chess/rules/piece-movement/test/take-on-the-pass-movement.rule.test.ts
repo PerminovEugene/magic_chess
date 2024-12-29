@@ -1,16 +1,20 @@
 import { Cell } from "../../../cell";
 import { PieceType } from "../../../piece.consts";
 import { Coordinate } from "../../../coordinate";
-import { AvailableMove, Direction } from "../movement-rule";
+import { Action, Direction } from "../movement-rule";
 import { PositionSpecificMovementRuleConfig } from "../position-specific-movement.rule";
 import { TakeOnThePassMovementRule } from "../take-on-the-pass.rule";
-import { TurnType } from "../../../turn";
+import { Turn, TurnType } from "../../../turn";
 import { Pawn } from "../../../pieces";
 import { Color } from "../../../color";
-import { AffectType } from "../../../affect.types";
 import { MovementRules } from "../movement-rules.const";
+import {
+  buildKillAffect,
+  buildMoveAffect,
+  markAsUserSelected,
+} from "../../../affect.utils";
 
-describe("VerticalMovementRule", () => {
+describe("TakeOnThePassMovementRule", () => {
   let rule: TakeOnThePassMovementRule;
   let squares: Cell[][];
   const getPiece = (x: number, y: number) => squares[y][x].getPiece();
@@ -46,10 +50,7 @@ describe("VerticalMovementRule", () => {
     squares = getDefaultCells();
   });
 
-  const checkMoves = (
-    moves: AvailableMove[],
-    expectedMoves: AvailableMove[]
-  ) => {
+  const checkMoves = (moves: Action[], expectedMoves: Action[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
 
     expect(moves).isEqlAvailableMoves(expectedMoves);
@@ -58,6 +59,7 @@ describe("VerticalMovementRule", () => {
   describe("check from the middle", () => {
     const fromX = 2;
     const fromY = 2;
+    const from: Coordinate = [fromX, fromY];
 
     /**
      * |_|w|_|_|_|
@@ -70,21 +72,25 @@ describe("VerticalMovementRule", () => {
       updateRule();
       const enemyPawnFrom: Coordinate = [1, 0];
       const enemyPawnTo: Coordinate = [1, 2];
-      const expectedMoves: AvailableMove[] = [
-        [1, 1, [{ type: AffectType.kill, from: enemyPawnTo }]],
+      const expectedMoves: Action[] = [
+        [
+          buildKillAffect(enemyPawnTo),
+          markAsUserSelected(buildMoveAffect(from, [1, 1])),
+        ],
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.black));
       squares[enemyPawnTo[1]][enemyPawnTo[0]].putPiece(new Pawn(Color.white));
 
       const turns = [
         {
-          from: enemyPawnFrom,
-          to: enemyPawnTo,
+          affects: [
+            markAsUserSelected(buildMoveAffect(enemyPawnFrom, enemyPawnTo)),
+          ],
           pieceType: PieceType.Pawn,
           color: Color.white,
           type: TurnType.Move,
           timestamp: new Date().toISOString(),
-        },
+        } as Turn,
       ];
 
       const moves = rule.availableMoves(fromX, fromY, getPiece, turns, size);
@@ -102,17 +108,21 @@ describe("VerticalMovementRule", () => {
       updateRule();
       const enemyPawnFrom: Coordinate = [3, 0];
       const enemyPawnTo: Coordinate = [3, 2];
-      const expectedMoves: AvailableMove[] = [
-        [3, 1, [{ type: AffectType.kill, from: enemyPawnTo }]],
+      const expectedMoves: Action[] = [
+        [
+          buildKillAffect(enemyPawnTo),
+          markAsUserSelected(buildMoveAffect(from, [3, 1])),
+        ],
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.black));
       squares[enemyPawnTo[1]][enemyPawnTo[0]].putPiece(new Pawn(Color.white));
 
       const turns = [
         {
-          from: enemyPawnFrom,
-          to: enemyPawnTo,
           pieceType: PieceType.Pawn,
+          affects: [
+            markAsUserSelected(buildMoveAffect(enemyPawnFrom, enemyPawnTo)),
+          ],
           color: Color.white,
           type: TurnType.Move,
           timestamp: new Date().toISOString(),
@@ -136,17 +146,21 @@ describe("VerticalMovementRule", () => {
       });
       const enemyPawnFrom: Coordinate = [1, 4];
       const enemyPawnTo: Coordinate = [1, 2];
-      const expectedMoves: AvailableMove[] = [
-        [1, 3, [{ type: AffectType.kill, from: enemyPawnTo }]],
+      const expectedMoves: Action[] = [
+        [
+          buildKillAffect(enemyPawnTo),
+          markAsUserSelected(buildMoveAffect(from, [1, 3])),
+        ],
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
       squares[enemyPawnTo[1]][enemyPawnTo[0]].putPiece(new Pawn(Color.black));
 
       const turns = [
         {
-          from: enemyPawnFrom,
-          to: enemyPawnTo,
           pieceType: PieceType.Pawn,
+          affects: [
+            markAsUserSelected(buildMoveAffect(enemyPawnFrom, enemyPawnTo)),
+          ],
           color: Color.black,
           type: TurnType.Move,
           timestamp: new Date().toISOString(),
@@ -168,16 +182,20 @@ describe("VerticalMovementRule", () => {
       updateRule({ directions: new Set<Direction>([Direction.DownRight]) });
       const enemyPawnFrom: Coordinate = [3, 4];
       const enemyPawnTo: Coordinate = [3, 2];
-      const expectedMoves: AvailableMove[] = [
-        [3, 3, [{ type: AffectType.kill, from: enemyPawnTo }]],
+      const expectedMoves: Action[] = [
+        [
+          buildKillAffect(enemyPawnTo),
+          markAsUserSelected(buildMoveAffect(from, [3, 3])),
+        ],
       ];
       squares[fromY][fromX].putPiece(new Pawn(Color.white));
       squares[enemyPawnTo[1]][enemyPawnTo[0]].putPiece(new Pawn(Color.black));
 
       const turns = [
         {
-          from: enemyPawnFrom,
-          to: enemyPawnTo,
+          affects: [
+            markAsUserSelected(buildMoveAffect(enemyPawnFrom, enemyPawnTo)),
+          ],
           pieceType: PieceType.Pawn,
           color: Color.white,
           type: TurnType.Move,

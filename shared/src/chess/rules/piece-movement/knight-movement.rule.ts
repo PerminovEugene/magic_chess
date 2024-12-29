@@ -1,9 +1,11 @@
-import { Direction } from "./movement-rule";
+import { Action, Direction } from "./movement-rule";
 import {
   StraightMovementRule,
   StraightMovementRuleConfig,
 } from "./straight-movement.rule";
 import { Coordinate } from "../../coordinate";
+import { AffectType } from "../../affect.types";
+import { buildMoveAffect, markAsUserSelected } from "../../affect.utils";
 
 /**
  *           upLeft up
@@ -78,7 +80,11 @@ export class KnightMovementRule extends StraightMovementRule {
     y: number,
     diff: number,
     dirrection: Direction
-  ): Coordinate => {
-    return actionMap[dirrection](x, y, diff);
+  ): Action => {
+    return [
+      markAsUserSelected(
+        buildMoveAffect([x, y], actionMap[dirrection](x, y, diff))
+      ),
+    ];
   };
 }

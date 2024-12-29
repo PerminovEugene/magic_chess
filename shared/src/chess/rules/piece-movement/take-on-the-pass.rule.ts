@@ -1,12 +1,18 @@
 import { Turn } from "../../turn";
 import { PieceType } from "../../piece.consts";
-import { AvailableMove, Direction } from "./movement-rule";
+import { Action, Direction } from "./movement-rule";
 import {
   PositionSpecificMovementRule,
   PositionSpecificMovementRuleConfig,
 } from "./position-specific-movement.rule";
 import { directionToVector } from "./straight-movement.rule";
 import { Affect, AffectType } from "../../affect.types";
+import {
+  buildKillAffect,
+  buildMoveAffect,
+  getUserSelectedMoveAffect,
+  markAsUserSelected,
+} from "../../affect.utils";
 
 export class TakeOnThePassMovementRule extends PositionSpecificMovementRule {
   constructor({
@@ -48,13 +54,6 @@ export class TakeOnThePassMovementRule extends PositionSpecificMovementRule {
     Direction.DownRight,
   ];
 
-  private getAffect(toX: number, toY: number): Affect {
-    return {
-      type: AffectType.kill,
-      from: [toX, toY],
-    };
-  }
-
   private pawnFirstDoubleStepDistance = 2;
 
   protected calculateNewCoord = (
@@ -63,13 +62,16 @@ export class TakeOnThePassMovementRule extends PositionSpecificMovementRule {
     diff: number,
     dirrection: Direction,
     turns: Turn[]
-  ): AvailableMove => {
+  ): Action => {
     if (!turns || !turns.length) {
-      return [x, y];
+      return [];
     }
     const lastTurn = turns[turns.length - 1];
-    const [enemyFromX, enemyFromY] = lastTurn.from;
-    const [toX, toY] = lastTurn.to;
+    const [enemyFromX, enemyFromY] = getUserSelectedMoveAffect(
+      lastTurn.affects
+    ).from;
+
+    const [toX, toY] = getUserSelectedMoveAffect(lastTurn.affects).to;
 
     const prevEnemyPos =
       this.getDirectionModifier(dirrection) * this.pawnFirstDoubleStepDistance;
@@ -85,9 +87,11 @@ export class TakeOnThePassMovementRule extends PositionSpecificMovementRule {
       y === toY &&
       enemyFromX === newX
     ) {
-      const affect = this.getAffect(toX, toY);
-      return [newX, newY, [affect]];
+      return [
+        buildKillAffect([toX, toY]),
+        markAsUserSelected(buildMoveAffect([x, y], [newX, newY])),
+      ];
     }
-    return [x, y];
+    return [];
   };
 }

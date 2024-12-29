@@ -1,9 +1,13 @@
 import { PieceType } from "../../piece.consts";
 import { Color } from "../../color";
-import { AvailableMove } from "../piece-movement/movement-rule";
+import { Action } from "../piece-movement/movement-rule";
 import { PostMovementRule, PostMovementRuleMeta } from "./post-movement.rule";
-import { Affect, AffectType } from "../../affect.types";
+import { Affect, AffectType, MoveAffect } from "../../affect.types";
 import { PostMovementRules } from "../piece-movement/movement-rules.const";
+import {
+  buildTransformationAffect,
+  markAsUserSelected,
+} from "../../affect.utils";
 
 export type TransformationOnPositionRuleConfig = {
   name: PostMovementRules;
@@ -50,50 +54,42 @@ export class TransformationOnPositionRule extends PostMovementRule {
   }
 
   public updateMovesAffects(
-    availableMoves: AvailableMove[],
+    availableMoves: Action[],
     sourcePieceType: PieceType
-  ): AvailableMove[] {
-    const newMoves: AvailableMove[] = [];
+  ): Action[] {
+    const newMoves: Action[] = [];
     if (this.charges > 0) {
-      for (let move of availableMoves) {
-        const [x, y] = move;
-        if (y === this.config.triggerOnY) {
+      for (let action of availableMoves) {
+        const moveAffect = action.find(
+          (affect) => affect.type === AffectType.move
+        );
+        if (moveAffect && moveAffect.to[1] === this.config.triggerOnY) {
           for (const destPieceType of this.config.possiblePiecesTypes) {
-            const moveVariation = this.cloneMoveAndAddSelectedTypeVariation(
-              move,
-              destPieceType,
-              sourcePieceType
+            // TODO here moves are wrong not all
+            const transformationVariation = markAsUserSelected(
+              buildTransformationAffect(
+                moveAffect.to,
+                destPieceType,
+                sourcePieceType
+              )
             );
-            newMoves.push(moveVariation);
+            action.push(transformationVariation);
           }
         }
+        newMoves.push(action);
       }
-    }
-    if (!newMoves.length) {
-      return availableMoves;
     }
     return newMoves;
   }
 
-  cloneMoveAndAddSelectedTypeVariation(
-    move: AvailableMove,
+  addTransformationVariation(
+    move: MoveAffect,
     type: PieceType,
     sourcePieceType: PieceType
-  ): AvailableMove {
-    const [x, y] = move;
-    const newMove: AvailableMove = [
-      x,
-      y,
-      [
-        ...(move[2] || []),
-        {
-          type: AffectType.transformation,
-          from: [x, y],
-          pieceTypesForTransformation: this.config.possiblePiecesTypes,
-          destPieceType: type,
-          sourcePieceType,
-        } as Affect,
-      ],
+  ): Action {
+    const newMove: Action = [
+      move,
+      buildTransformationAffect(move.to, type, sourcePieceType),
     ];
     return newMove;
   }

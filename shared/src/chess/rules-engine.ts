@@ -1,7 +1,4 @@
-import {
-  AvailableMove,
-  MovementRule,
-} from "./rules/piece-movement/movement-rule";
+import { Action, MovementRule } from "./rules/piece-movement/movement-rule";
 import {
   PostMovementRule,
   PostMovementRuleMeta,
@@ -108,7 +105,7 @@ export class RulesEngine {
 
   public addPostMovementCorrections(
     rule: PostMovementRules,
-    sourceMoves: AvailableMove[],
+    sourceMoves: Action[],
     pieceType: PieceType
   ) {
     const ruleInstance = this.postMovementRules.get(rule);

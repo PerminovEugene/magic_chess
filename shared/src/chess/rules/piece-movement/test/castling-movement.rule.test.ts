@@ -3,15 +3,16 @@ import { Bishop, King, Queen, Rook } from "../../../pieces";
 import { PieceType } from "../../../piece.consts";
 import { Color } from "../../../color";
 import { Coordinate } from "../../../coordinate";
-import { AvailableMove, Direction } from "../movement-rule";
+import { Action, Direction } from "../movement-rule";
 import {
   CastlingMovementRule,
   CastlingMovementRuleConfig,
 } from "../castling.rule";
 import { TurnType } from "../../../turn";
 import { Turn } from "../../../turn";
-import { AffectType } from "../../../affect.types";
+import { Affects } from "../../../affect.types";
 import { MovementRules } from "../movement-rules.const";
+import { buildMoveAffect, markAsUserSelected } from "../../../affect.utils";
 
 describe("CastlingMovementRule", () => {
   let rule: CastlingMovementRule;
@@ -54,10 +55,7 @@ describe("CastlingMovementRule", () => {
     } as CastlingMovementRuleConfig);
   };
 
-  const checkMoves = (
-    moves: AvailableMove[],
-    expectedMoves: AvailableMove[]
-  ) => {
+  const checkMoves = (moves: Action[], expectedMoves: Action[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
     expect(moves).isEqlAvailableMoves(expectedMoves);
   };
@@ -85,8 +83,7 @@ describe("CastlingMovementRule", () => {
     return {
       pieceType,
       color: Color.white,
-      from,
-      to,
+      affects: [markAsUserSelected(buildMoveAffect(from, to))],
       timestamp: new Date().toISOString(),
       type: TurnType.Move,
     } as Turn;
@@ -111,7 +108,7 @@ describe("CastlingMovementRule", () => {
 
     it("should return empty moves when king has moved", () => {
       turns.push(createTurn(PieceType.King, [kingX, 0], [kingX - 1, 0]));
-      const expectedMoves: Coordinate[] = [];
+      const expectedMoves: Affects[] = [];
 
       const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
@@ -121,14 +118,14 @@ describe("CastlingMovementRule", () => {
       turns.push(
         createTurn(PieceType.Rook, [kingsRookX, 0], [kingsRookX + 1, 0])
       );
-      const expectedMoves: Coordinate[] = [];
+      const expectedMoves: Affects[] = [];
 
       const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
       checkMoves(moves, expectedMoves);
     });
     it("should return empty moves when cell is between king and rook is locked", () => {
-      const expectedMoves: Coordinate[] = [];
+      const expectedMoves: Affects[] = [];
 
       addKingsBishop();
 
@@ -137,17 +134,11 @@ describe("CastlingMovementRule", () => {
       checkMoves(moves, expectedMoves);
     });
     it("should return kingside castling available move", () => {
-      const expectedMoves: AvailableMove[] = [
+      const kingFrom: Coordinate = [kingX, 0];
+      const expectedMoves: Affects[] = [
         [
-          1,
-          0,
-          [
-            {
-              type: AffectType.move,
-              from: [kingsRookX, 0],
-              to: [2, 0],
-            },
-          ],
+          markAsUserSelected(buildMoveAffect(kingFrom, [1, 0])),
+          buildMoveAffect([kingsRookX, 0], [2, 0]),
         ],
       ];
 
@@ -169,7 +160,7 @@ describe("CastlingMovementRule", () => {
 
     it("should return empty moves when king has moved", () => {
       turns.push(createTurn(PieceType.King, [kingX, 0], [kingX - 1, 0]));
-      const expectedMoves: Coordinate[] = [];
+      const expectedMoves: Affects[] = [];
 
       const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
@@ -179,14 +170,14 @@ describe("CastlingMovementRule", () => {
       turns.push(
         createTurn(PieceType.Rook, [queensRookX, 0], [queensRookX + 1, 0])
       );
-      const expectedMoves: Coordinate[] = [];
+      const expectedMoves: Affects[] = [];
 
       const moves = rule.availableMoves(kingX, 0, getPiece, turns);
 
       checkMoves(moves, expectedMoves);
     });
     it("should return empty moves when cell is between king and rook is locked", () => {
-      const expectedMoves: Coordinate[] = [];
+      const expectedMoves: Affects[] = [];
 
       addQueen();
 
@@ -195,17 +186,10 @@ describe("CastlingMovementRule", () => {
       checkMoves(moves, expectedMoves);
     });
     it("should return queenside castling available move", () => {
-      const expectedMoves: AvailableMove[] = [
+      const expectedMoves: Affects[] = [
         [
-          5,
-          0,
-          [
-            {
-              type: AffectType.move,
-              from: [queensRookX, 0],
-              to: [4, 0],
-            },
-          ],
+          markAsUserSelected(buildMoveAffect([kingX, 0], [5, 0])),
+          buildMoveAffect([queensRookX, 0], [4, 0]),
         ],
       ];
 

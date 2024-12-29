@@ -1,4 +1,4 @@
-import { AvailableMove, Direction, MovementRuleMeta } from "./movement-rule";
+import { Action, Direction, MovementRuleMeta } from "./movement-rule";
 import {
   directionToVector,
   StraightMovementRule,
@@ -6,6 +6,8 @@ import {
 } from "./straight-movement.rule";
 import { Turn } from "../../turn";
 import { MovementRules } from "./movement-rules.const";
+import { AffectType } from "../../affect.types";
+import { buildMoveAffect, markAsUserSelected } from "../../affect.utils";
 
 /*
   Allows to setup specific positions for activation of the rule, like pawn first double step from initial line
@@ -95,12 +97,15 @@ export class PositionSpecificMovementRule extends StraightMovementRule {
     diff: number,
     dirrection: Direction,
     _: Turn[]
-  ): AvailableMove => {
+  ): Action => {
     if (this.activatePositions.y?.has(y) || this.activatePositions.x?.has(x)) {
-      return directionToVector(dirrection, x, y, diff);
+      return [
+        markAsUserSelected(
+          buildMoveAffect([x, y], directionToVector(dirrection, x, y, diff))
+        ),
+      ];
     }
-
-    return [x, y];
+    return [];
   };
 
   getMeta(): PositionSpecificMovementRuleMeta {
