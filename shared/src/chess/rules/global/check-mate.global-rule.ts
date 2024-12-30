@@ -16,14 +16,9 @@ export abstract class GlobalRule {
     board: Board,
     turns: Turn[]
   ): void;
-  // public abstract isMoveValid(
-  //   node: Node,
-  //   board: Board,
-  //   turn: TurnSubSet
-  // ): boolean;
 }
 
-export class CheckMateGlobalRule2 extends GlobalRule {
+export class CheckMateGlobalRule extends GlobalRule {
   constructor() {
     super();
   }
@@ -82,10 +77,12 @@ export class CheckMateGlobalRule2 extends GlobalRule {
         const moveAffect = getUserSelectedMoveAffect(moveResultData.affects);
         if (
           prevNode &&
+          !prevNode.underCheck &&
           moveAffect.to[0] === enemyKingCoordinate[0] &&
           moveAffect.to[1] === enemyKingCoordinate[1]
         ) {
           prevNode.underCheck = true;
+          continue;
         }
 
         const nextNode = moveResultData.next;
@@ -115,10 +112,10 @@ export class CheckMateGlobalRule2 extends GlobalRule {
             }
           }
 
-          if (nextNode.movements[nextMovementFrom][nextMoveToCurrentKingKey]) {
-            // leadsToCurrentColorCheck = true;
-            moveResultData.suisidal = true;
-          }
+          // if (nextNode.movements[nextMovementFrom][nextMoveToCurrentKingKey]) {
+          //   // leadsToCurrentColorCheck = true;
+          //   moveResultData.suisidal = true;
+          // }
         }
         // if (!leadsToCurrentColorCheck) {
         //   // at least one currentColor move doesn't lead to immediate check

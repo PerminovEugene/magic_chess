@@ -1,3 +1,4 @@
+import { Action } from "../chess";
 import { Affect } from "../chess/affect/affect.types";
 
 const deepEqual = (obj1: any, obj2: any): boolean => {
@@ -29,7 +30,11 @@ const deepEqual = (obj1: any, obj2: any): boolean => {
 };
 
 export const isAffectEql = (expected: Affect, received: Affect): boolean => {
-  return deepEqual(expected, received);
+  const result = deepEqual(expected, received);
+  if (!result) {
+    console.log("Mismatch in Affect:", { expected, received });
+  }
+  return result;
 };
 
 export const isAffectsEql = (
@@ -38,9 +43,45 @@ export const isAffectsEql = (
 ): boolean => {
   if (!expected && !received) return true;
   if (!expected || !received) return false;
-  if (expected.length !== received.length) return false;
+  if (expected.length !== received.length) {
+    console.log("Mismatch in Affect array length:", { expected, received });
+    return false;
+  }
 
-  return expected.every((expectedAffect, index) =>
-    isAffectEql(expectedAffect, received[index])
-  );
+  return expected.every((expectedAffect, index) => {
+    const result = isAffectEql(expectedAffect, received[index]);
+    if (!result) {
+      console.log(`Mismatch at index ${index}:`, {
+        expectedAffect,
+        received: received[index],
+      });
+    }
+    return result;
+  });
+};
+
+export const isActionsEql = (
+  expected: Action[] | undefined,
+  received: Action[] | undefined
+): boolean => {
+  if (!expected && !received) return true;
+  if (!expected || !received) return false;
+  if (expected.length !== received.length) {
+    console.log("Mismatch in Action array length:", { expected, received });
+    return false;
+  }
+
+  const unmatchedReceived = [...received];
+
+  return expected.every((expectedAction) => {
+    const index = unmatchedReceived.findIndex((receivedAction) =>
+      deepEqual(expectedAction, receivedAction)
+    );
+    if (index === -1) {
+      console.log("No matching Action found for:", { expectedAction });
+      return false;
+    }
+    unmatchedReceived.splice(index, 1);
+    return true;
+  });
 };

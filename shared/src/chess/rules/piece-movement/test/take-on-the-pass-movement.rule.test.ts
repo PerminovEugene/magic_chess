@@ -13,6 +13,7 @@ import {
   buildMoveAffect,
   markAsUserSelected,
 } from "../../../affect/affect.utils";
+import { randomUUID } from "crypto";
 
 describe("TakeOnThePassMovementRule", () => {
   let rule: TakeOnThePassMovementRule;
@@ -31,6 +32,7 @@ describe("TakeOnThePassMovementRule", () => {
   };
   const updateRule = (config?: Partial<PositionSpecificMovementRuleConfig>) => {
     rule = new TakeOnThePassMovementRule({
+      id: randomUUID(), // this
       name: MovementRules.TakeOnThePassMovementRule,
       moveToEmpty: true,
       moveToKill: true,

@@ -12,6 +12,7 @@ import {
   handleMoveAffect,
   handleSpawnAffect,
   handleTransformAffect,
+  reverseAffects,
 } from "../affect/affect";
 import { buildPieceByMeta } from "../piece/piece-builder";
 import { BoardMeta } from "./board.types";
@@ -123,9 +124,9 @@ export class Board {
     }
     const { movementRules, postMovementRules } = piece;
 
-    movementRules.forEach((rule) => {
+    movementRules.forEach((ruleId) => {
       const ruleMoves = this.rulesEngine.getAvailableMoves(
-        rule,
+        ruleId,
         x,
         y,
         this.getPiece,
@@ -135,9 +136,9 @@ export class Board {
       availableMoves.push(...ruleMoves);
     });
     let updatedMoves: Action[] = availableMoves;
-    postMovementRules?.forEach((rule) => {
+    postMovementRules?.forEach((ruleId) => {
       updatedMoves = this.rulesEngine.addPostMovementCorrections(
-        rule,
+        ruleId,
         updatedMoves,
         piece.type
       );
@@ -162,15 +163,10 @@ export class Board {
 
   public updateCellsOnMove(affects: Action) {
     affects.forEach((affect) => {
-      const killed = handleKillAffect(affect, this.squares);
-      if (killed) {
-        this.killed.push(killed);
-      }
+      handleKillAffect(affect, this.squares, this.killed);
       handleMoveAffect(affect, this.squares, this.metaStorage);
-
       handleTransformAffect(affect, this.squares, this.metaStorage);
-
-      handleSpawnAffect(affect, this.squares, this.killed.pop() as Piece);
+      handleSpawnAffect(affect, this.squares, this.killed);
     });
 
     // if (affects) {
@@ -205,6 +201,11 @@ export class Board {
     //     handleSpawnAffect(affect, this.squares, this.killed.pop() as Piece);
     //   });
     // }
+  }
+
+  public revertMove(affects: Action): void {
+    const reversedAffects = reverseAffects(affects);
+    this.updateCellsOnMove(reversedAffects);
   }
 
   public duplicatePosition(cells: Cell[][]): Cell[][] {

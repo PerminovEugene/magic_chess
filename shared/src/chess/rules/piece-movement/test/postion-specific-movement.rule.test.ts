@@ -12,6 +12,7 @@ import {
   buildMoveAffect,
   markAsUserSelected,
 } from "../../../affect/affect.utils";
+import { randomUUID } from "crypto";
 
 describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
   let rule: PositionSpecificMovementRule;
@@ -31,6 +32,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
   };
   const updateRule = (config?: Partial<PositionSpecificMovementRuleConfig>) => {
     rule = new PositionSpecificMovementRule({
+      id: randomUUID(), // this
       name: MovementRules.PositionSpecificMovementRule,
       moveToEmpty: true,
       moveToKill: true,

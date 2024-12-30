@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "target": "es2022",
     "module": "ESNext",
     "declaration": true,
     "sourceMap": true,
@@ -10,7 +10,8 @@
     "resolveJsonModule": true,
     "rootDir": "./src",
     "outDir": "./dist/esm",
-    "types": ["node"]
+    "types": ["node"],
+    "lib": ["es2023"]
   },
   "include": ["src/**/*.ts", "src/**/*.json"],
   "exclude": ["node_modules", "**/*.test.ts"]

@@ -2,9 +2,11 @@ import { Turn } from "../../turn";
 import { Coordinate } from "../../coordinate";
 import { Action, Direction, MovementRule } from "./movement-rule";
 import { GetPiece } from "../../get-piece";
-import { Affect, AffectType, KillAffect } from "../../affect/affect.types";
+import { AffectType } from "../../affect/affect.types";
 import { MovementRules } from "./movement-rules.const";
 import { buildKillAffect } from "../../affect/affect.utils";
+import { Entity } from "../../entity";
+import { UUID } from "crypto";
 
 export type StraightMovementRuleConfig = {
   name: MovementRules;
@@ -14,7 +16,7 @@ export type StraightMovementRuleConfig = {
   distance: number;
   directions: Set<Direction>;
   speed: number;
-};
+} & Entity;
 
 const mapDirectionToVector = {
   [Direction.UpLeft]: (x: number, y: number, diff: number): Coordinate => [
@@ -62,7 +64,8 @@ export function directionToVector(
 
 export abstract class StraightMovementRule extends MovementRule {
   constructor(
-    mname: MovementRules,
+    id: UUID,
+    name: MovementRules,
     moveToEmpty: boolean,
     moveToKill: boolean,
     collision: boolean, // true - will move until first enemy, false - will jump like horse
@@ -71,7 +74,8 @@ export abstract class StraightMovementRule extends MovementRule {
     speed: number
   ) {
     super(
-      mname,
+      id,
+      name,
       moveToEmpty,
       moveToKill,
       collision,
@@ -130,13 +134,13 @@ export abstract class StraightMovementRule extends MovementRule {
             // todo remove magic
             availableDirections.delete(dirrection);
           } else {
-            const toPiece = getPiece(newX, newY);
             const fromPiece = getPiece(fromX, fromY);
 
             if (!fromPiece) {
               throw new Error("Not found piece at from location");
             }
 
+            const toPiece = getPiece(newX, newY);
             if (this.moveToEmpty && !toPiece) {
               // can move to empty square
               moves.push(affects);

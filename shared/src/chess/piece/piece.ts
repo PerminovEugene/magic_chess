@@ -4,13 +4,14 @@ import {
   MovementRules,
   PostMovementRules,
 } from "../rules/piece-movement/movement-rules.const";
+import { MovementRule, PostMovementRule } from "../rules";
 
 export abstract class Piece {
   constructor(
     public type: PieceType,
     public color: Color,
-    public movementRules: MovementRules[],
-    public postMovementRules?: PostMovementRules[]
+    public movementRules: MovementRule["id"][],
+    public postMovementRules?: PostMovementRule["id"][]
   ) {}
 
   getMeta() {

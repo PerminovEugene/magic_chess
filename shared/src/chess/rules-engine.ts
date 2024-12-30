@@ -24,6 +24,7 @@ import {
 import { GetPiece } from "./get-piece";
 import { Turn } from "./turn";
 import { PieceType } from "./piece/piece.constants";
+import { Entity } from "./entity";
 
 const rulesMapper = {
   [MovementRules.VerticalMovementRule]: VerticalMovementRule,
@@ -62,11 +63,11 @@ export class RulesEngine {
       directions: new Set(ruleMeta.directions),
       ...uniqRulesParams,
     });
-    this.movementRules.set(ruleMeta.name, ruleInstance);
+    this.movementRules.set(ruleMeta.id, ruleInstance);
   }
   public addMovementRules(rulesMeta: RuleMeta[]) {
     rulesMeta.forEach((ruleMeta) => {
-      if (!this.movementRules.has(ruleMeta.name)) {
+      if (!this.movementRules.has(ruleMeta.id)) {
         this.addMovementRule(ruleMeta);
       }
     });
@@ -75,36 +76,36 @@ export class RulesEngine {
   public addPostMovementRule(ruleMeta: PostMovementRuleMeta) {
     if (isTransformingRuleMeta(ruleMeta)) {
       const ruleInstance = new postMovementRulesMapper[ruleMeta.name](ruleMeta);
-      this.postMovementRules.set(ruleMeta.name, ruleInstance);
+      this.postMovementRules.set(ruleMeta.id, ruleInstance);
     } else {
       throw new Error("Invalid post movement rule");
     }
   }
   public addPostMovementRules(rulesMeta: PostMovementRuleMeta[]) {
     rulesMeta.forEach((ruleMeta) => {
-      if (!this.postMovementRules.has(ruleMeta.name)) {
+      if (!this.postMovementRules.has(ruleMeta.id)) {
         this.addPostMovementRule(ruleMeta);
       }
     });
   }
 
   public getAvailableMoves(
-    ruleName: MovementRules,
+    ruleId: Entity["id"],
     x: number,
     y: number,
     getPiece: GetPiece,
     turns: Turn[],
     size: number
   ) {
-    const ruleInstance = this.movementRules.get(ruleName);
+    const ruleInstance = this.movementRules.get(ruleId);
     if (!ruleInstance) {
-      throw new Error(`Movement rule not found ${ruleName}`);
+      throw new Error(`Movement rule not found ${ruleId}`);
     }
     return ruleInstance.availableMoves(x, y, getPiece, turns, size);
   }
 
   public addPostMovementCorrections(
-    rule: PostMovementRules,
+    rule: PostMovementRule["id"],
     sourceMoves: Action[],
     pieceType: PieceType
   ) {

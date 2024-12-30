@@ -2,6 +2,7 @@ import { Turn } from "../../turn";
 import { GetPiece } from "../../get-piece";
 import { Affects } from "../../affect/affect.types";
 import { MovementRules } from "./movement-rules.const";
+import { UUID } from "crypto";
 
 export enum Direction {
   Up = "Up",
@@ -15,6 +16,7 @@ export enum Direction {
 }
 
 export type MovementRuleMeta = {
+  id: UUID;
   name: MovementRules;
   moveToEmpty: boolean;
   moveToKill: boolean;
@@ -28,6 +30,7 @@ export type Action = Affects;
 
 export abstract class MovementRule {
   constructor(
+    public id: UUID,
     public name: MovementRules,
     protected moveToEmpty: boolean,
     protected moveToKill: boolean,
@@ -39,6 +42,7 @@ export abstract class MovementRule {
 
   getMeta() {
     return {
+      id: this.id,
       name: this.name,
       moveToEmpty: this.moveToEmpty,
       moveToKill: this.moveToKill,

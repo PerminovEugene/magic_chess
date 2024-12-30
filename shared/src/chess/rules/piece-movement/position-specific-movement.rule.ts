@@ -34,6 +34,7 @@ export type PositionSpecificMovementRuleMeta = {
 export class PositionSpecificMovementRule extends StraightMovementRule {
   protected activatePositions: ActivatePositions;
   constructor({
+    id,
     name,
     moveToEmpty,
     moveToKill,
@@ -44,6 +45,7 @@ export class PositionSpecificMovementRule extends StraightMovementRule {
     activatePositions,
   }: PositionSpecificMovementRuleConfig) {
     super(
+      id,
       name,
       moveToEmpty,
       moveToKill,

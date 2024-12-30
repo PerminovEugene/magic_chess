@@ -1,9 +1,8 @@
 import { Board } from "../board/board";
-import { Turn, TurnType } from "../turn";
+import { Turn } from "../turn";
 import { Color } from "../color";
 import { Action } from "../rules/piece-movement/movement-rule";
 import { AffectType } from "../affect/affect.types";
-import { reverseAffects } from "../affect/affect";
 import { reverseColor } from "../color";
 import { Node } from "./moves-tree.types";
 import { GlobalRule } from "../rules/global/check-mate.global-rule";
@@ -15,7 +14,10 @@ import {
 
 /**
  * This structure keep all possible moves for both players
- * Root keeps all moves for currentColor, each node keeps all possible moves for the next player
+ * Root keeps all moves for currentColor, each node keeps all possible moves for the next player.
+ * It applies node marks from global rules.
+ * Restrictions: checkmate/stalemate can not be detected on the first turn.
+ *   So all tests on check mate should contains at least one process turn cal
  */
 export class MovesTree {
   private root: Node;
@@ -31,17 +33,37 @@ export class MovesTree {
     this.fillUpRoot();
   }
 
+  private fillUpRoot() {
+    this.fillUpNode(this.root); // contain all moves for the first turn
+
+    let i = 1;
+    while (i < this.length) {
+      this.raiseTree();
+      console.log("raise");
+      i += 1;
+    }
+    this.applyGlobalRules(this.root);
+
+    if (this.length > 1) {
+      this.forEachChild(this.root, (node) => {
+        this.applyGlobalRules(node, this.root);
+      });
+    }
+    this.treeShaking(this.root);
+    if (this.length > 1) {
+      this.forEachChild(this.root, (node) => {
+        this.treeShaking(node);
+      });
+    }
+  }
+
   /**
    * Move root to the next level by turn data
    * @param fromCoordinate
    * @param fromCoordinate
    * @param selectedPieceType - using for transforming pawn to another piece
    */
-  public processTurn(
-    turn: Turn
-    // toCoordinate: Coordinate,
-    // selectedPieceType?: PieceType // this is donkey solution, but for now it's not clear how to keep dynamic data
-  ) {
+  public processTurn(turn: Turn) {
     const fromCoordinate = turn.affects.find(
       (a) => a.type === AffectType.move && a.userSelected
     )?.from;
@@ -51,7 +73,8 @@ export class MovesTree {
     const from = serializeCoordinate(fromCoordinate);
     const to = serializeAffects(turn.affects);
 
-    // bullshit
+    // console.log(from, to, this.root.movements[from]);
+
     let movementResults = this.root.movements[from][to];
 
     // const movementAffects = movementResults.affects;
@@ -67,19 +90,27 @@ export class MovesTree {
     // }
 
     const nextNode = movementResults.next;
-
+    const prevRoot = this.root;
     this.root = nextNode;
+
+    console.log(" new root", this.root);
+
     this.updateBoard(movementResults.affects);
 
     this.raiseTree();
+
+    this.applyGlobalRules(this.root, prevRoot);
+
+    //
+    // this.treeShaking();
 
     this.forEachChild(this.root, (node) => {
       this.applyGlobalRules(node, this.root);
     });
 
-    this.treeShaking();
+    this.treeShaking(this.root);
 
-    // handling transformation
+    console.log("after bullshit root", this.root);
   }
 
   public getRoot() {
@@ -94,32 +125,8 @@ export class MovesTree {
   }
   private applyGlobalRules(node: Node, prevNode?: Node) {
     for (const rule of this.globalRules) {
-      rule.markNodeWithChilds(
-        node,
-        prevNode,
-        // this.squares,
-        this.board,
-        this.initialTurns
-      );
+      rule.markNodeWithChilds(node, prevNode, this.board, this.initialTurns);
     }
-  }
-
-  private fillUpRoot() {
-    this.fillUpNode(this.root); // contain all moves for the first turn
-
-    let i = 1;
-    while (i < this.length) {
-      this.raiseTree();
-      i += 1;
-    }
-    this.applyGlobalRules(this.root);
-
-    if (this.length > 1) {
-      this.forEachChild(this.root, (node) => {
-        this.applyGlobalRules(node, this.root);
-      });
-    }
-    this.treeShaking();
   }
 
   private raiseTree() {
@@ -132,15 +139,15 @@ export class MovesTree {
    * It cuts off all invalid moves from the tree
    * Like moves that leads to check
    */
-  private treeShaking() {
-    Object.keys(this.root.movements).forEach((fromKey) => {
-      Object.keys(this.root.movements[fromKey]).forEach((toKey) => {
-        if (this.root.movements[fromKey][toKey].suisidal) {
-          delete this.root.movements[fromKey][toKey];
+  private treeShaking(node: Node) {
+    Object.keys(node.movements).forEach((fromKey) => {
+      Object.keys(node.movements[fromKey]).forEach((toKey) => {
+        if (node.movements[fromKey][toKey].suisidal) {
+          delete node.movements[fromKey][toKey];
         }
       });
-      if (Object.keys(this.root.movements[fromKey]).length === 0) {
-        delete this.root.movements[fromKey];
+      if (Object.keys(node.movements[fromKey]).length === 0) {
+        delete node.movements[fromKey];
       }
     });
   }
@@ -156,8 +163,9 @@ export class MovesTree {
 
         callback(nextNode);
 
-        const reversedAffects = reverseAffects(movementResultAffects);
-        this.updateBoard(reversedAffects);
+        // const reversedAffects = reverseAffects(movementResultAffects);
+        // this.updateBoard(reversedAffects);
+        this.board.revertMove(movementResultAffects);
       });
     });
   }
@@ -168,18 +176,15 @@ export class MovesTree {
   ) {
     Object.keys(movements).forEach((fromKey) => {
       Object.keys(movements[fromKey]).forEach((toKey) => {
-        const movementResult = movements[fromKey][toKey];
-        const nextNode = movementResult.next;
-        const movementResultAffects = movementResult.affects;
+        const { next, affects } = movements[fromKey][toKey];
 
-        this.updateBoard(movementResultAffects);
-        if (Object.keys(nextNode.movements).length === 0) {
-          callback(nextNode);
+        this.updateBoard(affects);
+        if (Object.keys(next.movements).length === 0) {
+          callback(next);
         } else {
-          this.forEachSubTreeLeaf(nextNode, callback);
+          this.forEachSubTreeLeaf(next, callback);
         }
-        const reversedAffects = reverseAffects(movementResultAffects);
-        this.updateBoard(reversedAffects);
+        this.board.revertMove(affects);
       });
     });
   }

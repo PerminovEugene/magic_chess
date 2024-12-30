@@ -22,17 +22,18 @@ import { Coordinate } from "../coordinate";
 
 export function handleKillAffect(
   affect: Affect,
-  cells: Cell[][]
-): Piece | undefined {
+  cells: Cell[][],
+  killed: Piece[]
+) {
   const { from, type } = affect;
 
   if (isKillAffect(affect)) {
     const [fromX, fromY] = from;
-    const killed = cells[fromY][fromX].popPiece();
-    if (!killed) {
+    const killedPiece = cells[fromY][fromX].popPiece();
+    if (!killedPiece) {
       throw new Error(`Invalid affect kill cordinate ${fromX}, ${fromY}`);
     }
-    return killed;
+    killed.push(killedPiece);
   }
 }
 
@@ -96,13 +97,18 @@ export function handleMoveAffect(
     cells[toY][toX].putPiece(pieceMovedByAffect);
   }
 }
+// currently it's purely for reverting kill
 export function handleSpawnAffect(
   affect: Affect,
   cells: Cell[][],
-  spawnedPiece: Piece
+  killed: Piece[]
 ) {
   if (isSpawnAffect(affect)) {
     const [fromX, fromY] = affect.from;
+    const spawnedPiece = killed.pop();
+    if (!spawnedPiece) {
+      throw new Error("Invalid move: no piece to spawn");
+    }
     cells[fromY][fromX].putPiece(spawnedPiece);
   }
 }
@@ -161,7 +167,7 @@ function reverseTransformationAffect(
 }
 
 export function reverseAffects(affects: Affects): Affects {
-  return affects.reverse().map((affect) => {
+  return affects.toReversed().map((affect: Affect) => {
     if (isKillAffect(affect)) {
       return reverseKillAffect(affect);
     } else if (isMoveAffect(affect)) {

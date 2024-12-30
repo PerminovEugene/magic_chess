@@ -8,6 +8,7 @@ import {
 
 export class VerticalMovementRule extends StraightMovementRule {
   constructor({
+    id,
     name,
     moveToEmpty,
     moveToKill,
@@ -17,6 +18,7 @@ export class VerticalMovementRule extends StraightMovementRule {
     speed = 1,
   }: StraightMovementRuleConfig) {
     super(
+      id,
       name,
       moveToEmpty,
       moveToKill,

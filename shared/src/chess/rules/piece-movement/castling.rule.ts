@@ -10,6 +10,7 @@ import {
   getUserSelectedMoveAffect,
   markAsUserSelected,
 } from "../../affect/affect.utils";
+import { Entity } from "../../entity";
 
 export type CastlingRuleSpecificConfig = {
   mainPieceCoordinate: Coordinate;
@@ -19,15 +20,18 @@ export type CastlingRuleSpecificConfig = {
 export type CastlingMovementRuleConfig = {
   color: Color;
 } & StraightMovementRuleConfig &
-  CastlingRuleSpecificConfig;
+  CastlingRuleSpecificConfig &
+  Entity;
 
 export type CastlingMovementRuleMeta = MovementRuleMeta & {
   color: Color;
-} & CastlingRuleSpecificConfig;
+} & CastlingRuleSpecificConfig &
+  Entity;
 
 export class CastlingMovementRule extends MovementRule {
   private color: Color;
   constructor({
+    id,
     name,
     moveToEmpty,
     moveToKill,
@@ -40,6 +44,7 @@ export class CastlingMovementRule extends MovementRule {
     foreginPieceCoordinate,
   }: CastlingMovementRuleConfig) {
     super(
+      id,
       name,
       moveToEmpty,
       moveToKill,

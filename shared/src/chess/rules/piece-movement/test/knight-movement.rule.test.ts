@@ -11,6 +11,7 @@ import {
   buildMoveAffect,
   markAsUserSelected,
 } from "../../../affect/affect.utils";
+import { randomUUID } from "crypto";
 
 describe("KnightMovementRule", () => {
   let rule: KnightMovementRule;
@@ -28,6 +29,7 @@ describe("KnightMovementRule", () => {
   };
   const updateRule = (config?: Partial<StraightMovementRuleConfig>) => {
     rule = new KnightMovementRule({
+      id: randomUUID(), // this
       name: MovementRules.KnightMovementRule,
       moveToEmpty: true,
       moveToKill: true,

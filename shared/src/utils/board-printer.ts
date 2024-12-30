@@ -13,7 +13,7 @@ export function printCells(cells: BoardMeta) {
     }
     r = `${r}
 ${printData.join("|")}
---------------------`;
+-----------------------`;
   }
   console.log(r);
 }

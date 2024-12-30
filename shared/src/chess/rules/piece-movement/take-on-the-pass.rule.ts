@@ -15,6 +15,7 @@ import {
 
 export class TakeOnThePassMovementRule extends PositionSpecificMovementRule {
   constructor({
+    id,
     name,
     moveToEmpty,
     moveToKill,
@@ -25,6 +26,7 @@ export class TakeOnThePassMovementRule extends PositionSpecificMovementRule {
     activatePositions,
   }: PositionSpecificMovementRuleConfig) {
     super({
+      id,
       name,
       moveToEmpty,
       moveToKill,

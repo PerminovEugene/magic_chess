@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { AffectType } from "../../../affect/affect.types";
 import {
   buildKillAffect,
@@ -32,6 +33,7 @@ describe("VerticalMovementRule", () => {
   };
   const updateRule = (config?: Partial<StraightMovementRuleConfig>) => {
     rule = new VerticalMovementRule({
+      id: randomUUID(),
       name: MovementRules.VerticalMovementRule,
       moveToEmpty: true,
       moveToKill: true,

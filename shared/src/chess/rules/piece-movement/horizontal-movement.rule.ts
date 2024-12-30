@@ -9,6 +9,7 @@ import {
 
 export class HorizontalMovementRule extends StraightMovementRule {
   constructor({
+    id,
     name,
     moveToEmpty,
     moveToKill,
@@ -18,6 +19,7 @@ export class HorizontalMovementRule extends StraightMovementRule {
     speed,
   }: StraightMovementRuleConfig) {
     super(
+      id,
       name,
       moveToEmpty,
       moveToKill,

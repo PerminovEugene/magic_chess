@@ -46,6 +46,7 @@ const actionMap: {
 
 export class KnightMovementRule extends StraightMovementRule {
   constructor({
+    id,
     name,
     moveToEmpty,
     moveToKill,
@@ -55,6 +56,7 @@ export class KnightMovementRule extends StraightMovementRule {
     speed,
   }: StraightMovementRuleConfig) {
     super(
+      id,
       name,
       moveToEmpty,
       moveToKill,

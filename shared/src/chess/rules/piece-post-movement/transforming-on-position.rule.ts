@@ -8,6 +8,7 @@ import {
   buildTransformationAffect,
   markAsUserSelected,
 } from "../../affect/affect.utils";
+import { Entity } from "../../entity";
 
 export type TransformationOnPositionRuleConfig = {
   name: PostMovementRules;
@@ -17,7 +18,7 @@ export type TransformationOnPositionRuleConfig = {
   // metadata for these pieces should be in board metadata
   possiblePiecesTypes: PieceType[];
   maxCharges: number;
-};
+} & Entity;
 export type TransformationOnPositionRuleMeta = {
   name: PostMovementRules;
 } & TransformationOnPositionRuleConfig;
@@ -36,7 +37,7 @@ export class TransformationOnPositionRule extends PostMovementRule {
   private charges: number;
 
   constructor(private config: TransformationOnPositionRuleConfig) {
-    super(config.name);
+    super(config.id, config.name);
     if (config.triggerOnX === undefined && config.triggerOnY === undefined) {
       throw new Error("triggerOnX or triggerOnY are required");
     }
@@ -65,33 +66,22 @@ export class TransformationOnPositionRule extends PostMovementRule {
         );
         if (moveAffect && moveAffect.to[1] === this.config.triggerOnY) {
           for (const destPieceType of this.config.possiblePiecesTypes) {
-            // TODO here moves are wrong not all
-            const transformationVariation = markAsUserSelected(
+            const transformationAffect = markAsUserSelected(
               buildTransformationAffect(
                 moveAffect.to,
                 destPieceType,
                 sourcePieceType
               )
             );
-            action.push(transformationVariation);
+
+            newMoves.push([...action, transformationAffect]);
           }
+        } else {
+          newMoves.push(action);
         }
-        newMoves.push(action);
       }
     }
     return newMoves;
-  }
-
-  addTransformationVariation(
-    move: MoveAffect,
-    type: PieceType,
-    sourcePieceType: PieceType
-  ): Action {
-    const newMove: Action = [
-      move,
-      buildTransformationAffect(move.to, type, sourcePieceType),
-    ];
-    return newMove;
   }
 
   getMeta(): TransformationOnPositionRuleMeta {

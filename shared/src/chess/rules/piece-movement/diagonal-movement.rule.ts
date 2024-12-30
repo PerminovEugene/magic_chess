@@ -1,4 +1,3 @@
-import { AffectType } from "../../affect/affect.types";
 import { buildMoveAffect, markAsUserSelected } from "../../affect/affect.utils";
 import { Action, Direction } from "./movement-rule";
 import {
@@ -9,6 +8,7 @@ import {
 
 export class DiagonalMovementRule extends StraightMovementRule {
   constructor({
+    id,
     name,
     moveToEmpty,
     moveToKill,
@@ -18,6 +18,7 @@ export class DiagonalMovementRule extends StraightMovementRule {
     speed = 1,
   }: StraightMovementRuleConfig) {
     super(
+      id,
       name,
       moveToEmpty,
       moveToKill,

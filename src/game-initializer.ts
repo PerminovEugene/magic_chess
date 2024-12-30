@@ -17,11 +17,12 @@ import { Direction } from "../shared/src/chess/rules/piece-movement/movement-rul
 import { VerticalMovementRule } from "../shared/src/chess/rules/piece-movement/vertical-movement.rule";
 import { TakeOnThePassMovementRule } from "../shared/src/chess/rules/piece-movement/take-on-the-pass.rule";
 import { CastlingMovementRule } from "../shared/src/chess/rules/piece-movement/castling.rule";
-import { CheckMateGlobalRule2 } from "../shared/src/chess/rules/global/check-mate.global-rule";
+import { CheckMateGlobalRule } from "../shared/src/chess/rules/global/check-mate.global-rule";
 import {
   MovementRules,
   PostMovementRules,
 } from "../shared/src/chess/rules/piece-movement/movement-rules.const";
+import { randomUUID } from "crypto";
 
 export type Position = {
   [key in Color]: { type: PieceType; coordinate: Coordinate }[];
@@ -35,58 +36,60 @@ export class GameInitializer {
     PieceType.Knight,
   ];
   getDefaultPawnRules(color: Color, withPostRulest: boolean = true) {
+    const verticalDirection =
+      color == Color.white
+        ? new Set<Direction>([Direction.Down])
+        : new Set<Direction>([Direction.Up]);
+
+    const diagonalDirection =
+      color == Color.white
+        ? new Set<Direction>([Direction.DownRight, Direction.DownLeft])
+        : new Set<Direction>([Direction.UpRight, Direction.UpLeft]);
+
     return {
       movementRules: [
         new VerticalMovementRule({
+          id: randomUUID(),
           name: MovementRules.VerticalMovementRule,
           moveToEmpty: true,
           moveToKill: false,
           collision: true,
           distance: 1,
-          directions:
-            color == Color.white
-              ? new Set<Direction>([Direction.Down])
-              : new Set<Direction>([Direction.Up]),
+          directions: verticalDirection,
           speed: 1,
         }),
         new DiagonalMovementRule({
+          id: randomUUID(),
           name: MovementRules.DiagonalMovementRule,
           moveToEmpty: false,
           moveToKill: true,
           collision: true,
           distance: 1,
-          directions:
-            color == Color.white
-              ? new Set<Direction>([Direction.DownRight, Direction.DownLeft])
-              : new Set<Direction>([Direction.UpRight, Direction.UpLeft]),
+          directions: diagonalDirection,
           speed: 1,
         }),
         new PositionSpecificMovementRule({
+          id: randomUUID(),
           name: MovementRules.PositionSpecificMovementRule,
           moveToEmpty: true,
           moveToKill: false,
           collision: true,
           distance: 2,
           speed: 2,
-          directions:
-            color == Color.white
-              ? new Set<Direction>([Direction.Down])
-              : new Set<Direction>([Direction.Up]),
+          directions: verticalDirection,
           activatePositions: {
             y: new Set<number>(color == Color.white ? [1] : [6]),
           },
         }),
         new TakeOnThePassMovementRule({
+          id: randomUUID(),
           name: MovementRules.TakeOnThePassMovementRule,
           moveToEmpty: true,
           moveToKill: false,
           collision: true,
           distance: 1,
           speed: 1,
-          directions:
-            color == Color.white
-              ? new Set<Direction>([Direction.DownLeft, Direction.DownRight])
-              : new Set<Direction>([Direction.UpLeft, Direction.UpRight]),
+          directions: diagonalDirection,
           activatePositions: {
             y: new Set<number>(color == Color.white ? [4] : [3]),
           },
@@ -95,6 +98,7 @@ export class GameInitializer {
       postMovementRules: withPostRulest
         ? [
             new TransformationOnPositionRule({
+              id: randomUUID(),
               name: PostMovementRules.TransformationOnPositionRule,
               color,
               maxCharges: 1,
@@ -109,6 +113,7 @@ export class GameInitializer {
     return {
       movementRules: [
         new VerticalMovementRule({
+          id: randomUUID(),
           name: MovementRules.VerticalMovementRule,
           moveToEmpty: true,
           moveToKill: true,
@@ -118,6 +123,7 @@ export class GameInitializer {
           speed: 1,
         }),
         new HorizontalMovementRule({
+          id: randomUUID(),
           name: MovementRules.HorizontalMovementRule,
           moveToEmpty: true,
           moveToKill: true,
@@ -133,6 +139,7 @@ export class GameInitializer {
     return {
       movementRules: [
         new DiagonalMovementRule({
+          id: randomUUID(),
           name: MovementRules.DiagonalMovementRule,
           moveToEmpty: true,
           moveToKill: true,
@@ -153,6 +160,7 @@ export class GameInitializer {
     return {
       movementRules: [
         new KnightMovementRule({
+          id: randomUUID(),
           name: MovementRules.KnightMovementRule,
           moveToEmpty: true,
           moveToKill: true,
@@ -177,6 +185,7 @@ export class GameInitializer {
     return {
       movementRules: [
         new DiagonalMovementRule({
+          id: randomUUID(),
           name: MovementRules.DiagonalMovementRule,
           moveToEmpty: true,
           moveToKill: true,
@@ -191,6 +200,7 @@ export class GameInitializer {
           speed: 1,
         }),
         new VerticalMovementRule({
+          id: randomUUID(),
           name: MovementRules.VerticalMovementRule,
           moveToEmpty: true,
           moveToKill: true,
@@ -200,6 +210,7 @@ export class GameInitializer {
           speed: 1,
         }),
         new HorizontalMovementRule({
+          id: randomUUID(),
           name: MovementRules.HorizontalMovementRule,
           moveToEmpty: true,
           moveToKill: true,
@@ -216,6 +227,7 @@ export class GameInitializer {
     const rookPos: Coordinate = color === Color.white ? [0, 0] : [0, 7];
 
     return new CastlingMovementRule({
+      id: randomUUID(),
       name: MovementRules.CastlingMovementRule,
       moveToEmpty: true,
       moveToKill: false,
@@ -232,6 +244,7 @@ export class GameInitializer {
     const kingPos: Coordinate = color === Color.white ? [3, 0] : [3, 7];
     const rookPos: Coordinate = color === Color.white ? [7, 0] : [7, 7];
     return new CastlingMovementRule({
+      id: randomUUID(),
       name: MovementRules.CastlingMovementRule,
       moveToEmpty: true,
       moveToKill: false,
@@ -248,6 +261,7 @@ export class GameInitializer {
     return {
       movementRules: [
         new DiagonalMovementRule({
+          id: randomUUID(),
           name: MovementRules.DiagonalMovementRule,
           moveToEmpty: true,
           moveToKill: true,
@@ -262,6 +276,7 @@ export class GameInitializer {
           speed: 1,
         }),
         new VerticalMovementRule({
+          id: randomUUID(),
           name: MovementRules.VerticalMovementRule,
           moveToEmpty: true,
           moveToKill: true,
@@ -271,6 +286,7 @@ export class GameInitializer {
           speed: 1,
         }),
         new HorizontalMovementRule({
+          id: randomUUID(),
           name: MovementRules.HorizontalMovementRule,
           moveToEmpty: true,
           moveToKill: true,
@@ -286,7 +302,7 @@ export class GameInitializer {
   }
 
   getDefaultGlobalRules(board: Board) {
-    return [new CheckMateGlobalRule2()];
+    return [new CheckMateGlobalRule()];
   }
 
   spawnDefaultRulesAndDefaultPosition(board: Board) {

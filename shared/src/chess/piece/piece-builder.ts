@@ -7,9 +7,9 @@ export function buildPieceByMeta(meta: PieceMeta) {
   const c = mapper[meta.type as PieceType];
   return new c(
     meta.color,
-    meta.rules.map((ruleMeta: RuleMeta) => ruleMeta.name),
+    meta.rules.map((ruleMeta: RuleMeta) => ruleMeta.id),
     meta.postMovementRulesMeta?.map(
-      (ruleMeta: PostMovementRuleMeta) => ruleMeta.name
+      (ruleMeta: PostMovementRuleMeta) => ruleMeta.id
     )
     //   const r = rulesMapper[ruleMeta.name];
 

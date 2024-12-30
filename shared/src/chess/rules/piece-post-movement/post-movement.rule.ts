@@ -2,9 +2,11 @@ import { Color } from "../../color";
 import { Action } from "../piece-movement/movement-rule";
 import { PostMovementRules } from "../piece-movement/movement-rules.const";
 import { PieceType } from "../../piece/piece.constants";
+import { Entity } from "../../entity";
+import { UUID } from "crypto";
 
 export abstract class PostMovementRule {
-  constructor(public name: PostMovementRules) {}
+  constructor(public readonly id: UUID, public name: PostMovementRules) {}
   public abstract updateMovesAffects(
     moves: Action[],
     pieceType: PieceType
@@ -16,4 +18,4 @@ export type PostMovementRuleMeta = {
   name: PostMovementRules;
   color: Color;
   maxCharges: number;
-};
+} & Entity;
