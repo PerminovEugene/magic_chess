@@ -1,238 +1,222 @@
-import { KnightMovementRule } from "../shared/src";
-import { Board } from "../shared/src/chess/board";
-import {
-  Bishop,
-  Color,
-  King,
-  Knight,
-  Pawn,
-  Queen,
-  Rook,
-} from "../shared/src/chess/piece";
-import { DiagonalMovementRule } from "../shared/src/chess/rules/diagonal-movement.rule";
-import { HorizontalMovementRule } from "../shared/src/chess/rules/horizontal-movement.rule";
-import { PositionSpecificMovementRule } from "../shared/src/chess/rules/position-specific-movement.rule";
-import { Direction } from "../shared/src/chess/rules/movement-rule";
-import { VerticalMovementRule } from "../shared/src/chess/rules/vertical-movement.rule";
-import { TakeOnThePassMovementRule } from "../shared/src/chess/rules/take-on-the-pass.rule";
+import { Coordinate, PostMovementRule, RuleMeta } from "../shared/src";
+import { Board } from "../shared/src/chess/board/board";
+import { BoardMeta } from "../shared/src/chess/board/board.types";
+import { Color } from "../shared/src/chess/color";
+import { PieceMeta } from "../shared/src/chess/piece/piece.types";
+import { PieceType } from "../shared/src/chess/piece/piece.constants";
+import { MovementRule } from "../shared/src/chess/rules/piece-movement/movement-rule";
+import { CheckMateGlobalRule } from "../shared/src/chess/rules/global/check-mate.global-rule";
+import { randomUUID } from "crypto";
+import { RulesRepository } from "./rules.repository";
+import { PostMovementRuleMeta } from "../shared/src/chess/rules/piece-post-movement/post.movement.types";
+
+export type Position = {
+  [key in Color]: { type: PieceType; coordinate: Coordinate }[];
+};
+export type RulesMeta = {
+  movementRules: RuleMeta[];
+  postMovementRules?: PostMovementRuleMeta[];
+};
 
 export class GameInitializer {
-  public spawnPieces(board: Board) {
-    this.spawnColor(board, Color.white);
-    this.spawnColor(board, Color.black);
+  getDefaultGlobalRules(board: Board) {
+    return [new CheckMateGlobalRule()];
   }
 
-  getDefaultPawnRules(color: Color) {
-    return [
-      new VerticalMovementRule({
-        moveToEmpty: true,
-        moveToKill: false,
-        collision: true,
-        distance: 1,
-        directions:
-          color == Color.white
-            ? new Set<Direction>([Direction.Down])
-            : new Set<Direction>([Direction.Up]),
-        speed: 1,
-      }),
-      new DiagonalMovementRule({
-        moveToEmpty: false,
-        moveToKill: true,
-        collision: true,
-        distance: 1,
-        directions:
-          color == Color.white
-            ? new Set<Direction>([Direction.DownRight, Direction.DownLeft])
-            : new Set<Direction>([Direction.UpRight, Direction.UpLeft]),
-        speed: 1,
-      }),
-      new PositionSpecificMovementRule({
-        moveToEmpty: true,
-        moveToKill: false,
-        collision: true,
-        distance: 2,
-        speed: 2,
-        directions:
-          color == Color.white
-            ? new Set<Direction>([Direction.Down])
-            : new Set<Direction>([Direction.Up]),
-        activatePositions: {
-          y: new Set<number>(color == Color.white ? [1] : [6]),
-        },
-      }),
-      new TakeOnThePassMovementRule({
-        moveToEmpty: true,
-        moveToKill: false,
-        collision: true,
-        distance: 1,
-        speed: 1,
-        directions:
-          color == Color.white
-            ? new Set<Direction>([Direction.DownLeft, Direction.DownRight])
-            : new Set<Direction>([Direction.UpLeft, Direction.UpRight]),
-        activatePositions: {
-          y: new Set<number>(color == Color.white ? [4] : [3]),
-        },
-      }),
-    ];
-  }
-  getDefaultRookRules() {
-    return [
-      new VerticalMovementRule({
-        moveToEmpty: true,
-        moveToKill: true,
-        collision: true,
-        distance: 8,
-        directions: new Set<Direction>([Direction.Up, Direction.Down]),
-        speed: 1,
-      }),
-      new HorizontalMovementRule({
-        moveToEmpty: true,
-        moveToKill: true,
-        collision: true,
-        distance: 8,
-        directions: new Set<Direction>([Direction.Left, Direction.Right]),
-        speed: 1,
-      }),
-    ];
-  }
-  getDefaultBishopRules() {
-    return [
-      new DiagonalMovementRule({
-        moveToEmpty: true,
-        moveToKill: true,
-        collision: true,
-        distance: 8,
-        directions: new Set<Direction>([
-          Direction.UpLeft,
-          Direction.DownLeft,
-          Direction.UpRight,
-          Direction.DownRight,
-        ]),
-        speed: 1,
-      }),
-    ];
-  }
-  getDefaultKnightRules() {
-    return [
-      new KnightMovementRule({
-        moveToEmpty: true,
-        moveToKill: true,
-        collision: false,
-        distance: 1,
-        directions: new Set<Direction>([
-          Direction.UpLeft,
-          Direction.DownLeft,
-          Direction.UpRight,
-          Direction.DownRight,
-          Direction.Up,
-          Direction.Down,
-          Direction.Right,
-          Direction.Left,
-        ]),
-        speed: 1,
-      }),
-    ];
-  }
-  getDefaultQueenRules() {
-    return [
-      new DiagonalMovementRule({
-        moveToEmpty: true,
-        moveToKill: true,
-        collision: true,
-        distance: 8,
-        directions: new Set<Direction>([
-          Direction.UpLeft,
-          Direction.DownLeft,
-          Direction.UpRight,
-          Direction.DownRight,
-        ]),
-        speed: 1,
-      }),
-      new VerticalMovementRule({
-        moveToEmpty: true,
-        moveToKill: true,
-        collision: true,
-        distance: 8,
-        directions: new Set<Direction>([Direction.Up, Direction.Down]),
-        speed: 1,
-      }),
-      new HorizontalMovementRule({
-        moveToEmpty: true,
-        moveToKill: true,
-        collision: true,
-        distance: 8,
-        directions: new Set<Direction>([Direction.Left, Direction.Right]),
-        speed: 1,
-      }),
-    ];
-  }
-  getDefaultKingRules() {
-    return [
-      new DiagonalMovementRule({
-        moveToEmpty: true,
-        moveToKill: true,
-        collision: true,
-        distance: 1,
-        directions: new Set<Direction>([
-          Direction.UpLeft,
-          Direction.DownLeft,
-          Direction.UpRight,
-          Direction.DownRight,
-        ]),
-        speed: 1,
-      }),
-      new VerticalMovementRule({
-        moveToEmpty: true,
-        moveToKill: true,
-        collision: true,
-        distance: 1,
-        directions: new Set<Direction>([Direction.Up, Direction.Down]),
-        speed: 1,
-      }),
-      new HorizontalMovementRule({
-        moveToEmpty: true,
-        moveToKill: true,
-        collision: true,
-        distance: 1,
-        directions: new Set<Direction>([Direction.Left, Direction.Right]),
-        speed: 1,
-      }),
-    ];
-  }
+  spawnDefaultRulesAndDefaultPosition(board: Board) {
+    const whitePawnSpawnLine = 1;
+    const blackPawnSpawnLine = 6;
+    const whiteSpawnLine = 0;
+    const blackSpawnLine = 7;
 
-  spawnColor(board: Board, color: Color) {
-    const spawnLine = color === Color.white ? 0 : 7;
-    const pawnSpawnLine = color === Color.white ? spawnLine + 1 : spawnLine - 1;
+    const position: Position = {
+      [Color.white]: [
+        { type: PieceType.Rook, coordinate: [0, whiteSpawnLine] },
+        { type: PieceType.Knight, coordinate: [1, whiteSpawnLine] },
+        { type: PieceType.Bishop, coordinate: [2, whiteSpawnLine] },
+        { type: PieceType.King, coordinate: [3, whiteSpawnLine] },
 
-    for (let i = 0; i < board.size; i++) {
-      board.squares[pawnSpawnLine][i].putPiece(
-        new Pawn(color, this.getDefaultPawnRules(color))
-      );
+        { type: PieceType.Queen, coordinate: [4, whiteSpawnLine] },
+        { type: PieceType.Bishop, coordinate: [5, whiteSpawnLine] },
+        { type: PieceType.Knight, coordinate: [6, whiteSpawnLine] },
+        { type: PieceType.Rook, coordinate: [7, whiteSpawnLine] },
+      ],
+      [Color.black]: [
+        { type: PieceType.Rook, coordinate: [0, blackSpawnLine] },
+        { type: PieceType.Knight, coordinate: [1, blackSpawnLine] },
+        { type: PieceType.Bishop, coordinate: [2, blackSpawnLine] },
+        { type: PieceType.King, coordinate: [3, blackSpawnLine] },
+
+        { type: PieceType.Queen, coordinate: [4, blackSpawnLine] },
+        { type: PieceType.Bishop, coordinate: [5, blackSpawnLine] },
+        { type: PieceType.Knight, coordinate: [6, blackSpawnLine] },
+        { type: PieceType.Rook, coordinate: [7, blackSpawnLine] },
+      ],
+    };
+
+    for (let i = 0; i <= 7; i++) {
+      // todo debug thing
+
+      position[Color.white].push({
+        type: PieceType.Pawn,
+        coordinate: [i, whitePawnSpawnLine],
+      });
+      position[Color.black].push({
+        type: PieceType.Pawn,
+        coordinate: [i, blackPawnSpawnLine],
+      });
     }
-    board.squares[spawnLine][0].putPiece(
-      new Rook(color, this.getDefaultRookRules())
-    );
-    board.squares[spawnLine][1].putPiece(
-      new Knight(color, this.getDefaultKnightRules())
-    );
-    board.squares[spawnLine][2].putPiece(
-      new Bishop(color, this.getDefaultBishopRules())
-    );
-    board.squares[spawnLine][4].putPiece(
-      new Queen(color, this.getDefaultQueenRules())
-    );
-    board.squares[spawnLine][3].putPiece(
-      new King(color, this.getDefaultKingRules())
-    );
-    board.squares[spawnLine][5].putPiece(
-      new Bishop(color, this.getDefaultBishopRules())
-    );
-    board.squares[spawnLine][6].putPiece(
-      new Knight(color, this.getDefaultKnightRules())
-    );
-    board.squares[spawnLine][7].putPiece(
-      new Rook(color, this.getDefaultRookRules())
-    );
+
+    this.spawnDefaultRulesCustomPosition(board, position);
+    return position;
+  }
+
+  private rulesRepository: RulesRepository = new RulesRepository();
+
+  getDefaultRulesForPiece(
+    type: PieceType,
+    color: Color,
+    withPostRulest: boolean = true
+  ): RulesMeta {
+    switch (type) {
+      case PieceType.Pawn:
+        return this.rulesRepository.getDefaultPawnRules(color, withPostRulest);
+      case PieceType.Rook:
+        return this.rulesRepository.getDefaultRookRules(color);
+      case PieceType.Bishop:
+        return this.rulesRepository.getDefaultBishopRules();
+      case PieceType.Knight:
+        return this.rulesRepository.getDefaultKnightRules();
+      case PieceType.Queen:
+        return this.rulesRepository.getDefaultQueenRules();
+      case PieceType.King:
+        return this.rulesRepository.getDefaultKingRules(color);
+    }
+  }
+
+  spawnBeforeTransformPostiion(board: Board) {
+    const whitePawnSpawnLine = 4;
+    const blackPawnSpawnLine = 3;
+    const whiteSpawnLine = 0;
+    const blackSpawnLine = 7;
+
+    const position: Position = {
+      [Color.white]: [
+        { type: PieceType.Rook, coordinate: [0, whiteSpawnLine] },
+        { type: PieceType.Knight, coordinate: [1, whiteSpawnLine] },
+        { type: PieceType.Bishop, coordinate: [2, whiteSpawnLine] },
+        { type: PieceType.King, coordinate: [3, whiteSpawnLine] },
+
+        { type: PieceType.Queen, coordinate: [4, whiteSpawnLine] },
+        { type: PieceType.Bishop, coordinate: [5, whiteSpawnLine] },
+        { type: PieceType.Knight, coordinate: [6, whiteSpawnLine] },
+        { type: PieceType.Rook, coordinate: [7, whiteSpawnLine] },
+      ],
+      [Color.black]: [
+        { type: PieceType.Rook, coordinate: [0, blackSpawnLine] },
+        { type: PieceType.Knight, coordinate: [1, blackSpawnLine] },
+        { type: PieceType.Bishop, coordinate: [2, blackSpawnLine] },
+        { type: PieceType.King, coordinate: [3, blackSpawnLine] },
+
+        { type: PieceType.Queen, coordinate: [4, blackSpawnLine] },
+        { type: PieceType.Bishop, coordinate: [5, blackSpawnLine] },
+        { type: PieceType.Knight, coordinate: [6, blackSpawnLine] },
+        { type: PieceType.Rook, coordinate: [7, blackSpawnLine] },
+      ],
+    };
+
+    for (let i = 0; i <= 7; i++) {
+      position[Color.white].push({
+        type: PieceType.Pawn,
+        coordinate: [i, whitePawnSpawnLine],
+      });
+      position[Color.black].push({
+        type: PieceType.Pawn,
+        coordinate: [i, blackPawnSpawnLine],
+      });
+    }
+
+    this.spawnDefaultRulesCustomPosition(board, position);
+    return position;
+  }
+
+  buildPieceMeta(
+    type: PieceType,
+    color: Color,
+    rulesMeta: RulesMeta
+  ): PieceMeta {
+    return {
+      id: randomUUID(),
+      type,
+      color: color as Color,
+      movementRulesMeta: rulesMeta.movementRules.map((rule) => rule.id),
+      postMovementRulesMeta: rulesMeta.postMovementRules?.map(
+        (rule) => rule.id
+      ),
+    };
+  }
+
+  spawnDefaultRulesCustomPosition(
+    board: Board,
+    position: Position,
+    withPostRulest: boolean = true
+  ) {
+    const meta: BoardMeta = {
+      cellsMeta: [],
+      movementRules: [],
+      postMovementRules: [],
+      pieceMeta: [],
+    };
+    for (let i = 0; i < board.size; i++) {
+      meta.cellsMeta.push(new Array(board.size).fill(null));
+    }
+
+    for (const color in position) {
+      for (const piece of position[color as Color]) {
+        const { type, coordinate } = piece;
+        const [x, y] = coordinate;
+
+        const rulesMeta = this.getDefaultRulesForPiece(
+          type,
+          color as Color,
+          withPostRulest
+        ) as any;
+
+        const pieceMeta = this.buildPieceMeta(type, color as Color, rulesMeta);
+        meta.cellsMeta[y][x] = pieceMeta.id;
+        meta.movementRules.push(...rulesMeta.movementRules);
+        meta.postMovementRules.push(...(rulesMeta.postMovementRules || []));
+        meta.pieceMeta.push(pieceMeta);
+      }
+    }
+
+    // const additionalMeta: PieceMeta[] = [];
+    this.rulesRepository.getPawnTransformationPieces().forEach((type) => {
+      const rulesMetaBlack = this.getDefaultRulesForPiece(
+        //TODO remove ugly stuff
+        type,
+        Color.black,
+        withPostRulest
+      ) as any;
+
+      meta.pieceMeta.push(
+        this.buildPieceMeta(type, Color.black, rulesMetaBlack)
+      );
+      meta.movementRules.push(...rulesMetaBlack.movementRules);
+      meta.postMovementRules.push(...(rulesMetaBlack.postMovementRules || []));
+
+      const rulesMetaWhite = this.getDefaultRulesForPiece(
+        type,
+        Color.white,
+        withPostRulest
+      ) as any;
+      meta.pieceMeta.push(
+        this.buildPieceMeta(type, Color.white, rulesMetaWhite)
+      );
+      meta.movementRules.push(...rulesMetaWhite.movementRules);
+      meta.postMovementRules.push(...(rulesMetaWhite.postMovementRules || []));
+    });
+
+    board.fillBoardByMeta(meta);
   }
 }

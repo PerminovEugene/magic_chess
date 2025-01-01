@@ -1,49 +1,53 @@
-import { Affect, AvailableMove } from "../shared/src";
-import { isAffectsEql } from "../shared/src/utils/matchers";
+import { Action } from "../shared/src";
+import { isAffectEql } from "../shared/src/utils/matchers";
 
-// Custom matcher for comparing AvailableMove arrays
-export const isEqlAvailableMoves = (
-  received: AvailableMove[],
-  expected: AvailableMove[]
-): any => {
-  if (received.length !== expected.length) {
-    return {
-      message: () =>
-        `Expected moves length ${received.length} to equal ${expected.length}`,
-      pass: false,
-    };
-  }
-
+export const toMatchActions = (received: Action[], expected: Action[]) => {
   const errors: string[] = [];
 
-  for (let i = 0; i < received.length; i++) {
-    const [rx, ry, rAffects] = received[i];
-    const fit = expected.find(([ex, ey, eAffects]) => {
-      return ex === rx && ry === ey && isAffectsEql(rAffects, eAffects);
+  const unmatchedReceived = [...received];
+
+  expected.forEach((expectedAction, i) => {
+    const index = unmatchedReceived.findIndex((receivedAction) => {
+      if (expectedAction.length !== receivedAction.length) {
+        return false;
+      }
+
+      return expectedAction.every((expectedAffect, j: number) => {
+        return isAffectEql(expectedAffect, receivedAction[j]);
+      });
     });
-    if (!fit) {
+
+    if (index === -1) {
       errors.push(
-        `Received move ${i} doesnt have pair in expected ${JSON.stringify(
-          received[i]
+        `Received move ${i} doesn't have pair in expected ${JSON.stringify(
+          expectedAction,
+          null,
+          2
         )}`
       );
+    } else {
+      unmatchedReceived.splice(index, 1);
     }
-  }
+  });
 
   if (errors.length === 0) {
     return {
       message: () =>
-        `Expected moves ${JSON.stringify(received)} to eql ${JSON.stringify(
-          expected
-        )}`,
+        `Expected moves ${JSON.stringify(
+          received,
+          null,
+          2
+        )} to eql ${JSON.stringify(expected, null, 2)}`,
       pass: true,
     };
   } else {
     return {
       message: () =>
         `Found mismatches:\n${errors.join("\n")}\nReceived: ${JSON.stringify(
-          received
-        )}\nExpected: ${JSON.stringify(expected)}`,
+          received,
+          null,
+          2
+        )}\nExpected: ${JSON.stringify(expected, null, 2)}`,
       pass: false,
     };
   }

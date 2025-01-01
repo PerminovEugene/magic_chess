@@ -3,8 +3,9 @@ import {
   WSClientGameEvent,
   WSServerGameEvent,
 } from "../shared/src/socket/const";
-import { Game, Turn } from "../shared/src/chess/game";
-import { Color } from "../shared/src/chess/piece";
+import { Game } from "../shared/src/chess/game";
+import { Color } from "../shared/src/chess/color";
+import { Turn } from "../shared/src/chess/turn";
 
 type Listener = (args: any) => void;
 type ListenersMap = Map<WSClientGameEvent, Listener>;
@@ -69,13 +70,12 @@ export class GameMachine {
   }
   public beginGame() {
     for (const color of Object.values(Color)) {
-      const board = this.game.getBoardMetaForColor(color);
+      const boardMeta = this.game.getBoardMetaForColor(color);
       const gameInfo = this.game.getNewGameInfoForColor(color);
       this.sockets[color].emit(WSServerGameEvent.GameStarted, {
-        board,
+        boardMeta,
         gameInfo,
       });
-      console.log("Emit game started"), board;
     }
 
     this.game.timeStart = new Date().toISOString();
@@ -83,11 +83,23 @@ export class GameMachine {
 
   private handleTurn(color: Color, turn: Turn) {
     try {
-      const win = this.game.processTurn(turn);
-      if (win) {
-        this.sockets[color].emit(WSServerGameEvent.OpponentWon);
-        this.sockets[this.getOppositColor(color)].emit(
-          WSServerGameEvent.YouLost,
+      const gameResult = this.game.processTurn(turn);
+      if (gameResult) {
+        let messageForBlack = WSServerGameEvent.Stalemate;
+        let messageForWhite = WSServerGameEvent.Stalemate;
+        if (gameResult === Color.black) {
+          messageForBlack = WSServerGameEvent.YouWon;
+          messageForWhite = WSServerGameEvent.OpponentWon;
+        } else if (gameResult === Color.white) {
+          messageForBlack = WSServerGameEvent.OpponentWon;
+          messageForWhite = WSServerGameEvent.YouWon;
+        }
+        this.sockets[this.getOppositColor(Color.white)].emit(
+          messageForWhite,
+          turn
+        );
+        this.sockets[this.getOppositColor(Color.black)].emit(
+          messageForBlack,
           turn
         );
       } else {

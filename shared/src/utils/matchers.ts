@@ -1,4 +1,5 @@
-import { Affect } from "../chess";
+import { Action } from "../chess";
+import { Affect } from "../chess/affect/affect.types";
 
 const deepEqual = (obj1: any, obj2: any): boolean => {
   if (obj1 === obj2) return true;
@@ -38,9 +39,38 @@ export const isAffectsEql = (
 ): boolean => {
   if (!expected && !received) return true;
   if (!expected || !received) return false;
-  if (expected.length !== received.length) return false;
+  if (expected.length !== received.length) {
+    console.log("Mismatch in Affect array length:", { expected, received });
+    return false;
+  }
 
-  return expected.every((expectedAffect, index) =>
-    isAffectEql(expectedAffect, received[index])
-  );
+  return expected.every((expectedAffect, index) => {
+    return isAffectEql(expectedAffect, received[index]);
+  });
+};
+
+export const isActionsEql = (
+  expected: Action[] | undefined,
+  received: Action[] | undefined
+): boolean => {
+  if (!expected && !received) return true;
+  if (!expected || !received) return false;
+  if (expected.length !== received.length) {
+    console.log("Mismatch in Action array length:", { expected, received });
+    return false;
+  }
+
+  const unmatchedReceived = [...received];
+
+  return expected.every((expectedAction) => {
+    const index = unmatchedReceived.findIndex((receivedAction) =>
+      deepEqual(expectedAction, receivedAction)
+    );
+    if (index === -1) {
+      console.log("No matching Action found for:", { expectedAction });
+      return false;
+    }
+    unmatchedReceived.splice(index, 1);
+    return true;
+  });
 };

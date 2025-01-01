@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { Board } from "../shared/src/chess/board";
+import { Board } from "../shared/src/chess/board/board";
 import { Game, Player } from "../shared/src/chess/game";
 import { GameInitializer } from "./game-initializer";
 
@@ -40,10 +40,14 @@ export class Matchmaker {
       return null;
     }
     const board = new Board();
-    this.gameInitializer.spawnPieces(board);
+    this.gameInitializer.spawnDefaultRulesAndDefaultPosition(board);
+    // this.gameInitializer.spawnBeforeTransformPostiion(board);
+
+    const defaultGloobalRules =
+      this.gameInitializer.getDefaultGlobalRules(board);
 
     return {
-      game: new Game(player, opponent.player, board),
+      game: new Game(player, opponent.player, board, defaultGloobalRules, 3),
       opponentSocket: opponent.socket,
     };
   }

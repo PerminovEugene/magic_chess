@@ -1,0 +1,23 @@
+import { PieceMeta } from "./piece.types";
+import { PieceType } from "./piece.constants";
+import { Pawn, Bishop, Knight, Rook, Queen, King } from "./pieces";
+import { RuleMeta } from "../rules";
+import { PostMovementRuleMeta } from "../rules/piece-post-movement/post.movement.types";
+
+export function buildPieceByMeta(meta: PieceMeta) {
+  const c = mapper[meta.type as PieceType];
+  return new c(
+    meta.color,
+    meta.movementRulesMeta.map((ruleMetaId) => ruleMetaId),
+    meta.postMovementRulesMeta?.map((ruleMetaId) => ruleMetaId)
+  );
+}
+
+const mapper = {
+  [PieceType.Pawn]: Pawn,
+  [PieceType.Bishop]: Bishop,
+  [PieceType.Knight]: Knight,
+  [PieceType.Rook]: Rook,
+  [PieceType.Queen]: Queen,
+  [PieceType.King]: King,
+};

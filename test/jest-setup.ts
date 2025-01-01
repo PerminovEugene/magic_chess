@@ -1,5 +1,5 @@
 import "jest";
-import { isEqlAvailableMoves } from "./custom-matcher";
+import { toMatchActions } from "./custom-matcher";
 import { expect } from "@jest/globals";
 
-expect.extend({ isEqlAvailableMoves });
+expect.extend({ toMatchActions });

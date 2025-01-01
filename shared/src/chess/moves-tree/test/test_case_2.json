@@ -1,0 +1,2157 @@
+{
+  "color": "white",
+  "movements": {
+    "4_0": {
+      "3_1": {
+        "affects": [
+          {
+            "type": "move",
+            "from": [
+              4,
+              0
+            ],
+            "to": [
+              3,
+              1
+            ],
+            "userSelected": true
+          }
+        ],
+        "next": {
+          "color": "black",
+          "movements": {
+            "4_1": {
+              "4_0": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      4,
+                      1
+                    ],
+                    "to": [
+                      4,
+                      0
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "3_1": {
+                      "2_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              0
+                            ]
+                          },
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "7_7": {
+              "6_6": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      7,
+                      7
+                    ],
+                    "to": [
+                      6,
+                      6
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "3_1": {
+                      "2_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          },
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "7_6": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      7,
+                      7
+                    ],
+                    "to": [
+                      7,
+                      6
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "3_1": {
+                      "2_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          },
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "6_7": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      7,
+                      7
+                    ],
+                    "to": [
+                      6,
+                      7
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "3_1": {
+                      "2_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "2_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              2,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          },
+                          {
+                            "type": "move",
+                            "from": [
+                              3,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "5_1": {
+        "affects": [
+          {
+            "type": "move",
+            "from": [
+              4,
+              0
+            ],
+            "to": [
+              5,
+              1
+            ],
+            "userSelected": true
+          }
+        ],
+        "next": {
+          "color": "black",
+          "movements": {
+            "4_1": {
+              "4_0": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      4,
+                      1
+                    ],
+                    "to": [
+                      4,
+                      0
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "5_1": {
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              0
+                            ]
+                          },
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "7_7": {
+              "6_6": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      7,
+                      7
+                    ],
+                    "to": [
+                      6,
+                      6
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "5_1": {
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          },
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "7_6": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      7,
+                      7
+                    ],
+                    "to": [
+                      7,
+                      6
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "5_1": {
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          },
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "6_7": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      7,
+                      7
+                    ],
+                    "to": [
+                      6,
+                      7
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "5_1": {
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_1": {
+                        "affects": [
+                          {
+                            "type": "kill",
+                            "from": [
+                              4,
+                              1
+                            ]
+                          },
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "6_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              5,
+                              1
+                            ],
+                            "to": [
+                              6,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "4_1": {
+        "affects": [
+          {
+            "type": "kill",
+            "from": [
+              4,
+              1
+            ]
+          },
+          {
+            "type": "move",
+            "from": [
+              4,
+              0
+            ],
+            "to": [
+              4,
+              1
+            ],
+            "userSelected": true
+          }
+        ],
+        "next": {
+          "color": "black",
+          "movements": {
+            "7_7": {
+              "6_6": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      7,
+                      7
+                    ],
+                    "to": [
+                      6,
+                      6
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "4_1": {
+                      "3_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "7_6": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      7,
+                      7
+                    ],
+                    "to": [
+                      7,
+                      6
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "4_1": {
+                      "3_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "6_7": {
+                "affects": [
+                  {
+                    "type": "move",
+                    "from": [
+                      7,
+                      7
+                    ],
+                    "to": [
+                      6,
+                      7
+                    ],
+                    "userSelected": true
+                  }
+                ],
+                "next": {
+                  "color": "white",
+                  "movements": {
+                    "4_1": {
+                      "3_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_0": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              0
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "4_2": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              4,
+                              2
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "3_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              3,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      },
+                      "5_1": {
+                        "affects": [
+                          {
+                            "type": "move",
+                            "from": [
+                              4,
+                              1
+                            ],
+                            "to": [
+                              5,
+                              1
+                            ],
+                            "userSelected": true
+                          }
+                        ],
+                        "next": {
+                          "color": "black",
+                          "movements": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "underCheck": true
+}

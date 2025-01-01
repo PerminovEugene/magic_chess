@@ -1,4 +1,4 @@
-import { Piece } from "./piece";
+import { Piece } from "./piece/piece";
 
 export class Cell {
   constructor(public piece?: Piece) {}

@@ -1,4 +1,4 @@
-import { Coordinate } from "./types";
+import { Coordinate } from "./coordinate";
 
 export function fromChessToLogic(coord: string): Coordinate {
   return [7 - coord.charCodeAt(0) + 97, parseInt(coord[1]) - 1];

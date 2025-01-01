@@ -1,5 +1,5 @@
 import { fromChessToLogic, fromLogicArrayToChess } from "../turn-formatter";
-import { Coordinate } from "../types";
+import { Coordinate } from "../coordinate";
 
 describe("fromChessToLogic", () => {
   it("should convert chess coordinates to logic coordinates", () => {
