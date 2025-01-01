@@ -63,8 +63,6 @@ export function handleTransformAffect(
       );
     }
 
-    console.log("transformationsPieceMeta", boardMeta.pieceMeta);
-
     const newPieceMeta = boardMeta.pieceMeta.find(
       (pieceMeta) =>
         pieceMeta.color === transformed.color &&

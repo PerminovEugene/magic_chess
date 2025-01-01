@@ -11,6 +11,7 @@ import {
   serializeCoordinate,
   serializeXY,
 } from "./moves-tree.utils";
+import { isMoveAffect } from "../affect";
 
 /**
  * This structure keep all possible moves for both players
@@ -34,7 +35,7 @@ export class MovesTree {
   }
 
   private fillUpRoot() {
-    this.fillUpNode(this.root); // contain all moves for the first turn
+    this.fillUpNode(this.root, this.initialTurns); // contain all moves for the first turn
 
     let i = 1;
     while (i < this.length) {
@@ -72,21 +73,7 @@ export class MovesTree {
     const from = serializeCoordinate(fromCoordinate);
     const to = serializeAffects(turn.affects);
 
-    // console.log(from, to, this.root.movements[from]);
-
     let movementResults = this.root.movements[from][to];
-
-    // const movementAffects = movementResults.affects;
-
-    // if (selectedPieceType) {
-    //   const transformationAffect = movementAffects?.find(
-    //     (a) => a.type === AffectType.transformation
-    //   );
-    //   if (!transformationAffect) {
-    //     throw new Error("Transformation affect is not found");
-    //   }
-    //   transformationAffect.destPieceType = selectedPieceType;
-    // }
 
     const nextNode = movementResults.next;
     const prevRoot = this.root;
@@ -122,9 +109,13 @@ export class MovesTree {
   }
 
   private raiseTree() {
-    this.forEachSubTreeLeaf(this.root, (node) => {
-      this.fillUpNode(node);
-    });
+    this.forEachSubTreeLeaf(
+      this.root,
+      this.initialTurns,
+      (node, turns: Turn[]) => {
+        this.fillUpNode(node, turns);
+      }
+    );
   }
 
   /**
@@ -155,8 +146,6 @@ export class MovesTree {
 
         callback(nextNode);
 
-        // const reversedAffects = reverseAffects(movementResultAffects);
-        // this.updateBoard(reversedAffects);
         this.board.revertMove(movementResultAffects);
       });
     });
@@ -164,19 +153,33 @@ export class MovesTree {
 
   private forEachSubTreeLeaf(
     { movements }: Node,
-    callback: (node: Node) => void
+    turns: Turn[],
+    callback: (node: Node, turns: Turn[]) => void
   ) {
     Object.keys(movements).forEach((fromKey) => {
       Object.keys(movements[fromKey]).forEach((toKey) => {
         const { next, affects } = movements[fromKey][toKey];
-
+        const moveAffect = affects.find(
+          (a) => isMoveAffect(a) && a.userSelected
+        );
+        if (!moveAffect) {
+          throw new Error("Move affect is not found");
+        }
+        const pieceType = this.board.getPieceByCoordinate(
+          moveAffect.from
+        )?.type;
+        if (!pieceType) {
+          throw new Error("Piece type is not found");
+        }
+        turns.push({ affects, pieceType } as Turn);
         this.updateBoard(affects);
         if (Object.keys(next.movements).length === 0) {
-          callback(next);
+          callback(next, turns);
         } else {
-          this.forEachSubTreeLeaf(next, callback);
+          this.forEachSubTreeLeaf(next, turns, callback);
         }
         this.board.revertMove(affects);
+        turns.pop();
       });
     });
   }
@@ -186,16 +189,17 @@ export class MovesTree {
   }
 
   // it expects empty node which will be filled up by current state of this.squares
-  private fillUpNode(node: Node) {
+  private fillUpNode(node: Node, turns: Turn[]) {
     this.board.forEachPiece(node.color, (piece, x, y) => {
       const fromKey = serializeXY(x, y);
       if (piece && piece.color === node.color) {
         node.movements[fromKey] = {};
 
+        const turns = this.initialTurns;
         const availableMoves: Action[] = this.board.getPieceAvailableMoves(
           x,
           y,
-          this.initialTurns
+          turns
         );
 
         const reversedColor = reverseColor(node.color);

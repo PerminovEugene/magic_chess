@@ -3,7 +3,7 @@ import { Color } from "../../color";
 import { Board } from "../../board/board";
 import { GameInitializer, Position } from "../../../../../src/game-initializer";
 import { MovesTree } from "../moves-tree";
-import { printCells } from "../../../utils/board-printer";
+// import { printCells } from "../../../utils/board-printer";
 import {
   CheckMateGlobalRule,
   GlobalRule,
@@ -206,23 +206,17 @@ describe("MovesTree", () => {
         Color.white
       );
 
-      // console.log("keys", Object.keys(tree.getRoot().movements));
-
       tree.processTurn({
         affects: [markAsUserSelected(buildMoveAffect([4, 0], [3, 0]))],
       } as Turn);
 
-      printCells(board.getMeta());
-
-      // console.log("keys-2", Object.keys(tree.getRoot().movements));
+      // printCells(board.getMeta());
 
       tree.processTurn({
         affects: [markAsUserSelected(buildMoveAffect([0, 1], [0, 0]))],
       } as Turn);
 
-      printCells(board.getMeta());
-
-      // console.log("keys-3", Object.keys(tree.getRoot().movements));
+      // printCells(board.getMeta());
 
       const root = tree.getRoot();
 
