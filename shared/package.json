@@ -1,10 +1,11 @@
 {
   "name": "@real_one_chess_king/game-logic",
-  "version": "0.1.17",
-  "description": "R.O.C.K. game logic",
+  "version": "0.2.0",
+  "description": "R.O.C.K. chess game logic",
   "keywords": [
     "chess",
-    "game"
+    "game",
+    "websockets"
   ],
   "main": "dist/cjs/index.cjs",
   "module": "dist/esm/index.mjs",

@@ -1,3 +1,9 @@
+# 0.2.0
+
+Complete default chess logic.
+Migrate implementation to full affects.
+Add ids (hardcoded for now) to entities.
+
 # 0.1.17
 
 Add moves tree
