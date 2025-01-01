@@ -3,7 +3,6 @@ import { PieceType } from "../piece/piece.constants";
 
 export enum AffectType {
   move = "move",
-  moveNotMain = "moveNotMain",
   kill = "kill",
   spawn = "spawn",
   transformation = "transformation",
@@ -14,8 +13,7 @@ export type Affect =
   | MoveAffect
   | KillAffect
   | SpawnAffect
-  | TransformationAffect
-  | ReversedTranformationAffect;
+  | TransformationAffect;
 
 export type Affects = Affect[];
 
@@ -24,12 +22,6 @@ export type UserSelectedAffectMixin = {
 };
 
 export type MoveAffect = {
-  type: AffectType.move;
-  from: Coordinate;
-  to: Coordinate;
-} & UserSelectedAffectMixin;
-
-export type MoveNotMainAffect = {
   type: AffectType.move;
   from: Coordinate;
   to: Coordinate;
@@ -47,13 +39,6 @@ export type SpawnAffect = {
 
 export type TransformationAffect = {
   type: AffectType.transformation;
-  from: Coordinate;
-  destPieceType: PieceType;
-  sourcePieceType: PieceType;
-} & UserSelectedAffectMixin;
-
-export type ReversedTranformationAffect = {
-  type: AffectType.reversedTransformation;
   from: Coordinate;
   destPieceType: PieceType;
   sourcePieceType: PieceType;

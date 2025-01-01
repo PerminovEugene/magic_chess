@@ -59,7 +59,7 @@ describe("PositionSpecificMovementRule with speed 2 (like for pawn)", () => {
 
   const checkMoves = (moves: Action[], expectedMoves: Action[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
-    expect(moves).isEqlAvailableMoves(expectedMoves);
+    expect(moves).toMatchActions(expectedMoves);
   };
 
   describe("check from the position for activation near border", () => {

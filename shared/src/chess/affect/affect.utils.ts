@@ -2,41 +2,29 @@ import {
   KillAffect,
   AffectType,
   MoveAffect,
-  MoveNotMainAffect,
   SpawnAffect,
   TransformationAffect,
-  ReversedTranformationAffect,
   Affect,
 } from "./affect.types";
 import { Coordinate } from "../coordinate";
 import { PieceType } from "../piece/piece.constants";
 
-export function isKillAffect(affect: any): affect is KillAffect {
+export function isKillAffect(affect: Affect): affect is KillAffect {
   return affect.type === AffectType.kill;
 }
 
-export function isMoveAffect(affect: any): affect is MoveAffect {
+export function isMoveAffect(affect: Affect): affect is MoveAffect {
   return affect.type === AffectType.move;
 }
 
-export function isNotMainMoveAffect(affect: any): affect is MoveNotMainAffect {
-  return affect.type === AffectType.moveNotMain;
-}
-
-export function isSpawnAffect(affect: any): affect is SpawnAffect {
+export function isSpawnAffect(affect: Affect): affect is SpawnAffect {
   return affect.type === AffectType.spawn;
 }
 
 export function isTransformationAffect(
-  affect: any
+  affect: Affect
 ): affect is TransformationAffect {
   return affect.type === AffectType.transformation;
-}
-
-export function isReversedTransformationAffect(
-  affect: any
-): affect is ReversedTranformationAffect {
-  return affect.type === AffectType.reversedTransformation;
 }
 
 export function isUserSelectableAffect(affect: Affect): boolean {
@@ -77,19 +65,6 @@ export function buildTransformationAffect(
 ): TransformationAffect {
   return {
     type: AffectType.transformation,
-    from,
-    destPieceType,
-    sourcePieceType,
-  };
-}
-
-export function buildReversedTransformationAffect(
-  from: Coordinate,
-  destPieceType: PieceType,
-  sourcePieceType: PieceType
-): ReversedTranformationAffect {
-  return {
-    type: AffectType.reversedTransformation,
     from,
     destPieceType,
     sourcePieceType,

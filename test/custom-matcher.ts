@@ -1,7 +1,7 @@
 import { Action } from "../shared/src";
 import { isAffectEql } from "../shared/src/utils/matchers";
 
-export const isEqlAvailableMoves = (received: Action[], expected: Action[]) => {
+export const toMatchActions = (received: Action[], expected: Action[]) => {
   const errors: string[] = [];
 
   const unmatchedReceived = [...received];
@@ -12,7 +12,7 @@ export const isEqlAvailableMoves = (received: Action[], expected: Action[]) => {
         return false;
       }
 
-      return expectedAction.every((expectedAffect: any, j: number) => {
+      return expectedAction.every((expectedAffect, j: number) => {
         return isAffectEql(expectedAffect, receivedAction[j]);
       });
     });

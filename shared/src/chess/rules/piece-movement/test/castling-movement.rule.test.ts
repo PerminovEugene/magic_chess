@@ -60,7 +60,7 @@ describe("CastlingMovementRule", () => {
 
   const checkMoves = (moves: Action[], expectedMoves: Action[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
-    expect(moves).isEqlAvailableMoves(expectedMoves);
+    expect(moves).toMatchActions(expectedMoves);
   };
 
   const kingX = 3;

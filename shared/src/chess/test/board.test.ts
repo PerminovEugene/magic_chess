@@ -46,7 +46,7 @@ describe("Board", () => {
 
       const kingMoves = board.getPieceAvailableMoves(3, 0, []);
 
-      expect(kingMoves).isEqlAvailableMoves([
+      expect(kingMoves).toMatchActions([
         [
           buildKillAffect([2, 0]),
           markAsUserSelected(buildMoveAffect(whiteKingPos, blackPawnPos)),
@@ -154,7 +154,7 @@ describe("Board", () => {
         []
       );
 
-      expect(pawnMoves).isEqlAvailableMoves([
+      expect(pawnMoves).toMatchActions([
         buildActionToCellWithBishop(PieceType.Queen),
         buildActionToCellWithBishop(PieceType.Bishop),
         buildActionToCellWithBishop(PieceType.Knight),

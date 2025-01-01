@@ -1,9 +1,10 @@
 import "jest";
+import { Action } from "../shared/src";
 
 declare global {
   namespace jest {
-    interface Matchers<R> {
-      isEqlAvailableMoves(expected: any[][]): R;
+    interface Matchers<R extends Action[]> {
+      toMatchActions(expected: Action[]): R;
     }
   }
 }

@@ -14,7 +14,6 @@ import {
 import {
   isKillAffect,
   isMoveAffect,
-  isNotMainMoveAffect,
   isSpawnAffect,
   isTransformationAffect,
 } from "./affect.utils";
@@ -84,7 +83,7 @@ export function handleMoveAffect(
   cells: Cell[][]
   // metaStorage: MetaStorage
 ) {
-  if (isMoveAffect(affect) || isNotMainMoveAffect(affect)) {
+  if (isMoveAffect(affect)) {
     checkAffectToAttribute(affect);
 
     const { from, to } = affect;
@@ -176,8 +175,6 @@ export function reverseAffects(affects: Affects): Affects {
     if (isKillAffect(affect)) {
       return reverseKillAffect(affect);
     } else if (isMoveAffect(affect)) {
-      return reverseMoveAffect(affect);
-    } else if (isNotMainMoveAffect(affect)) {
       return reverseMoveAffect(affect);
     } else if (isSpawnAffect(affect)) {
       return reverseSpawnAffect(affect);

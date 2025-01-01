@@ -30,11 +30,7 @@ const deepEqual = (obj1: any, obj2: any): boolean => {
 };
 
 export const isAffectEql = (expected: Affect, received: Affect): boolean => {
-  const result = deepEqual(expected, received);
-  if (!result) {
-    console.log("Mismatch in Affect:", { expected, received });
-  }
-  return result;
+  return deepEqual(expected, received);
 };
 
 export const isAffectsEql = (
@@ -49,14 +45,7 @@ export const isAffectsEql = (
   }
 
   return expected.every((expectedAffect, index) => {
-    const result = isAffectEql(expectedAffect, received[index]);
-    if (!result) {
-      console.log(`Mismatch at index ${index}:`, {
-        expectedAffect,
-        received: received[index],
-      });
-    }
-    return result;
+    return isAffectEql(expectedAffect, received[index]);
   });
 };
 

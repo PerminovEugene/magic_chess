@@ -55,7 +55,7 @@ describe("TakeOnThePassMovementRule", () => {
   const checkMoves = (moves: Action[], expectedMoves: Action[]) => {
     expect(moves).toHaveLength(expectedMoves.length);
 
-    expect(moves).isEqlAvailableMoves(expectedMoves);
+    expect(moves).toMatchActions(expectedMoves);
   };
 
   describe("check from the middle", () => {

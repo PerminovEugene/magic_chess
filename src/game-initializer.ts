@@ -1,4 +1,4 @@
-import { Coordinate, PostMovementRule } from "../shared/src";
+import { Coordinate, PostMovementRule, RuleMeta } from "../shared/src";
 import { Board } from "../shared/src/chess/board/board";
 import { BoardMeta } from "../shared/src/chess/board/board.types";
 import { Color } from "../shared/src/chess/color";
@@ -8,9 +8,14 @@ import { MovementRule } from "../shared/src/chess/rules/piece-movement/movement-
 import { CheckMateGlobalRule } from "../shared/src/chess/rules/global/check-mate.global-rule";
 import { randomUUID } from "crypto";
 import { RulesRepository } from "./rules.repository";
+import { PostMovementRuleMeta } from "../shared/src/chess/rules/piece-post-movement/post.movement.types";
 
 export type Position = {
   [key in Color]: { type: PieceType; coordinate: Coordinate }[];
+};
+export type RulesMeta = {
+  movementRules: RuleMeta[];
+  postMovementRules?: PostMovementRuleMeta[];
 };
 
 export class GameInitializer {
@@ -72,7 +77,7 @@ export class GameInitializer {
     type: PieceType,
     color: Color,
     withPostRulest: boolean = true
-  ) {
+  ): RulesMeta {
     switch (type) {
       case PieceType.Pawn:
         return this.rulesRepository.getDefaultPawnRules(color, withPostRulest);
@@ -135,16 +140,18 @@ export class GameInitializer {
     return position;
   }
 
-  buildPieceMeta(type: PieceType, color: Color, rulesMeta: any): PieceMeta {
+  buildPieceMeta(
+    type: PieceType,
+    color: Color,
+    rulesMeta: RulesMeta
+  ): PieceMeta {
     return {
       id: randomUUID(),
       type,
       color: color as Color,
-      movementRulesMeta: rulesMeta.movementRules.map(
-        (rule: MovementRule) => rule.id
-      ),
+      movementRulesMeta: rulesMeta.movementRules.map((rule) => rule.id),
       postMovementRulesMeta: rulesMeta.postMovementRules?.map(
-        (rule: PostMovementRule) => rule.id
+        (rule) => rule.id
       ),
     };
   }
