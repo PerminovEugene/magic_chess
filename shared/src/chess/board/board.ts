@@ -6,7 +6,7 @@ import { PieceMeta } from "../piece/piece.types";
 import { PieceType } from "../piece/piece.constants";
 import { Action } from "../rules/piece-movement/movement-rule";
 import { Coordinate } from "../coordinate";
-import { MetaStorage } from "../meta-storage";
+// import { MetaStorage } from "../meta-storage";
 import {
   handleKillAffect,
   handleMoveAffect,
@@ -33,7 +33,7 @@ export class Board {
    * Metastorage is needed for saving initial data about pieces
    * It can be used for transformation of pieces
    */
-  private metaStorage: MetaStorage = new MetaStorage();
+  private meta: BoardMeta | undefined;
 
   constructor() {
     this.squares = this.buildCells();
@@ -48,44 +48,57 @@ export class Board {
   public isIndexValid = (index: number) => index >= 0 && index < this.size;
 
   public getMeta(): BoardMeta {
-    const boardMeta: any[][] = Array.from({ length: this.squares.length }, () =>
-      Array.from({ length: this.size }, () => null)
-    );
-    for (let i = 0; i < this.squares.length; i++) {
-      for (let j = 0; j < this.squares[i].length; j++) {
-        const cell = this.squares[i][j];
-        const piece = cell.getPiece();
-        if (piece) {
-          const meta = piece.getMeta();
-          boardMeta[i][j] = meta;
-        }
-      }
+    // const boardMeta: any[][] = Array.from({ length: this.squares.length }, () =>
+    //   Array.from({ length: this.size }, () => null)
+    // );
+    // for (let i = 0; i < this.squares.length; i++) {
+    //   for (let j = 0; j < this.squares[i].length; j++) {
+    //     const cell = this.squares[i][j];
+    //     const piece = cell.getPiece();
+    //     if (piece) {
+    //       const meta = piece.getMeta();
+    //       boardMeta[i][j] = meta;
+    //     }
+    //   }
+    // }
+    if (!this.meta) {
+      throw new Error("Board meta is not defined yet");
     }
-    return boardMeta;
+    return this.meta;
   }
 
-  public fillBoardByMeta(metas: BoardMeta): void {
+  public fillBoardByMeta(meta: BoardMeta): void {
+    this.meta = meta;
+    const { cellsMeta: cells, postMovementRules, movementRules } = meta;
+    this.rulesEngine.addMovementRules(movementRules);
+    this.rulesEngine.addPostMovementRules(postMovementRules);
+
     for (let row = 0; row < this.size; row++) {
       for (let col = 0; col < this.size; col++) {
-        const meta = metas[row][col];
+        const pieceMetaId = cells[row][col];
 
-        if (meta) {
+        if (pieceMetaId) {
           const cell = this.getCell(col, row);
-          this.metaStorage.setMeta(meta);
-          cell.putPiece(buildPieceByMeta(meta));
-          this.rulesEngine.addMovementRules(meta.rules);
-          if (meta.postMovementRulesMeta) {
-            this.rulesEngine.addPostMovementRules(meta.postMovementRulesMeta);
+          // this.metaStorage.setMeta(cellMeta);
+
+          const pieceMeta = meta.pieceMeta.find(({ id }) => id === pieceMetaId);
+          if (!pieceMeta) {
+            throw new Error("Piece meta not found");
           }
+          cell.putPiece(buildPieceByMeta(pieceMeta));
+          // if (cellMeta.postMovementRulesMeta) {
+          //   this.rulesEngine.addPostMovementRules(meta.postMovementRulesMeta);
+          // }
         }
       }
     }
+    // this.saveAdditionalMeta(transformationsPieceMeta);
   }
-  public saveAdditionalMeta(pieceMeta: PieceMeta[]) {
-    pieceMeta.forEach((meta) => {
-      this.metaStorage.setMeta(meta);
-    });
-  }
+  // public saveAdditionalMeta(pieceMeta: PieceMeta[]) {
+  //   pieceMeta.forEach((meta) => {
+  //     this.metaStorage.setMeta(meta);
+  //   });
+  // }
 
   public getPiece = (x: number, y: number) => {
     return this.squares[y][x].getPiece();
@@ -162,10 +175,13 @@ export class Board {
   // }
 
   public updateCellsOnMove(affects: Action) {
+    if (!this.meta) {
+      throw new Error("Board meta is not defined yet");
+    }
     affects.forEach((affect) => {
       handleKillAffect(affect, this.squares, this.killed);
-      handleMoveAffect(affect, this.squares, this.metaStorage);
-      handleTransformAffect(affect, this.squares, this.metaStorage);
+      handleMoveAffect(affect, this.squares);
+      handleTransformAffect(affect, this.squares, this.meta as BoardMeta);
       handleSpawnAffect(affect, this.squares, this.killed);
     });
 

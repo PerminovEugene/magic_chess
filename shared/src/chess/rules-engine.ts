@@ -1,8 +1,5 @@
 import { Action, MovementRule } from "./rules/piece-movement/movement-rule";
-import {
-  PostMovementRule,
-  PostMovementRuleMeta,
-} from "./rules/piece-post-movement/post-movement.rule";
+import { PostMovementRule } from "./rules/piece-post-movement/post-movement.rule";
 import {
   ActivatePositions,
   DiagonalMovementRule,
@@ -25,6 +22,7 @@ import { GetPiece } from "./get-piece";
 import { Turn } from "./turn";
 import { PieceType } from "./piece/piece.constants";
 import { Entity } from "./entity";
+import { PostMovementRuleMeta } from "./rules/piece-post-movement/post.movement.types";
 
 const rulesMapper = {
   [MovementRules.VerticalMovementRule]: VerticalMovementRule,
@@ -50,11 +48,11 @@ export class RulesEngine {
     let uniqRulesParams: any = {};
     if (isPositionSpecificMovementRuleMeta(ruleMeta)) {
       const activatePositions: ActivatePositions = {};
-      if (activatePositions.x) {
-        activatePositions.x = new Set(activatePositions.x);
+      if (ruleMeta.activatePositions.x) {
+        activatePositions.x = new Set(ruleMeta.activatePositions.x);
       }
-      if (activatePositions.y) {
-        activatePositions.y = new Set(activatePositions.y);
+      if (ruleMeta.activatePositions.y) {
+        activatePositions.y = new Set(ruleMeta.activatePositions.y);
       }
       uniqRulesParams.activatePositions = activatePositions;
     }

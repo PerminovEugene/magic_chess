@@ -39,7 +39,6 @@ export class MovesTree {
     let i = 1;
     while (i < this.length) {
       this.raiseTree();
-      console.log("raise");
       i += 1;
     }
     this.applyGlobalRules(this.root);
@@ -93,24 +92,17 @@ export class MovesTree {
     const prevRoot = this.root;
     this.root = nextNode;
 
-    console.log(" new root", this.root);
-
     this.updateBoard(movementResults.affects);
 
     this.raiseTree();
 
     this.applyGlobalRules(this.root, prevRoot);
 
-    //
-    // this.treeShaking();
-
     this.forEachChild(this.root, (node) => {
       this.applyGlobalRules(node, this.root);
     });
 
     this.treeShaking(this.root);
-
-    console.log("after bullshit root", this.root);
   }
 
   public getRoot() {

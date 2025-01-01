@@ -1,5 +1,5 @@
 import { Cell } from "../cell";
-import { MetaStorage } from "../meta-storage";
+// import { MetaStorage } from "../meta-storage";
 import { Piece } from "../piece/piece";
 import { buildPieceByMeta } from "../piece/piece-builder";
 import {
@@ -19,6 +19,7 @@ import {
   isTransformationAffect,
 } from "./affect.utils";
 import { Coordinate } from "../coordinate";
+import { BoardMeta } from "../board/board.types";
 
 export function handleKillAffect(
   affect: Affect,
@@ -40,7 +41,7 @@ export function handleKillAffect(
 export function handleTransformAffect(
   affect: Affect,
   cells: Cell[][],
-  metaStorage: MetaStorage
+  boardMeta: BoardMeta
 ) {
   if (isTransformationAffect(affect)) {
     const { from, sourcePieceType, destPieceType } = affect;
@@ -62,7 +63,13 @@ export function handleTransformAffect(
       );
     }
 
-    const newPieceMeta = metaStorage.getMeta(transformed.color, destPieceType);
+    console.log("transformationsPieceMeta", boardMeta.pieceMeta);
+
+    const newPieceMeta = boardMeta.pieceMeta.find(
+      (pieceMeta) =>
+        pieceMeta.color === transformed.color &&
+        pieceMeta.type === destPieceType
+    );
 
     if (!newPieceMeta) {
       throw new Error(
@@ -76,8 +83,8 @@ export function handleTransformAffect(
 
 export function handleMoveAffect(
   affect: Affect,
-  cells: Cell[][],
-  metaStorage: MetaStorage
+  cells: Cell[][]
+  // metaStorage: MetaStorage
 ) {
   if (isMoveAffect(affect) || isNotMainMoveAffect(affect)) {
     checkAffectToAttribute(affect);

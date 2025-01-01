@@ -1,8 +1,9 @@
 import { PieceType } from "../../piece/piece.constants";
 import { Color } from "../../color";
 import { Action } from "../piece-movement/movement-rule";
-import { PostMovementRule, PostMovementRuleMeta } from "./post-movement.rule";
-import { AffectType, MoveAffect } from "../../affect/affect.types";
+import { PostMovementRule } from "./post-movement.rule";
+import { PostMovementRuleMeta } from "./post.movement.types";
+import { AffectType } from "../../affect/affect.types";
 import { PostMovementRules } from "../piece-movement/movement-rules.const";
 import {
   buildTransformationAffect,

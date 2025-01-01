@@ -40,8 +40,8 @@ export class Matchmaker {
       return null;
     }
     const board = new Board();
-    // this.gameInitializer.spawnDefaultRulesAndDefaultPosition(board);
-    this.gameInitializer.spawnBeforeTransformPostiion(board);
+    this.gameInitializer.spawnDefaultRulesAndDefaultPosition(board);
+    // this.gameInitializer.spawnBeforeTransformPostiion(board);
 
     const defaultGloobalRules =
       this.gameInitializer.getDefaultGlobalRules(board);

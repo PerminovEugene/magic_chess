@@ -1,11 +1,11 @@
 import { Color } from "../color";
 import { PieceType } from "./piece.constants";
-import { RuleMeta } from "../rules/piece-movement/rules";
-import { PostMovementRuleMeta } from "../rules/piece-post-movement/post-movement.rule";
+import { UUID } from "crypto";
 
 export type PieceMeta = {
+  id: UUID;
   type: PieceType;
   color: Color;
-  rules: RuleMeta[];
-  postMovementRulesMeta?: PostMovementRuleMeta[];
+  movementRulesMeta: UUID[];
+  postMovementRulesMeta?: UUID[];
 };

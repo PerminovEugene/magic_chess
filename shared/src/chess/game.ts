@@ -5,6 +5,9 @@ import { MovesTree } from "./moves-tree/moves-tree";
 import { GlobalRule } from "./rules/global/check-mate.global-rule";
 import { Turn, TurnType } from "./turn";
 import { BoardMeta } from "./board/board.types";
+import { Coordinate } from "./coordinate";
+import { serializeCoordinate } from "./moves-tree";
+import { Action } from "./rules";
 
 export class Player {
   constructor(public name: string) {}
@@ -65,15 +68,20 @@ export class Game {
   //   return actions;
   // }
 
-  // getMovementResult(
-  //   affects: Action,
-  // ) {
-  //   const movements = this.getMoveToCoordinatesObj(from);
-  //   if (!movements) {
-  //     return;
-  //   }
-  //   return movements[coordToKey(to, selectedPieceType)];
-  // }
+  getActionsForCoordinate(coordinate: Coordinate): Action[] {
+    const root = this.movesTree.getRoot();
+    const actions: Action[] = [];
+    const fromKey = serializeCoordinate(coordinate);
+    const movements = root.movements[fromKey];
+    if (!movements) {
+      return actions;
+    }
+    for (const toKey in movements) {
+      actions.push(movements[toKey].affects);
+    }
+
+    return actions;
+  }
 
   processTurn(turn: Turn) {
     const { color, type, affects, selectedPieceType } = turn;
@@ -101,8 +109,8 @@ export class Game {
       //   throw new Error("Invalid move affects");
       // }
 
-      this.movesTree.processTurn(turn);
       this.turns.push(turn);
+      this.movesTree.processTurn(turn);
     } else {
       // this.turns.push(turn);
       // this.board.cast(color, from, to);
@@ -125,17 +133,17 @@ export class Game {
   // returns meta board for color, it hides opponent private data, hold minimal data
   getBoardMetaForColor(color: Color): BoardMeta {
     const boardMeta = this.board.getMeta();
-    for (let i = 0; i < boardMeta.length; i++) {
-      for (let j = 0; j < boardMeta[i].length; j++) {
-        const meta = boardMeta[i][j];
-        if (meta) {
-          if (meta.color !== color) {
-            // Rules will be hidden for  custom game mode, default mode reqires them for check-mate rule
-            // meta.rules = []; // when scouting will be available need to add smarter solution
-          }
-        }
-      }
-    }
+    // for (let i = 0; i < boardMeta.cells.length; i++) {
+    //   for (let j = 0; j < boardMeta.cells[i].length; j++) {
+    //     const meta = boardMeta.cells[i][j];
+    //     if (meta) {
+    //       if (meta.color !== color) {
+    //         // Rules will be hidden for  custom game mode, default mode reqires them for check-mate rule
+    //         // meta.rules = []; // when scouting will be available need to add smarter solution
+    //       }
+    //     }
+    //   }
+    // }
     return boardMeta;
   }
 

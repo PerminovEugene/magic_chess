@@ -1,41 +1,15 @@
 import { PieceMeta } from "./piece.types";
 import { PieceType } from "./piece.constants";
 import { Pawn, Bishop, Knight, Rook, Queen, King } from "./pieces";
-import { PostMovementRuleMeta, RuleMeta } from "../rules";
+import { RuleMeta } from "../rules";
+import { PostMovementRuleMeta } from "../rules/piece-post-movement/post.movement.types";
 
 export function buildPieceByMeta(meta: PieceMeta) {
   const c = mapper[meta.type as PieceType];
   return new c(
     meta.color,
-    meta.rules.map((ruleMeta: RuleMeta) => ruleMeta.id),
-    meta.postMovementRulesMeta?.map(
-      (ruleMeta: PostMovementRuleMeta) => ruleMeta.id
-    )
-    //   const r = rulesMapper[ruleMeta.name];
-
-    //   let uniqRulesParams: any = {};
-    //   if (isPositionSpecificMovementRuleMeta(ruleMeta)) {
-    //     const activatePositions: ActivatePositions = {};
-    //     if (activatePositions.x) {
-    //       activatePositions.x = new Set(activatePositions.x);
-    //     }
-    //     if (activatePositions.y) {
-    //       activatePositions.y = new Set(activatePositions.y);
-    //     }
-    //     uniqRulesParams.activatePositions = activatePositions;
-    //   }
-    //   return new r({
-    //     ...ruleMeta,
-    //     directions: new Set(ruleMeta.directions),
-    //     ...uniqRulesParams,
-    //   });
-    // }),
-    // meta.postMovementRulesMeta?.map((ruleMeta: PostMovementRuleMeta) => {
-    //   if (isTransformingRuleMeta(ruleMeta)) {
-    //     return new postMovementRulesMapper[ruleMeta.name](ruleMeta);
-    //   }
-    //   throw new Error("Invalid post movement rule");
-    // })
+    meta.movementRulesMeta.map((ruleMetaId) => ruleMetaId),
+    meta.postMovementRulesMeta?.map((ruleMetaId) => ruleMetaId)
   );
 }
 

@@ -5,7 +5,6 @@ export * from "./color";
 export * from "./coordinate";
 export * from "./game";
 export * from "./get-piece";
-export * from "./meta-storage";
 export * from "./moves-tree/index";
 export * from "./piece/index";
 export * from "./rules/index";

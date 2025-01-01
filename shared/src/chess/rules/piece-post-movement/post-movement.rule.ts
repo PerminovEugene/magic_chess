@@ -1,8 +1,6 @@
-import { Color } from "../../color";
 import { Action } from "../piece-movement/movement-rule";
 import { PostMovementRules } from "../piece-movement/movement-rules.const";
 import { PieceType } from "../../piece/piece.constants";
-import { Entity } from "../../entity";
 import { UUID } from "crypto";
 
 export abstract class PostMovementRule {
@@ -13,9 +11,3 @@ export abstract class PostMovementRule {
   ): Action[];
   public abstract getMeta(): any;
 }
-
-export type PostMovementRuleMeta = {
-  name: PostMovementRules;
-  color: Color;
-  maxCharges: number;
-} & Entity;

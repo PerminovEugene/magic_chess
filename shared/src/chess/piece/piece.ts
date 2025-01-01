@@ -1,9 +1,5 @@
 import { Color } from "../color";
 import { PieceType } from "./piece.constants";
-import {
-  MovementRules,
-  PostMovementRules,
-} from "../rules/piece-movement/movement-rules.const";
 import { MovementRule, PostMovementRule } from "../rules";
 
 export abstract class Piece {

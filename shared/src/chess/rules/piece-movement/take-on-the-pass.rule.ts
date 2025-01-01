@@ -67,6 +67,9 @@ export class TakeOnThePassMovementRule extends PositionSpecificMovementRule {
     if (!turns || !turns.length) {
       return [];
     }
+    if (!this.activatePositions.y?.has(y)) {
+      return [];
+    }
     const lastTurn = turns[turns.length - 1];
     const [enemyFromX, enemyFromY] = getUserSelectedMoveAffect(
       lastTurn.affects
@@ -79,8 +82,21 @@ export class TakeOnThePassMovementRule extends PositionSpecificMovementRule {
 
     const [newX, newY] = directionToVector(dirrection, x, y, diff);
 
+    console.log({
+      pieceType: lastTurn.pieceType,
+      isPawn: lastTurn.pieceType === PieceType.Pawn,
+      isNear: this.isNear(enemyFromX, x),
+      enemyFromX,
+      x,
+      toX,
+      enemyFromY,
+      y,
+      prevEnemyPos,
+      toY,
+      newX,
+    });
     if (
-      this.activatePositions.y?.has(y) &&
+      // this.activatePositions.y?.has(y) &&
       lastTurn.pieceType === PieceType.Pawn &&
       this.isNear(enemyFromX, x) &&
       enemyFromX === toX &&
