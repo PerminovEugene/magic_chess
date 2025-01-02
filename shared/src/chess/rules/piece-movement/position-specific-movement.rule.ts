@@ -1,4 +1,5 @@
-import { Action, Direction, MovementRuleMeta } from "./movement-rule";
+import { Direction, MovementRuleMeta } from "./movement-rule";
+import { Action } from "../../affect/affect.types";
 import {
   directionToVector,
   StraightMovementRule,

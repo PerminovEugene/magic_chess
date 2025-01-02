@@ -1,6 +1,7 @@
 import { Turn } from "../../turn";
 import { Coordinate } from "../../coordinate";
-import { Action, Direction, MovementRule } from "./movement-rule";
+import { Direction, MovementRule } from "./movement-rule";
+import { Action } from "../../affect/affect.types";
 import { GetPiece } from "../../get-piece";
 import { AffectType } from "../../affect/affect.types";
 import { MovementRules } from "./movement-rules.const";

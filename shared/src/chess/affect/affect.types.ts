@@ -43,3 +43,5 @@ export type TransformationAffect = {
   destPieceType: PieceType;
   sourcePieceType: PieceType;
 } & UserSelectedAffectMixin;
+
+export type Action = Affects;

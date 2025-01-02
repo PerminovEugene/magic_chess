@@ -7,4 +7,4 @@ export * from "./piece-movement/vertical-movement.rule";
 export * from "./piece-movement/knight-movement.rule";
 export * from "./piece-movement/position-specific-movement.rule";
 export * from "./piece-post-movement/post-movement.rule";
-export * from "./piece-post-movement/transforming-on-position.rule";
+export * from "./piece-post-movement/transforming-on-position/transforming-on-position.rule";

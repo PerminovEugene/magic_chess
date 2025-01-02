@@ -7,8 +7,6 @@ import { serializeToCoordinate } from "../../moves-tree/moves-tree.utils";
 import { Node } from "../../moves-tree/moves-tree.types";
 import { getUserSelectedMoveAffect } from "../../affect/affect.utils";
 
-type TurnSubSet = Pick<Turn, "affects" | "color">;
-
 export abstract class GlobalRule {
   public abstract markNodeWithChilds(
     node: Node,
@@ -25,35 +23,6 @@ export class CheckMateGlobalRule extends GlobalRule {
 
   private mainPieceType = PieceType.King;
 
-  // public isMoveValid(node: Node, board: Board, turn: TurnSubSet) {
-  //   const from = getUserSelectedMoveAffect(turn.affects).from;
-  //   const to = getUserSelectedMoveAffect(turn.affects).to;
-
-  //   const fromHash = serializeCoordinate(from);
-  //   const toHash = serializeCoordinate(to);
-
-  //   const kingCoordinate = board.findUniqPiece(turn.color, this.mainPieceType);
-
-  //   const nextNode = node.movements[fromHash][toHash].next;
-
-  //   for (const nextMovementFrom in nextNode.movements) {
-  //     for (const nextMovementTo in nextNode.movements[nextMovementFrom]) {
-  //       const nextTo = parseKey(nextMovementTo);
-
-  //       const actualCurrentKingCoordinate = isCoordinateEql(
-  //         kingCoordinate,
-  //         from
-  //       )
-  //         ? to
-  //         : kingCoordinate;
-  //       if (isCoordinateEql(actualCurrentKingCoordinate, nextTo)) {
-  //         return false;
-  //       }
-  //     }
-  //   }
-  //   return true;
-  // }
-
   public markNodeWithChilds(node: Node, prevNode: Node, board: Board) {
     let currentColor = node.color;
 
@@ -69,11 +38,9 @@ export class CheckMateGlobalRule extends GlobalRule {
 
     // let allMovesLeadToMateForCurrentColor = true;
     for (const movementFrom in node.movements) {
-      // const from = parseKey(movementFrom);
       for (const movementTo in node.movements[movementFrom]) {
         const moveResultData = node.movements[movementFrom][movementTo];
 
-        // const to = parseToKey(movementTo);
         const moveAffect = getUserSelectedMoveAffect(moveResultData.affects);
         if (
           prevNode &&
@@ -86,8 +53,6 @@ export class CheckMateGlobalRule extends GlobalRule {
         }
 
         const nextNode = moveResultData.next;
-
-        // let leadsToCurrentColorCheck = false;
 
         // we search for enemy moves to current color kings position
         for (const nextMovementFrom in nextNode.movements) {
@@ -111,19 +76,8 @@ export class CheckMateGlobalRule extends GlobalRule {
               moveResultData.suisidal = true;
             }
           }
-
-          // if (nextNode.movements[nextMovementFrom][nextMoveToCurrentKingKey]) {
-          //   // leadsToCurrentColorCheck = true;
-          //   moveResultData.suisidal = true;
-          // }
         }
-        // if (!leadsToCurrentColorCheck) {
-        //   // at least one currentColor move doesn't lead to immediate check
-        //   allMovesLeadToMateForCurrentColor = false;
-        // }
       }
     }
-    // if (allMovesLeadToMateForCurrentColor) {
-    // }
   }
 }

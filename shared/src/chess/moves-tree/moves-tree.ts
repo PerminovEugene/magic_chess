@@ -1,7 +1,7 @@
 import { Board } from "../board/board";
 import { Turn } from "../turn";
 import { Color } from "../color";
-import { Action } from "../rules/piece-movement/movement-rule";
+import { Action } from "../affect/affect.types";
 import { AffectType } from "../affect/affect.types";
 import { reverseColor } from "../color";
 import { Node } from "./moves-tree.types";

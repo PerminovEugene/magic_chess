@@ -1,6 +1,6 @@
 import { Turn } from "../../turn";
 import { GetPiece } from "../../get-piece";
-import { Affects } from "../../affect/affect.types";
+import { Action } from "../../affect/affect.types";
 import { MovementRules } from "./movement-rules.const";
 import { UUID } from "crypto";
 
@@ -25,8 +25,6 @@ export type MovementRuleMeta = {
   directions: Direction[];
   speed: number;
 };
-
-export type Action = Affects;
 
 export abstract class MovementRule {
   constructor(

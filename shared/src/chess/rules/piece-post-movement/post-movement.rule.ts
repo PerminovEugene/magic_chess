@@ -1,4 +1,4 @@
-import { Action } from "../piece-movement/movement-rule";
+import { Action } from "../../affect/affect.types";
 import { PostMovementRules } from "../piece-movement/movement-rules.const";
 import { PieceType } from "../../piece/piece.constants";
 import { UUID } from "crypto";

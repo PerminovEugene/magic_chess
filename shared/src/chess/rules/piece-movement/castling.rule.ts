@@ -2,7 +2,8 @@ import { Turn } from "../../turn";
 import { PieceType } from "../../piece/piece.constants";
 import { Color } from "../../color";
 import { Coordinate, isCoordinateEql } from "../../coordinate";
-import { Action, MovementRule, MovementRuleMeta } from "./movement-rule";
+import { MovementRule, MovementRuleMeta } from "./movement-rule";
+import { Action } from "../../affect/affect.types";
 import { StraightMovementRuleConfig } from "./straight-movement.rule";
 import { GetPiece } from "../../get-piece";
 import {

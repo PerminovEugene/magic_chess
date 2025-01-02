@@ -8,7 +8,7 @@ import { MovementRule } from "../shared/src/chess/rules/piece-movement/movement-
 import { CheckMateGlobalRule } from "../shared/src/chess/rules/global/check-mate.global-rule";
 import { randomUUID } from "crypto";
 import { RulesRepository } from "./rules.repository";
-import { PostMovementRuleMeta } from "../shared/src/chess/rules/piece-post-movement/post.movement.types";
+import { PostMovementRuleMeta } from "../shared/src/chess/rules/piece-post-movement/post-movement.types";
 
 export type Position = {
   [key in Color]: { type: PieceType; coordinate: Coordinate }[];

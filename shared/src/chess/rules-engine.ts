@@ -1,10 +1,10 @@
-import { Action, MovementRule } from "./rules/piece-movement/movement-rule";
+import { MovementRule } from "./rules/piece-movement/movement-rule";
+import { Action } from "./affect/affect.types";
 import { PostMovementRule } from "./rules/piece-post-movement/post-movement.rule";
 import {
   ActivatePositions,
   DiagonalMovementRule,
   HorizontalMovementRule,
-  isTransformingRuleMeta,
   KnightMovementRule,
   PositionSpecificMovementRule,
   TransformationOnPositionRule,
@@ -22,7 +22,8 @@ import { GetPiece } from "./get-piece";
 import { Turn } from "./turn";
 import { PieceType } from "./piece/piece.constants";
 import { Entity } from "./entity";
-import { PostMovementRuleMeta } from "./rules/piece-post-movement/post.movement.types";
+import { PostMovementRuleMeta } from "./rules/piece-post-movement/post-movement.types";
+import { isTransformingRuleMeta } from "./rules/piece-post-movement/transforming-on-position/transforming-on-position.typeguard";
 
 const rulesMapper = {
   [MovementRules.VerticalMovementRule]: VerticalMovementRule,

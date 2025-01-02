@@ -1,5 +1,4 @@
 import { Cell } from "../cell";
-// import { MetaStorage } from "../meta-storage";
 import { Piece } from "../piece/piece";
 import { buildPieceByMeta } from "../piece/piece-builder";
 import {

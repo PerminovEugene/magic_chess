@@ -1,5 +1,5 @@
 import { Color } from "../color";
-import { Action } from "../rules";
+import { Action } from "..//affect/affect.types";
 
 export type X = number;
 export type Y = number;

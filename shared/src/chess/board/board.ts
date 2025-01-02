@@ -2,11 +2,9 @@ import { Cell } from "../cell";
 import { Turn } from "../turn";
 import { Color } from "../color";
 import { Piece } from "../piece/piece";
-import { PieceMeta } from "../piece/piece.types";
 import { PieceType } from "../piece/piece.constants";
-import { Action } from "../rules/piece-movement/movement-rule";
+import { Action } from "../affect/affect.types";
 import { Coordinate } from "../coordinate";
-// import { MetaStorage } from "../meta-storage";
 import {
   handleKillAffect,
   handleMoveAffect,
@@ -17,7 +15,6 @@ import {
 import { buildPieceByMeta } from "../piece/piece-builder";
 import { BoardMeta } from "./board.types";
 import { RulesEngine } from "../rules-engine";
-import { AffectType } from "../affect/affect.types";
 
 /**
  * Board keeps data about current game position and pieces on the array of cells
@@ -48,19 +45,6 @@ export class Board {
   public isIndexValid = (index: number) => index >= 0 && index < this.size;
 
   public getMeta(): BoardMeta {
-    // const boardMeta: any[][] = Array.from({ length: this.squares.length }, () =>
-    //   Array.from({ length: this.size }, () => null)
-    // );
-    // for (let i = 0; i < this.squares.length; i++) {
-    //   for (let j = 0; j < this.squares[i].length; j++) {
-    //     const cell = this.squares[i][j];
-    //     const piece = cell.getPiece();
-    //     if (piece) {
-    //       const meta = piece.getMeta();
-    //       boardMeta[i][j] = meta;
-    //     }
-    //   }
-    // }
     if (!this.meta) {
       throw new Error("Board meta is not defined yet");
     }
@@ -79,26 +63,16 @@ export class Board {
 
         if (pieceMetaId) {
           const cell = this.getCell(col, row);
-          // this.metaStorage.setMeta(cellMeta);
 
           const pieceMeta = meta.pieceMeta.find(({ id }) => id === pieceMetaId);
           if (!pieceMeta) {
             throw new Error("Piece meta not found");
           }
           cell.putPiece(buildPieceByMeta(pieceMeta));
-          // if (cellMeta.postMovementRulesMeta) {
-          //   this.rulesEngine.addPostMovementRules(meta.postMovementRulesMeta);
-          // }
         }
       }
     }
-    // this.saveAdditionalMeta(transformationsPieceMeta);
   }
-  // public saveAdditionalMeta(pieceMeta: PieceMeta[]) {
-  //   pieceMeta.forEach((meta) => {
-  //     this.metaStorage.setMeta(meta);
-  //   });
-  // }
 
   public getPiece = (x: number, y: number) => {
     return this.squares[y][x].getPiece();
@@ -166,14 +140,6 @@ export class Board {
    */
   private killed: Piece[] = [];
 
-  // private typesOrder = {
-  //   [AffectType.kill]: 10,
-  //   [AffectType.reversedTransformation]: 9,
-  //   [AffectType.move]: 5,
-  //   [AffectType.spawn]: 2,
-  //   [AffectType.transformation]: 1,
-  // }
-
   public updateCellsOnMove(affects: Action) {
     if (!this.meta) {
       throw new Error("Board meta is not defined yet");
@@ -184,39 +150,6 @@ export class Board {
       handleTransformAffect(affect, this.squares, this.meta as BoardMeta);
       handleSpawnAffect(affect, this.squares, this.killed);
     });
-
-    // if (affects) {
-    //   affects.forEach((affect) => {
-    //     // const unspawned = handleKillAffect(affect, this.squares);
-    //     if (unspawned) {
-    //       this.killed.push(unspawned);
-    //     }
-    //     if (affect.before) {
-    //       handleTransformAffect(affect, this.squares, this.metaStorage);
-    //     }
-    //   });
-    // }
-    // const fromCell = this.getCell(fromX, fromY);
-    // const toCell = this.getCell(toX, toY);
-
-    // if (toCell.isEmpty()) {
-    //   const piece = fromCell.popPiece() as Piece;
-    //   toCell.putPiece(piece);
-    // } else {
-    //   const piece = fromCell.popPiece() as Piece;
-    //   const killed = toCell.popPiece();
-    //   this.killed.push(killed as Piece);
-    //   toCell.putPiece(piece);
-    // }
-    // if (affects) {
-    //   affects.forEach((affect) => {
-    //     if (!affect.before) {
-    //       handleTransformAffect(affect, this.squares, this.metaStorage);
-    //     }
-    //     handleMoveAffect(affect, this.squares, this.metaStorage);
-    //     handleSpawnAffect(affect, this.squares, this.killed.pop() as Piece);
-    //   });
-    // }
   }
 
   public revertMove(affects: Action): void {

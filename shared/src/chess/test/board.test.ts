@@ -9,7 +9,6 @@ import {
   buildTransformationAffect,
   markAsUserSelected,
 } from "../affect/affect.utils";
-import { Piece } from "../piece";
 
 describe("Board", () => {
   let board: Board;
