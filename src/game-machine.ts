@@ -125,7 +125,7 @@ export class GameMachine {
     this.game.result = color === Color.white ? Color.black : Color.white;
     this.game.timeEnd = new Date().toISOString();
     this.sockets[this.getOppositColor(color)].emit(
-      WSServerGameEvent.OpponenSurrender
+      WSServerGameEvent.OpponentSurrender
     );
     // some confiramtion about receiving surrender needed before unsubscibe
     this.unsubscribeFromGameEvents();

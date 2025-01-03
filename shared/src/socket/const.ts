@@ -8,7 +8,7 @@ export enum WSServerGameEvent {
   TurnRejected = "turn_rejected",
   OpponentTurn = "opponent_turn",
   SurrenderConfirmed = "surrender_confirmed",
-  OpponenSurrender = "opponent_surrender",
+  OpponentSurrender = "opponent_surrender",
   OpponentDisconnected = "opponent_disconnected",
   OpponentWon = "opponent_won",
   YouWon = "you_won",
