@@ -1,3 +1,7 @@
+# 0.2.1
+
+Fix typo in ws event.
+
 # 0.2.0
 
 Complete default chess logic.

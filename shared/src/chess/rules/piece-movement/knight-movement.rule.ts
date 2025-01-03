@@ -1,10 +1,10 @@
-import { Action, Direction } from "./movement-rule";
+import { Direction } from "./movement-rule";
+import { Action } from "../../affect/affect.types";
 import {
   StraightMovementRule,
   StraightMovementRuleConfig,
 } from "./straight-movement.rule";
 import { Coordinate } from "../../coordinate";
-import { AffectType } from "../../affect/affect.types";
 import { buildMoveAffect, markAsUserSelected } from "../../affect/affect.utils";
 
 /**

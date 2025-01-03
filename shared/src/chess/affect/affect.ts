@@ -1,5 +1,4 @@
 import { Cell } from "../cell";
-// import { MetaStorage } from "../meta-storage";
 import { Piece } from "../piece/piece";
 import { buildPieceByMeta } from "../piece/piece-builder";
 import {
@@ -25,7 +24,7 @@ export function handleKillAffect(
   cells: Cell[][],
   killed: Piece[]
 ) {
-  const { from, type } = affect;
+  const { from } = affect;
 
   if (isKillAffect(affect)) {
     const [fromX, fromY] = from;

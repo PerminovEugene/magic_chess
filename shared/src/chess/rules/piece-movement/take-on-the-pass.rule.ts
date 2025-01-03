@@ -1,6 +1,7 @@
 import { Turn } from "../../turn";
 import { PieceType } from "../../piece/piece.constants";
-import { Action, Direction } from "./movement-rule";
+import { Direction } from "./movement-rule";
+import { Action } from "../../affect/affect.types";
 import {
   PositionSpecificMovementRule,
   PositionSpecificMovementRuleConfig,

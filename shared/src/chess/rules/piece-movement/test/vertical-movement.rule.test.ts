@@ -1,5 +1,4 @@
 import { randomUUID } from "crypto";
-import { AffectType } from "../../../affect/affect.types";
 import {
   buildKillAffect,
   buildMoveAffect,
@@ -9,7 +8,8 @@ import { Cell } from "../../../cell";
 import { Color } from "../../../color";
 import { Coordinate } from "../../../coordinate";
 import { Pawn } from "../../../piece/pieces";
-import { Action, Direction } from "../movement-rule";
+import { Direction } from "../movement-rule";
+import { Action } from "../../../affect/affect.types";
 import { MovementRules } from "../movement-rules.const";
 import { StraightMovementRuleConfig } from "../straight-movement.rule";
 import { VerticalMovementRule } from "../vertical-movement.rule";
@@ -56,10 +56,6 @@ describe("VerticalMovementRule", () => {
   };
 
   describe("check from the middle", () => {
-    const fromX = 2;
-    const fromY = 2;
-    const from = [fromX, fromY] as Coordinate;
-
     describe("check from the middle", () => {
       const fromX = 2;
       const fromY = 2;

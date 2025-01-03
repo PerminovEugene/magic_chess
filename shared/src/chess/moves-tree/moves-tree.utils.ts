@@ -7,14 +7,6 @@ import {
 } from "../affect/affect.types";
 import { Coordinate } from "../coordinate";
 import { X, Y } from "./moves-tree.types";
-import { PieceType } from "../piece/piece.constants";
-
-const postfixToPieceType = {
-  Q: PieceType.Queen,
-  R: PieceType.Rook,
-  B: PieceType.Bishop,
-  K: PieceType.Knight,
-};
 
 const coordinateSeparator = "_";
 export function serializeXY(x: X, y: Y) {

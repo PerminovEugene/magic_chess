@@ -9,9 +9,8 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    // "typeRoots": ["./types", "./node_modules/@types"]
-    // "types": ["node", "jest"]
     "lib": ["es2023"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "shared/**/*.ts", "types/**/*.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts", "shared/**/*.ts", "types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

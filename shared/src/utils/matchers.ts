@@ -1,6 +1,7 @@
 import { Action } from "../chess";
 import { Affect } from "../chess/affect/affect.types";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const deepEqual = (obj1: any, obj2: any): boolean => {
   if (obj1 === obj2) return true;
 

@@ -1,15 +1,15 @@
-import { Action, MovementRule } from "./rules/piece-movement/movement-rule";
+import { MovementRule } from "./rules/piece-movement/movement-rule";
+import { Action } from "./affect/affect.types";
 import { PostMovementRule } from "./rules/piece-post-movement/post-movement.rule";
 import {
   ActivatePositions,
   DiagonalMovementRule,
   HorizontalMovementRule,
-  isTransformingRuleMeta,
   KnightMovementRule,
   PositionSpecificMovementRule,
   TransformationOnPositionRule,
   VerticalMovementRule,
-} from "./rules/movement-rules";
+} from "./rules/piece-movement";
 import { CastlingMovementRule } from "./rules/piece-movement/castling.rule";
 import { RuleMeta } from "./rules/piece-movement/rules";
 import { TakeOnThePassMovementRule } from "./rules/piece-movement/take-on-the-pass.rule";
@@ -22,7 +22,8 @@ import { GetPiece } from "./get-piece";
 import { Turn } from "./turn";
 import { PieceType } from "./piece/piece.constants";
 import { Entity } from "./entity";
-import { PostMovementRuleMeta } from "./rules/piece-post-movement/post.movement.types";
+import { PostMovementRuleMeta } from "./rules/piece-post-movement/post-movement.types";
+import { isTransformingRuleMeta } from "./rules/piece-post-movement/transforming-on-position/transforming-on-position.typeguard";
 
 const rulesMapper = {
   [MovementRules.VerticalMovementRule]: VerticalMovementRule,
@@ -45,7 +46,9 @@ export class RulesEngine {
   public addMovementRule(ruleMeta: RuleMeta) {
     const r = rulesMapper[ruleMeta.name];
 
-    let uniqRulesParams: any = {};
+    const uniqRulesParams: {
+      activatePositions?: ActivatePositions;
+    } = {};
     if (isPositionSpecificMovementRuleMeta(ruleMeta)) {
       const activatePositions: ActivatePositions = {};
       if (ruleMeta.activatePositions.x) {
@@ -59,7 +62,8 @@ export class RulesEngine {
     const ruleInstance = new r({
       ...ruleMeta,
       directions: new Set(ruleMeta.directions),
-      ...uniqRulesParams,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(uniqRulesParams as any),
     });
     this.movementRules.set(ruleMeta.id, ruleInstance);
   }

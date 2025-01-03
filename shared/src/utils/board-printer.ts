@@ -7,7 +7,7 @@ export function printCells({
   let r = "";
   for (let i = 0; i < cells.length; i++) {
     const row = cells[i];
-    let printData = [];
+    const printData = [];
 
     for (let j = 0; j < row.length; j++) {
       const pieceMetaId = cells[i][j];

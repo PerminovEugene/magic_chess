@@ -2,7 +2,8 @@ import { Turn } from "../../turn";
 import { PieceType } from "../../piece/piece.constants";
 import { Color } from "../../color";
 import { Coordinate, isCoordinateEql } from "../../coordinate";
-import { Action, MovementRule, MovementRuleMeta } from "./movement-rule";
+import { MovementRule, MovementRuleMeta } from "./movement-rule";
+import { Action } from "../../affect/affect.types";
 import { StraightMovementRuleConfig } from "./straight-movement.rule";
 import { GetPiece } from "../../get-piece";
 import {
@@ -86,7 +87,7 @@ export class CastlingMovementRule extends MovementRule {
 
   private isSpaceBeetweenLocked(getPiece: GetPiece) {
     const [mainCoordX, mainCoordY] = this.mainPieceCoordinate;
-    const [foreginCoordX, foreginCoordY] = this.foreginPieceCoordinate;
+    const [foreginCoordX] = this.foreginPieceCoordinate;
     const sign = this.getSign();
     for (let i = (mainCoordX + 1 * sign) * sign; i < foreginCoordX; i++) {
       if (getPiece(i * sign, mainCoordY)) {

@@ -1,38 +1,15 @@
-import { PieceType } from "../../piece/piece.constants";
-import { Color } from "../../color";
-import { Action } from "../piece-movement/movement-rule";
-import { PostMovementRule } from "./post-movement.rule";
-import { PostMovementRuleMeta } from "./post.movement.types";
-import { AffectType } from "../../affect/affect.types";
-import { PostMovementRules } from "../piece-movement/movement-rules.const";
+import { PieceType } from "../../../piece/piece.constants";
+import { Action } from "../../../affect/affect.types";
+import { PostMovementRule } from "../post-movement.rule";
+import { AffectType } from "../../../affect/affect.types";
 import {
   buildTransformationAffect,
   markAsUserSelected,
-} from "../../affect/affect.utils";
-import { Entity } from "../../entity";
-
-export type TransformationOnPositionRuleConfig = {
-  name: PostMovementRules;
-  triggerOnX?: number;
-  triggerOnY?: number;
-  color: Color;
-  // metadata for these pieces should be in board metadata
-  possiblePiecesTypes: PieceType[];
-  maxCharges: number;
-} & Entity;
-export type TransformationOnPositionRuleMeta = {
-  name: PostMovementRules;
-} & TransformationOnPositionRuleConfig;
-
-export function isTransformingRuleMeta(
-  rule: PostMovementRuleMeta
-): rule is TransformationOnPositionRuleMeta {
-  return (
-    (rule as TransformationOnPositionRuleMeta).maxCharges !== undefined &&
-    ((rule as TransformationOnPositionRuleMeta).triggerOnX !== undefined ||
-      (rule as TransformationOnPositionRuleMeta).triggerOnY !== undefined)
-  );
-}
+} from "../../../affect/affect.utils";
+import {
+  TransformationOnPositionRuleConfig,
+  TransformationOnPositionRuleMeta,
+} from "./transforming-on-position.types";
 
 export class TransformationOnPositionRule extends PostMovementRule {
   private charges: number;
@@ -61,7 +38,7 @@ export class TransformationOnPositionRule extends PostMovementRule {
   ): Action[] {
     const newMoves: Action[] = [];
     if (this.charges > 0) {
-      for (let action of availableMoves) {
+      for (const action of availableMoves) {
         const moveAffect = action.find(
           (affect) => affect.type === AffectType.move
         );

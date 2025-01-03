@@ -1,14 +1,13 @@
-import { Coordinate, PostMovementRule, RuleMeta } from "../shared/src";
+import { Coordinate, RuleMeta } from "../shared/src";
 import { Board } from "../shared/src/chess/board/board";
 import { BoardMeta } from "../shared/src/chess/board/board.types";
 import { Color } from "../shared/src/chess/color";
 import { PieceMeta } from "../shared/src/chess/piece/piece.types";
 import { PieceType } from "../shared/src/chess/piece/piece.constants";
-import { MovementRule } from "../shared/src/chess/rules/piece-movement/movement-rule";
 import { CheckMateGlobalRule } from "../shared/src/chess/rules/global/check-mate.global-rule";
 import { randomUUID } from "crypto";
 import { RulesRepository } from "./rules.repository";
-import { PostMovementRuleMeta } from "../shared/src/chess/rules/piece-post-movement/post.movement.types";
+import { PostMovementRuleMeta } from "../shared/src/chess/rules/piece-post-movement/post-movement.types";
 
 export type Position = {
   [key in Color]: { type: PieceType; coordinate: Coordinate }[];
@@ -19,7 +18,7 @@ export type RulesMeta = {
 };
 
 export class GameInitializer {
-  getDefaultGlobalRules(board: Board) {
+  getDefaultGlobalRules() {
     return [new CheckMateGlobalRule()];
   }
 
@@ -82,7 +81,7 @@ export class GameInitializer {
       case PieceType.Pawn:
         return this.rulesRepository.getDefaultPawnRules(color, withPostRulest);
       case PieceType.Rook:
-        return this.rulesRepository.getDefaultRookRules(color);
+        return this.rulesRepository.getDefaultRookRules();
       case PieceType.Bishop:
         return this.rulesRepository.getDefaultBishopRules();
       case PieceType.Knight:
@@ -180,7 +179,7 @@ export class GameInitializer {
           type,
           color as Color,
           withPostRulest
-        ) as any;
+        );
 
         const pieceMeta = this.buildPieceMeta(type, color as Color, rulesMeta);
         meta.cellsMeta[y][x] = pieceMeta.id;
@@ -193,11 +192,10 @@ export class GameInitializer {
     // const additionalMeta: PieceMeta[] = [];
     this.rulesRepository.getPawnTransformationPieces().forEach((type) => {
       const rulesMetaBlack = this.getDefaultRulesForPiece(
-        //TODO remove ugly stuff
         type,
         Color.black,
         withPostRulest
-      ) as any;
+      );
 
       meta.pieceMeta.push(
         this.buildPieceMeta(type, Color.black, rulesMetaBlack)
@@ -209,7 +207,7 @@ export class GameInitializer {
         type,
         Color.white,
         withPostRulest
-      ) as any;
+      );
       meta.pieceMeta.push(
         this.buildPieceMeta(type, Color.white, rulesMetaWhite)
       );

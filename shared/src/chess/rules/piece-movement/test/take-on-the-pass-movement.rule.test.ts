@@ -1,7 +1,8 @@
 import { Cell } from "../../../cell";
 import { PieceType } from "../../../piece/piece.constants";
 import { Coordinate } from "../../../coordinate";
-import { Action, Direction } from "../movement-rule";
+import { Direction } from "../movement-rule";
+import { Action } from "../../../affect/affect.types";
 import { PositionSpecificMovementRuleConfig } from "../position-specific-movement.rule";
 import { TakeOnThePassMovementRule } from "../take-on-the-pass.rule";
 import { Turn, TurnType } from "../../../turn";

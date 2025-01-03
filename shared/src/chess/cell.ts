@@ -7,7 +7,7 @@ export class Cell {
     this.piece = piece;
   }
   public popPiece() {
-    let piece = this.piece;
+    const piece = this.piece;
     this.piece = undefined;
     return piece;
   }

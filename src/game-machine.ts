@@ -7,7 +7,7 @@ import { Game } from "../shared/src/chess/game";
 import { Color } from "../shared/src/chess/color";
 import { Turn } from "../shared/src/chess/turn";
 
-type Listener = (args: any) => void;
+type Listener = (args: Turn) => void;
 type ListenersMap = Map<WSClientGameEvent, Listener>;
 
 export class GameMachine {
@@ -35,23 +35,23 @@ export class GameMachine {
     );
   }
 
-  private onTurnListener = (color: Color) => {
+  private getOnTurnListener = (color: Color) => {
     return (turn: Turn) => {
       this.handleTurn(color, turn);
     };
   };
-  private onSurrenderListener = (color: Color) => {
-    return (turn: Turn) => {
-      this.handleSurrender(color, turn);
+  private getOnSurrenderListener = (color: Color) => {
+    return () => {
+      this.handleSurrender(color);
     };
   };
 
   private subscribeToGameEvents(color: Color) {
-    const onTurnListener = this.onTurnListener(color);
+    const onTurnListener = this.getOnTurnListener(color);
     this.sockets[color].on(WSClientGameEvent.Turn, onTurnListener);
     this.listeners[color].set(WSClientGameEvent.Turn, onTurnListener);
 
-    const onSurrenderListener = this.onSurrenderListener(color);
+    const onSurrenderListener = this.getOnSurrenderListener(color);
     this.sockets[color].on(WSClientGameEvent.Surrender, onSurrenderListener);
     this.listeners[color].set(WSClientGameEvent.Surrender, onSurrenderListener);
   }
@@ -70,7 +70,7 @@ export class GameMachine {
   }
   public beginGame() {
     for (const color of Object.values(Color)) {
-      const boardMeta = this.game.getBoardMetaForColor(color);
+      const boardMeta = this.game.getBoardMeta();
       const gameInfo = this.game.getNewGameInfoForColor(color);
       this.sockets[color].emit(WSServerGameEvent.GameStarted, {
         boardMeta,
@@ -121,11 +121,11 @@ export class GameMachine {
     return color === Color.white ? Color.black : Color.white;
   }
 
-  private handleSurrender(color: Color, turn: Turn) {
+  private handleSurrender(color: Color) {
     this.game.result = color === Color.white ? Color.black : Color.white;
     this.game.timeEnd = new Date().toISOString();
     this.sockets[this.getOppositColor(color)].emit(
-      WSServerGameEvent.OpponenSurrender
+      WSServerGameEvent.OpponentSurrender
     );
     // some confiramtion about receiving surrender needed before unsubscibe
     this.unsubscribeFromGameEvents();

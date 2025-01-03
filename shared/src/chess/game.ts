@@ -7,7 +7,7 @@ import { Turn, TurnType } from "./turn";
 import { BoardMeta } from "./board/board.types";
 import { Coordinate } from "./coordinate";
 import { serializeCoordinate } from "./moves-tree";
-import { Action } from "./rules";
+import { Action } from "./affect/affect.types";
 
 export class Player {
   constructor(public name: string) {}
@@ -51,23 +51,6 @@ export class Game {
     this.nextTurnColor = reverseColor(this.nextTurnColor);
   }
 
-  // getMoveToCoordinatesObj(coordinate: Coordinate) {
-  //   const root = this.movesTree.getRoot();
-  //   return root.movements[serializeCoordinate(coordinate)];
-  // }
-
-  // getAvailableActionsForCoordinate(from: Coordinate) {
-  //   const movements = this.getMoveToCoordinatesObj(from);
-  //   if (!movements) {
-  //     return;
-  //   }
-  //   const actions: Action[] = [];
-  //   for (const toKey in movements) {
-  //     actions.push(movements[toKey].affects));
-  //   }
-  //   return actions;
-  // }
-
   getActionsForCoordinate(coordinate: Coordinate): Action[] {
     const root = this.movesTree.getRoot();
     const actions: Action[] = [];
@@ -84,31 +67,11 @@ export class Game {
   }
 
   processTurn(turn: Turn) {
-    const { color, type, affects, selectedPieceType } = turn;
+    const { color, type } = turn;
     if (this.nextTurnColor !== color) {
       throw new Error("Not your turn");
     }
     if (type === TurnType.Move) {
-      // this.board.validateTurn(turn, this.turns);
-
-      // const root = this.movesTree.getRoot();
-
-      // const from = turn.affects.find(
-      //   (a) => a.type === AffectType.move && a.userSelected
-      // )?.from;
-      // const fromHash = coordToKey(from);
-      // if (!root.movements[fromHash]) {
-      //   throw new Error("Invalid from coordinate");
-      // }
-
-      // const moveRes = root.movements[fromHash][serializeAffects(affects)];
-      // if (!moveRes) {
-      //   throw new Error("Invalid to coordinate");
-      // }
-      // if (!isAffectsEql(moveRes.affects, turn.affects)) {
-      //   throw new Error("Invalid move affects");
-      // }
-
       this.turns.push(turn);
       this.movesTree.processTurn(turn);
     } else {
@@ -131,20 +94,8 @@ export class Game {
   }
 
   // returns meta board for color, it hides opponent private data, hold minimal data
-  getBoardMetaForColor(color: Color): BoardMeta {
-    const boardMeta = this.board.getMeta();
-    // for (let i = 0; i < boardMeta.cells.length; i++) {
-    //   for (let j = 0; j < boardMeta.cells[i].length; j++) {
-    //     const meta = boardMeta.cells[i][j];
-    //     if (meta) {
-    //       if (meta.color !== color) {
-    //         // Rules will be hidden for  custom game mode, default mode reqires them for check-mate rule
-    //         // meta.rules = []; // when scouting will be available need to add smarter solution
-    //       }
-    //     }
-    //   }
-    // }
-    return boardMeta;
+  getBoardMeta(): BoardMeta {
+    return this.board.getMeta();
   }
 
   getNewGameInfoForColor(color: Color): NewPlayerGameData {

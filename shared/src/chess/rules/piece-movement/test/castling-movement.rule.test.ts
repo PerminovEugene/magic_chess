@@ -3,7 +3,8 @@ import { Bishop, King, Queen, Rook } from "../../../piece/pieces";
 import { PieceType } from "../../../piece/piece.constants";
 import { Color } from "../../../color";
 import { Coordinate } from "../../../coordinate";
-import { Action, Direction } from "../movement-rule";
+import { Direction } from "../movement-rule";
+import { Action } from "../../../affect/affect.types";
 import {
   CastlingMovementRule,
   CastlingMovementRuleConfig,

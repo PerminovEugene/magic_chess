@@ -1,7 +1,7 @@
 import { Board } from "../board/board";
 import { Turn } from "../turn";
 import { Color } from "../color";
-import { Action } from "../rules/piece-movement/movement-rule";
+import { Action } from "../affect/affect.types";
 import { AffectType } from "../affect/affect.types";
 import { reverseColor } from "../color";
 import { Node } from "./moves-tree.types";
@@ -73,7 +73,7 @@ export class MovesTree {
     const from = serializeCoordinate(fromCoordinate);
     const to = serializeAffects(turn.affects);
 
-    let movementResults = this.root.movements[from][to];
+    const movementResults = this.root.movements[from][to];
 
     const nextNode = movementResults.next;
     const prevRoot = this.root;
@@ -195,7 +195,6 @@ export class MovesTree {
       if (piece && piece.color === node.color) {
         node.movements[fromKey] = {};
 
-        const turns = this.initialTurns;
         const availableMoves: Action[] = this.board.getPieceAvailableMoves(
           x,
           y,
@@ -207,7 +206,7 @@ export class MovesTree {
         availableMoves.forEach((affects) => {
           const toKey = serializeAffects(affects);
 
-          let newNode: Node = this.createEmptyNode(reversedColor);
+          const newNode: Node = this.createEmptyNode(reversedColor);
 
           node.movements[fromKey][toKey] = {
             affects,
