@@ -24,7 +24,7 @@ export class CheckMateGlobalRule extends GlobalRule {
   private mainPieceType = PieceType.King;
 
   public markNodeWithChilds(node: Node, prevNode: Node, board: Board) {
-    let currentColor = node.color;
+    const currentColor = node.color;
 
     const kingCoordinate = board.findUniqPiece(
       currentColor,

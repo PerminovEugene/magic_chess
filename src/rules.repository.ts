@@ -1,4 +1,4 @@
-import { Coordinate, TransformationOnPositionRule } from "../shared/src";
+import { Coordinate } from "../shared/src";
 import { Color } from "../shared/src/chess/color";
 import { PieceType } from "../shared/src/chess/piece/piece.constants";
 import { Direction } from "../shared/src/chess/rules/piece-movement/movement-rule";
@@ -92,7 +92,7 @@ export class RulesRepository {
         : [],
     };
   }
-  getDefaultRookRules(color: Color) {
+  getDefaultRookRules() {
     return {
       movementRules: [
         {

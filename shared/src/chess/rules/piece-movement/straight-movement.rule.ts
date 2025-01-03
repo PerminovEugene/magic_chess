@@ -107,10 +107,10 @@ export abstract class StraightMovementRule extends MovementRule {
     size: number
   ): Action[] {
     const moves: Action[] = [];
-    let availableDirections = new Set<Direction>(this.possibleDirrections);
+    const availableDirections = new Set<Direction>(this.possibleDirrections);
 
     for (let diff = this.speed; diff <= this.distance; diff += this.speed) {
-      for (let dirrection of this.directions) {
+      for (const dirrection of this.directions) {
         if (availableDirections.has(dirrection)) {
           const affects = this.calculateNewCoord(
             fromX,

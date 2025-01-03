@@ -6,8 +6,6 @@ import {
   StraightMovementRuleConfig,
 } from "./straight-movement.rule";
 import { Turn } from "../../turn";
-import { MovementRules } from "./movement-rules.const";
-import { AffectType } from "../../affect/affect.types";
 import { buildMoveAffect, markAsUserSelected } from "../../affect/affect.utils";
 
 /*
@@ -99,6 +97,7 @@ export class PositionSpecificMovementRule extends StraightMovementRule {
     y: number,
     diff: number,
     dirrection: Direction,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _: Turn[]
   ): Action => {
     if (this.activatePositions.y?.has(y) || this.activatePositions.x?.has(x)) {

@@ -87,7 +87,7 @@ export class CastlingMovementRule extends MovementRule {
 
   private isSpaceBeetweenLocked(getPiece: GetPiece) {
     const [mainCoordX, mainCoordY] = this.mainPieceCoordinate;
-    const [foreginCoordX, foreginCoordY] = this.foreginPieceCoordinate;
+    const [foreginCoordX] = this.foreginPieceCoordinate;
     const sign = this.getSign();
     for (let i = (mainCoordX + 1 * sign) * sign; i < foreginCoordX; i++) {
       if (getPiece(i * sign, mainCoordY)) {

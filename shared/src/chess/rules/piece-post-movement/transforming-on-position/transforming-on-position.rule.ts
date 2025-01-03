@@ -38,7 +38,7 @@ export class TransformationOnPositionRule extends PostMovementRule {
   ): Action[] {
     const newMoves: Action[] = [];
     if (this.charges > 0) {
-      for (let action of availableMoves) {
+      for (const action of availableMoves) {
         const moveAffect = action.find(
           (affect) => affect.type === AffectType.move
         );

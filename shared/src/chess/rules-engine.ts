@@ -9,7 +9,7 @@ import {
   PositionSpecificMovementRule,
   TransformationOnPositionRule,
   VerticalMovementRule,
-} from "./rules/movement-rules";
+} from "./rules/piece-movement";
 import { CastlingMovementRule } from "./rules/piece-movement/castling.rule";
 import { RuleMeta } from "./rules/piece-movement/rules";
 import { TakeOnThePassMovementRule } from "./rules/piece-movement/take-on-the-pass.rule";
@@ -46,7 +46,9 @@ export class RulesEngine {
   public addMovementRule(ruleMeta: RuleMeta) {
     const r = rulesMapper[ruleMeta.name];
 
-    let uniqRulesParams: any = {};
+    const uniqRulesParams: {
+      activatePositions?: ActivatePositions;
+    } = {};
     if (isPositionSpecificMovementRuleMeta(ruleMeta)) {
       const activatePositions: ActivatePositions = {};
       if (ruleMeta.activatePositions.x) {
@@ -60,7 +62,8 @@ export class RulesEngine {
     const ruleInstance = new r({
       ...ruleMeta,
       directions: new Set(ruleMeta.directions),
-      ...uniqRulesParams,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(uniqRulesParams as any),
     });
     this.movementRules.set(ruleMeta.id, ruleInstance);
   }

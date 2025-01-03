@@ -5,7 +5,8 @@ import {
   PositionSpecificMovementRule,
   PositionSpecificMovementRuleConfig,
 } from "../position-specific-movement.rule";
-import { Action, Direction } from "../movement-rule";
+import { Direction } from "../movement-rule";
+import { Action } from "../../../affect/affect.types";
 import { Coordinate } from "../../../coordinate";
 import { MovementRules } from "../movement-rules.const";
 import {

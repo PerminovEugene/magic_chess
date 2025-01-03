@@ -3,7 +3,8 @@ import { Color } from "../../../color";
 import { Pawn, Knight } from "../../../piece/pieces";
 import { Coordinate } from "../../../coordinate";
 import { KnightMovementRule } from "../knight-movement.rule";
-import { Action, Direction } from "../movement-rule";
+import { Direction } from "../movement-rule";
+import { Action } from "../../../affect/affect.types";
 import { StraightMovementRuleConfig } from "../straight-movement.rule";
 import { MovementRules } from "../movement-rules.const";
 import {
@@ -108,7 +109,6 @@ describe("KnightMovementRule", () => {
     it("should return available moves when alied pieces are close", () => {
       const fromX = 0;
       const fromY = 0;
-      const from: Coordinate = [fromX, fromY];
 
       squares[fromY][fromX].putPiece(new Knight(Color.white));
 

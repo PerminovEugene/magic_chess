@@ -24,7 +24,7 @@ export function handleKillAffect(
   cells: Cell[][],
   killed: Piece[]
 ) {
-  const { from, type } = affect;
+  const { from } = affect;
 
   if (isKillAffect(affect)) {
     const [fromX, fromY] = from;

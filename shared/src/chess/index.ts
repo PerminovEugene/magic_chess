@@ -1,5 +1,7 @@
 export * from "./affect/index";
 export * from "./board/index";
+export * from "./moves-tree/index";
+export * from "./piece/index";
 export * from "./cell";
 export * from "./color";
 export * from "./coordinate";

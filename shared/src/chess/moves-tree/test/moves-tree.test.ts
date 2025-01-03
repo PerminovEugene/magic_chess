@@ -18,10 +18,10 @@ import { Turn } from "../../turn";
  * @param {Object} data - The object to write as JSON.
  * @param {string} filePath - The path (including filename) where the JSON file should be created or overwritten.
  */
-function writeJsonToFileCallback(data: any, filePath: any) {
-  const jsonData = JSON.stringify(data, null, 2);
-  fs.writeFileSync(filePath, jsonData, "utf8");
-}
+// function writeJsonToFileCallback(data: any, filePath: any) {
+//   const jsonData = JSON.stringify(data, null, 2);
+//   fs.writeFileSync(filePath, jsonData, "utf8");
+// }
 
 describe("MovesTree", () => {
   const gameInitializer = new GameInitializer();
@@ -48,7 +48,7 @@ describe("MovesTree", () => {
     --------------------
      */
     it("should return correct tree with three levels and in 1 case Pb doesn't have available moves (Kw to 4:0)", () => {
-      let board = new Board();
+      const board = new Board();
       const tree = setup(board, {
         [Color.white]: [
           {

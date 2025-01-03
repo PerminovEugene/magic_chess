@@ -1,4 +1,4 @@
-import { Action } from "../shared/src";
+import { Action } from "../shared/src/index";
 import { isAffectEql } from "../shared/src/utils/matchers";
 
 export const toMatchActions = (received: Action[], expected: Action[]) => {

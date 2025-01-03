@@ -94,7 +94,7 @@ export class Game {
   }
 
   // returns meta board for color, it hides opponent private data, hold minimal data
-  getBoardMetaForColor(color: Color): BoardMeta {
+  getBoardMeta(): BoardMeta {
     return this.board.getMeta();
   }
 

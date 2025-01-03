@@ -172,7 +172,6 @@ export class Board {
   }
 
   public findUniqPiece(color: Color, pieceType: PieceType): Coordinate {
-    let king: Coordinate | undefined;
     for (let i = 0; i < this.squares.length; i++) {
       for (let j = 0; j < this.squares[i].length; j++) {
         const cell = this.squares[i][j];
@@ -186,5 +185,5 @@ export class Board {
     throw new Error(`${pieceType} not found`);
   }
 
-  cast(color: Color, from: Coordinate, to: Coordinate) {}
+  // cast(color: Color, from: Coordinate, to: Coordinate) {}
 }

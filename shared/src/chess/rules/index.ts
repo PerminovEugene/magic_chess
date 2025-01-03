@@ -1,2 +1,2 @@
-export * from "./movement-rules";
-export * from "./global-rules";
+export * from "./piece-movement";
+export * from "./global";

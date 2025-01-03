@@ -5,7 +5,6 @@ import {
   StraightMovementRuleConfig,
 } from "./straight-movement.rule";
 import { Coordinate } from "../../coordinate";
-import { AffectType } from "../../affect/affect.types";
 import { buildMoveAffect, markAsUserSelected } from "../../affect/affect.utils";
 
 /**
