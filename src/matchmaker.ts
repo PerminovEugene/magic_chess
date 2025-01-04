@@ -2,6 +2,7 @@ import { Socket } from "socket.io";
 import { Board } from "../shared/src/chess/board/board";
 import { Game, Player } from "../shared/src/chess/game";
 import { GameInitializer } from "./game-initializer";
+import { Color } from "../shared/src";
 
 type QueueItem = {
   player: Player;
@@ -43,11 +44,15 @@ export class Matchmaker {
     this.gameInitializer.spawnDefaultRulesAndDefaultPosition(board);
     // this.gameInitializer.spawnBeforeTransformPostiion(board);
 
-    const defaultGloobalRules =
-      this.gameInitializer.getDefaultGlobalRules(board);
+    const defaultGloobalRules = this.gameInitializer.getDefaultGlobalRules();
+
+    const fifteenMinutes = 15 * 1000;
 
     return {
-      game: new Game(player, opponent.player, board, defaultGloobalRules, 3),
+      game: new Game(player, opponent.player, board, defaultGloobalRules, 3, {
+        [Color.white]: fifteenMinutes,
+        [Color.black]: fifteenMinutes,
+      }),
       opponentSocket: opponent.socket,
     };
   }
