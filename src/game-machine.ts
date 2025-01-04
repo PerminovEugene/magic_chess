@@ -16,10 +16,13 @@ export class GameMachine {
     [Color.black]: new Map<WSClientGameEvent, Listener>(),
     [Color.white]: new Map<WSClientGameEvent, Listener>(),
   };
+  private isGameStarted: boolean = false;
+
   constructor(
     private game: Game,
     whitePlayerSocket: Socket,
-    blackPlayerSocket: Socket
+    blackPlayerSocket: Socket,
+    private onMatchEnd: () => void
   ) {
     this.sockets = {
       [Color.white]: whitePlayerSocket,
@@ -37,11 +40,19 @@ export class GameMachine {
 
   private getOnTurnListener = (color: Color) => {
     return (turn: Turn) => {
+      if (!this.isGameStarted) {
+        console.log("Game is not started yet");
+        return;
+      }
       this.handleTurn(color, turn);
     };
   };
   private getOnSurrenderListener = (color: Color) => {
     return () => {
+      if (!this.isGameStarted) {
+        console.log("Game is not started yet");
+        return;
+      }
       this.handleSurrender(color);
     };
   };
@@ -77,9 +88,29 @@ export class GameMachine {
         gameInfo,
       });
     }
-
-    this.game.timeStart = new Date().toISOString();
+    this.game.startTimer(this.onTimeStart, this.onTimeEnd);
   }
+
+  private onTimeStart = () => {
+    this.isGameStarted = true;
+  };
+
+  private onTimeEnd = () => {
+    const winner = this.game.result;
+    if (winner !== Color.black && winner !== Color.white) {
+      throw new Error("Game result is not set properly on timeout");
+    }
+    this.sockets[winner].emit(WSServerGameEvent.OpponentTimeOut);
+    this.sockets[this.getOppositColor(winner)].emit(
+      WSServerGameEvent.YourTimeOut
+    );
+    this.onGameEnd();
+  };
+
+  private onGameEnd = () => {
+    this.unsubscribeFromGameEvents();
+    this.onMatchEnd();
+  };
 
   private handleTurn(color: Color, turn: Turn) {
     try {
@@ -102,6 +133,7 @@ export class GameMachine {
           messageForBlack,
           turn
         );
+        this.onGameEnd();
       } else {
         this.sockets[color].emit(WSServerGameEvent.TurnConfirmed);
         this.sockets[this.getOppositColor(color)].emit(
@@ -123,12 +155,12 @@ export class GameMachine {
 
   private handleSurrender(color: Color) {
     this.game.result = color === Color.white ? Color.black : Color.white;
-    this.game.timeEnd = new Date().toISOString();
     this.sockets[this.getOppositColor(color)].emit(
       WSServerGameEvent.OpponentSurrender
     );
+    this.sockets[color].emit(WSServerGameEvent.SurrenderConfirmed);
     // some confiramtion about receiving surrender needed before unsubscibe
-    this.unsubscribeFromGameEvents();
+    this.onGameEnd();
   }
 
   private getColorBySocketId(socketId: string) {
@@ -140,8 +172,7 @@ export class GameMachine {
     const disconnectedColor = this.getColorBySocketId(socketId);
     const winnerColor = this.getOppositColor(disconnectedColor);
     this.game.result = winnerColor;
-    this.game.timeEnd = new Date().toISOString();
     this.sockets[winnerColor].emit(WSServerGameEvent.OpponentDisconnected);
-    this.unsubscribeFromGameEvents();
+    this.onGameEnd();
   }
 }

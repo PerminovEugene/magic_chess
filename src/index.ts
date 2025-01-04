@@ -18,16 +18,24 @@ const io = new Server({
 
 const matchmaker = new Matchmaker();
 
-const gameMachines: GameMachine[] = [];
+const gameMachines: GameMachine[] = []; // better structure is needed
 io.on("connection", (socket) => {
   console.log("connected", socket.id);
   socket.on(WSClientGameEvent.FindGame, (data) => {
-    console.log("on find game eventt");
+    console.log("on find game event");
     const player = new Player(data.name);
     const match = matchmaker.findMatch(player, socket);
     if (match) {
+      const onMatchEnd = () => {
+        gameMachines.splice(gameMachines.indexOf(gameMachine), 1);
+      };
       const { game, opponentSocket } = match;
-      const gameMachine = new GameMachine(game, socket, opponentSocket);
+      const gameMachine = new GameMachine(
+        game,
+        socket,
+        opponentSocket,
+        onMatchEnd
+      );
       gameMachines.push(gameMachine);
       gameMachine.beginGame();
     } else {
