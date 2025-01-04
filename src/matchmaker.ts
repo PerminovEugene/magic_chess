@@ -46,13 +46,21 @@ export class Matchmaker {
 
     const defaultGloobalRules = this.gameInitializer.getDefaultGlobalRules();
 
-    const fifteenMinutes = 15 * 1000;
+    const fifteenMinutes = 5 * 1000; // 45 * 60 *;
 
     return {
-      game: new Game(player, opponent.player, board, defaultGloobalRules, 3, {
-        [Color.white]: fifteenMinutes,
-        [Color.black]: fifteenMinutes,
-      }),
+      game: new Game(
+        player,
+        opponent.player,
+        board,
+        defaultGloobalRules,
+        3,
+        new Date(Date.now() + 6000).toISOString(),
+        {
+          [Color.white]: fifteenMinutes,
+          [Color.black]: fifteenMinutes,
+        }
+      ),
       opponentSocket: opponent.socket,
     };
   }

@@ -16,6 +16,8 @@ export class GameMachine {
     [Color.black]: new Map<WSClientGameEvent, Listener>(),
     [Color.white]: new Map<WSClientGameEvent, Listener>(),
   };
+  private isGameStarted: boolean = false;
+
   constructor(
     private game: Game,
     whitePlayerSocket: Socket,
@@ -38,11 +40,19 @@ export class GameMachine {
 
   private getOnTurnListener = (color: Color) => {
     return (turn: Turn) => {
+      if (!this.isGameStarted) {
+        console.log("Game is not started yet");
+        return;
+      }
       this.handleTurn(color, turn);
     };
   };
   private getOnSurrenderListener = (color: Color) => {
     return () => {
+      if (!this.isGameStarted) {
+        console.log("Game is not started yet");
+        return;
+      }
       this.handleSurrender(color);
     };
   };
@@ -78,8 +88,12 @@ export class GameMachine {
         gameInfo,
       });
     }
-    this.game.startTimer(this.onTimeEnd);
+    this.game.startTimer(this.onTimeStart, this.onTimeEnd);
   }
+
+  private onTimeStart = () => {
+    this.isGameStarted = true;
+  };
 
   private onTimeEnd = () => {
     const winner = this.game.result;

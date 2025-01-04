@@ -28,7 +28,6 @@ export class Game {
   private _nextTurnColor: Color;
   private turns: Turn[] = [];
   result: Color | "draw" | null = null;
-  public timeStart: string = new Date().toISOString();
   public timeEnd: string | null = null;
 
   constructor(
@@ -37,6 +36,7 @@ export class Game {
     public board: Board,
     public globalRules: GlobalRule[],
     public treeLength: number,
+    private timeStart: string,
     private timeLeft: { [key in Color]: number }
   ) {
     this._nextTurnColor = Color.white;
@@ -74,9 +74,17 @@ export class Game {
 
   private externalOnTimeEnd: () => void = () => {};
 
-  startTimer(externalOnTimeEnd: () => void) {
-    this.timeStart = new Date().toISOString();
-    this.timers[Color.white].start();
+  public startTimer(
+    externalOnTimeStart: () => void,
+    externalOnTimeEnd: () => void
+  ) {
+    const expectedStart = new Date(this.timeStart);
+    const beforeStart = expectedStart.getTime() - new Date().getTime();
+    setTimeout(() => {
+      this.timers[Color.white].start();
+      externalOnTimeStart();
+    }, beforeStart);
+
     this.externalOnTimeEnd = externalOnTimeEnd;
   }
 
