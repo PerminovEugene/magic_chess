@@ -1,3 +1,7 @@
+# 0.2.2
+
+Improved time sync and surrender flow.
+
 # 0.2.1
 
 Fix typo in ws event.
